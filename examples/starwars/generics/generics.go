@@ -1,11 +1,11 @@
-package models
+package generics
 
 type GenericStruct[T any, U interface{ MethodU() string }] struct {
 	Field1 T
 	Field2 U
 }
 
-type AnotherGeneric[K comparable, V any] struct {
+type AnotherGeneric[K comparable, V *any] struct {
 	Key   K
 	Value V
 }
@@ -14,6 +14,9 @@ type AnotherGeneric[K comparable, V any] struct {
 // 	Inner GenericStruct[X, AnotherGeneric[int, string]]
 // }
 
+// Generic interface with a type parameter
+// @schema("GenericInterface")
+// @function("DoSomething")
 type GenericInterface[A any] interface {
 	DoSomething(param A) A
 }
@@ -53,3 +56,15 @@ func (g *GenericStructWithMethods[T]) GetValue() T {
 func (g *GenericStructWithMethods[T]) SetValue(val T) {
 	g.Value = val
 }
+
+type ConcreteType struct {
+	Data string
+}
+
+func (c ConcreteType) ConstraintMethod() bool {
+	return len(c.Data) > 0
+}
+
+type ConcreteGeneric = GenericWithConstraints[ConcreteType]
+
+type AliasGeneric GenericStructWithMethods[ConcreteType]

@@ -1,11 +1,96 @@
 {
   "Types": {
-    "github.com/pablor21/goscanner/examples/starwars/generics.AnotherGeneric[K comparable, V any]": {
+    "github.com/pablor21/goscanner/examples/starwars/generics.AliasGeneric": {
+      "Kind": "struct",
+      "Name": "AliasGeneric",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.AliasGeneric",
+      "IsGenericInstantiation": true,
+      "GenericTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.GenericStructWithMethods",
+      "GenericArguments": [
+        {
+          "ParameterName": "T",
+          "ParameterTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.ConcreteType",
+          "ParameterKind": "struct",
+          "IsPointer": false
+        }
+      ],
+      "Details": {
+        "Fields": [
+          {
+            "Name": "Value",
+            "TypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.ConcreteType",
+            "TypeKind": "struct"
+          }
+        ],
+        "Methods": [
+          {
+            "Kind": "method",
+            "Name": "GetValue",
+            "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.AliasGeneric.GetValue",
+            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.AliasGeneric",
+            "IsPointerReceiver": true,
+            "ReceiverName": "g",
+            "Returns": [
+              {
+                "TypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.ConcreteType",
+                "IsPointer": false
+              }
+            ],
+            "IsVariadic": false,
+            "IsInterfaceMethod": false
+          },
+          {
+            "Kind": "method",
+            "Name": "SetValue",
+            "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.AliasGeneric.SetValue",
+            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.AliasGeneric",
+            "IsPointerReceiver": true,
+            "ReceiverName": "g",
+            "Parameters": [
+              {
+                "Name": "val",
+                "TypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.ConcreteType",
+                "IsPointer": false,
+                "IsVariadic": false
+              }
+            ],
+            "IsVariadic": false,
+            "IsInterfaceMethod": false
+          }
+        ]
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/generics.AnotherGeneric": {
       "Kind": "struct",
       "Name": "AnotherGeneric",
       "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
       "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.AnotherGeneric",
       "Details": {
+        "TypeParameters": [
+          {
+            "Name": "K",
+            "Constraints": [
+              {
+                "Kind": "interface",
+                "Name": "comparable",
+                "Descriptor": "comparable"
+              }
+            ]
+          },
+          {
+            "Name": "V",
+            "Constraints": [
+              {
+                "Kind": "interface",
+                "Name": "interface{}",
+                "Descriptor": "interface{}"
+              }
+            ]
+          }
+        ],
         "Fields": [
           {
             "Name": "Key",
@@ -20,19 +105,41 @@
         ]
       }
     },
-    "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface[M map[string][]int, S struct{Name string}]": {
+    "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface": {
       "Kind": "interface",
       "Name": "ComplexGenericInterface",
       "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
       "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface",
       "Details": {
+        "TypeParameters": [
+          {
+            "Name": "M",
+            "Constraints": [
+              {
+                "Kind": "interface",
+                "Name": "interface{}",
+                "Descriptor": "interface{}"
+              }
+            ]
+          },
+          {
+            "Name": "S",
+            "Constraints": [
+              {
+                "Kind": "interface",
+                "Name": "interface{}",
+                "Descriptor": "interface{}"
+              }
+            ]
+          }
+        ],
         "Methods": [
           {
             "Kind": "method",
             "Name": "HandleStruct",
             "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
-            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface[M map[string][]int, S struct{Name string}].HandleStruct",
-            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface[M map[string][]int, S struct{Name string}]",
+            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface.HandleStruct",
+            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface",
             "IsPointerReceiver": false,
             "Parameters": [
               {
@@ -55,8 +162,8 @@
             "Kind": "method",
             "Name": "ProcessMap",
             "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
-            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface[M map[string][]int, S struct{Name string}].ProcessMap",
-            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface[M map[string][]int, S struct{Name string}]",
+            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface.ProcessMap",
+            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface",
             "IsPointerReceiver": false,
             "Parameters": [
               {
@@ -78,19 +185,136 @@
         ]
       }
     },
-    "github.com/pablor21/goscanner/examples/starwars/generics.GenericInterface[A any]": {
+    "github.com/pablor21/goscanner/examples/starwars/generics.ConcreteGeneric": {
+      "Kind": "struct",
+      "Name": "ConcreteGeneric",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.ConcreteGeneric",
+      "IsTypeAlias": true,
+      "TypeAliasRef": "GenericWithConstraints[ConcreteType]",
+      "Details": {}
+    },
+    "github.com/pablor21/goscanner/examples/starwars/generics.ConcreteType": {
+      "Kind": "struct",
+      "Name": "ConcreteType",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.ConcreteType",
+      "Details": {
+        "Fields": [
+          {
+            "Name": "Data",
+            "TypeRef": "string",
+            "TypeKind": "basic"
+          }
+        ],
+        "Methods": [
+          {
+            "Kind": "method",
+            "Name": "ConstraintMethod",
+            "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.ConcreteType.ConstraintMethod",
+            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.ConcreteType",
+            "IsPointerReceiver": false,
+            "ReceiverName": "c",
+            "Returns": [
+              {
+                "TypeRef": "bool",
+                "IsPointer": false
+              }
+            ],
+            "IsVariadic": false,
+            "IsInterfaceMethod": false
+          }
+        ]
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/generics.GenericAlias": {
+      "Kind": "map",
+      "Name": "GenericAlias",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericAlias",
+      "IsTypeAlias": true,
+      "TypeAliasRef": "map[string]T",
+      "Details": {
+        "TypeParameters": [
+          {
+            "Name": "T",
+            "Constraints": [
+              {
+                "Kind": "interface",
+                "Name": "any",
+                "Descriptor": "any"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/generics.GenericChannel": {
+      "Kind": "channel",
+      "Name": "GenericChannel",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericChannel",
+      "Details": {
+        "TypeParameters": [
+          {
+            "Name": "T",
+            "Constraints": [
+              {
+                "Kind": "variable",
+                "Name": "any",
+                "Descriptor": "any"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/generics.GenericFunction": {
+      "Kind": "function",
+      "Name": "GenericFunction",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericFunction",
+      "Details": {
+        "TypeParameters": [
+          {
+            "Name": "T",
+            "Constraints": [
+              {
+                "Kind": "variable",
+                "Name": "any",
+                "Descriptor": "any"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/generics.GenericInterface": {
       "Kind": "interface",
       "Name": "GenericInterface",
       "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
       "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericInterface",
       "Details": {
+        "TypeParameters": [
+          {
+            "Name": "A",
+            "Constraints": [
+              {
+                "Kind": "variable",
+                "Name": "any",
+                "Descriptor": "any"
+              }
+            ]
+          }
+        ],
         "Methods": [
           {
             "Kind": "method",
             "Name": "DoSomething",
             "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
-            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericInterface[A any].DoSomething",
-            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.GenericInterface[A any]",
+            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericInterface.DoSomething",
+            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.GenericInterface",
             "IsPointerReceiver": false,
             "Parameters": [
               {
@@ -112,12 +336,116 @@
         ]
       }
     },
-    "github.com/pablor21/goscanner/examples/starwars/generics.GenericStructWithMethods[T any]": {
+    "github.com/pablor21/goscanner/examples/starwars/generics.GenericMap": {
+      "Kind": "map",
+      "Name": "GenericMap",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericMap",
+      "Details": {
+        "TypeParameters": [
+          {
+            "Name": "K",
+            "Constraints": [
+              {
+                "Kind": "interface",
+                "Name": "comparable",
+                "Descriptor": "comparable"
+              }
+            ]
+          },
+          {
+            "Name": "V",
+            "Constraints": [
+              {
+                "Kind": "variable",
+                "Name": "any",
+                "Descriptor": "any"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/generics.GenericSlice": {
+      "Kind": "slice",
+      "Name": "GenericSlice",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericSlice",
+      "Details": {
+        "TypeParameters": [
+          {
+            "Name": "T",
+            "Constraints": [
+              {
+                "Kind": "variable",
+                "Name": "any",
+                "Descriptor": "any"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/generics.GenericStruct": {
+      "Kind": "struct",
+      "Name": "GenericStruct",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericStruct",
+      "Details": {
+        "TypeParameters": [
+          {
+            "Name": "T",
+            "Constraints": [
+              {
+                "Kind": "variable",
+                "Name": "any",
+                "Descriptor": "any"
+              }
+            ]
+          },
+          {
+            "Name": "U",
+            "Constraints": [
+              {
+                "Kind": "interface",
+                "Name": "interface{}",
+                "Descriptor": "interface{}"
+              }
+            ]
+          }
+        ],
+        "Fields": [
+          {
+            "Name": "Field1",
+            "TypeRef": "T",
+            "TypeKind": "variable"
+          },
+          {
+            "Name": "Field2",
+            "TypeRef": "U",
+            "TypeKind": "variable"
+          }
+        ]
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/generics.GenericStructWithMethods": {
       "Kind": "struct",
       "Name": "GenericStructWithMethods",
       "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
       "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericStructWithMethods",
       "Details": {
+        "TypeParameters": [
+          {
+            "Name": "T",
+            "Constraints": [
+              {
+                "Kind": "variable",
+                "Name": "any",
+                "Descriptor": "any"
+              }
+            ]
+          }
+        ],
         "Fields": [
           {
             "Name": "Value",
@@ -165,32 +493,24 @@
         ]
       }
     },
-    "github.com/pablor21/goscanner/examples/starwars/generics.GenericStruct[T any, U interface{MethodU() string}]": {
-      "Kind": "struct",
-      "Name": "GenericStruct",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericStruct",
-      "Details": {
-        "Fields": [
-          {
-            "Name": "Field1",
-            "TypeRef": "T",
-            "TypeKind": "variable"
-          },
-          {
-            "Name": "Field2",
-            "TypeRef": "U",
-            "TypeKind": "variable"
-          }
-        ]
-      }
-    },
-    "github.com/pablor21/goscanner/examples/starwars/generics.GenericWithConstraints[T interface{ConstraintMethod() bool}]": {
+    "github.com/pablor21/goscanner/examples/starwars/generics.GenericWithConstraints": {
       "Kind": "struct",
       "Name": "GenericWithConstraints",
       "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
       "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericWithConstraints",
       "Details": {
+        "TypeParameters": [
+          {
+            "Name": "T",
+            "Constraints": [
+              {
+                "Kind": "interface",
+                "Name": "interface{}",
+                "Descriptor": "interface{}"
+              }
+            ]
+          }
+        ],
         "Fields": [
           {
             "Name": "GenericField",
@@ -200,19 +520,41 @@
         ]
       }
     },
-    "github.com/pablor21/goscanner/examples/starwars/generics.MultiGenericInterface[P, Q any]": {
+    "github.com/pablor21/goscanner/examples/starwars/generics.MultiGenericInterface": {
       "Kind": "interface",
       "Name": "MultiGenericInterface",
       "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
       "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.MultiGenericInterface",
       "Details": {
+        "TypeParameters": [
+          {
+            "Name": "P",
+            "Constraints": [
+              {
+                "Kind": "variable",
+                "Name": "any",
+                "Descriptor": "any"
+              }
+            ]
+          },
+          {
+            "Name": "Q",
+            "Constraints": [
+              {
+                "Kind": "variable",
+                "Name": "any",
+                "Descriptor": "any"
+              }
+            ]
+          }
+        ],
         "Methods": [
           {
             "Kind": "method",
             "Name": "Combine",
             "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
-            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.MultiGenericInterface[P, Q any].Combine",
-            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.MultiGenericInterface[P, Q any]",
+            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.MultiGenericInterface.Combine",
+            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.MultiGenericInterface",
             "IsPointerReceiver": false,
             "Parameters": [
               {

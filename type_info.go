@@ -35,8 +35,25 @@ const (
 	ChanDirRecv ChannelDirection = "recv" // <-chan T (receive-only)
 )
 
+// TypeParameterInfo represents a generic type parameter
+type TypeParameterInfo struct {
+	Name        string     `json:"Name"`
+	Constraints []TypeInfo `json:"Constraints,omitempty"` // Can be pointers, interfaces, or other types
+}
+
+// GenericArgumentInfo represents a concrete type argument for a generic parameter
+type GenericArgumentInfo struct {
+	ParameterName    string   `json:"ParameterName"`    // Name of the generic parameter (T, K, V, etc.)
+	ParameterTypeRef string   `json:"ParameterTypeRef"` // Reference to the concrete type
+	ParameterKind    TypeKind `json:"ParameterKind"`    // Kind of the concrete type
+	IsPointer        bool     `json:"IsPointer"`        // Whether the concrete type is a pointer
+}
+
 // DetailedTypeInfo contains heavy structural information that's lazy-loaded
 type DetailedTypeInfo struct {
+	// Generic type parameters
+	TypeParameters []TypeParameterInfo `json:"TypeParameters,omitempty"`
+
 	// Structure details for structs
 	Fields  []FieldInfo  `json:"Fields,omitempty"`
 	Methods []MethodInfo `json:"Methods,omitempty"`
@@ -81,6 +98,8 @@ type TypeInfo interface {
 	IsElementPointer() bool
 	IsBasic() bool
 	IsChannel() bool
+	IsGeneric() bool
+	GetTypeParameters() ([]TypeParameterInfo, error)
 }
 
 type NamedTypeInfo struct {
@@ -91,6 +110,15 @@ type NamedTypeInfo struct {
 	Descriptor  string                   `json:"Descriptor,omitempty"` // Type descriptor
 	Annotations []gonnotation.Annotation `json:"Annotations,omitempty"`
 	Comments    []string                 `json:"Comments,omitempty"`
+
+	// Generic instantiation info (eagerly loaded)
+	IsGenericInstantiation bool                  `json:"IsGenericInstantiation,omitempty"`
+	GenericTypeRef         string                `json:"GenericTypeRef,omitempty"`   // Reference to the generic base type
+	GenericArguments       []GenericArgumentInfo `json:"GenericArguments,omitempty"` // Concrete type arguments
+
+	// Type alias info (eagerly loaded)
+	IsTypeAlias  bool   `json:"IsTypeAlias,omitempty"`  // Whether this is a type alias
+	TypeAliasRef string `json:"TypeAliasRef,omitempty"` // Reference to the aliased type
 
 	// Lazy loading mechanism
 	Details     *DetailedTypeInfo `json:"Details,omitempty"`
@@ -287,6 +315,19 @@ func (nt *NamedTypeInfo) IsChannel() bool {
 	return details.ChanFlag
 }
 
+func (nt *NamedTypeInfo) IsGeneric() bool {
+	details, err := nt.GetDetails()
+	return err == nil && details != nil && len(details.TypeParameters) > 0
+}
+
+func (nt *NamedTypeInfo) GetTypeParameters() ([]TypeParameterInfo, error) {
+	details, err := nt.GetDetails()
+	if err != nil || details == nil {
+		return nil, err
+	}
+	return details.TypeParameters, nil
+}
+
 // AnonymousTypeInfo represents composite/anonymous types like maps, slices, etc.
 type AnonymousTypeInfo struct {
 	Kind       TypeKind
@@ -385,6 +426,14 @@ func (at *AnonymousTypeInfo) IsBasic() bool {
 
 func (at *AnonymousTypeInfo) IsChannel() bool {
 	return at.Kind == TypeKindChannel
+}
+
+func (at *AnonymousTypeInfo) IsGeneric() bool {
+	return false // Anonymous types are not generic
+}
+
+func (at *AnonymousTypeInfo) GetTypeParameters() ([]TypeParameterInfo, error) {
+	return nil, nil // Anonymous types don't have type parameters
 }
 
 // Specialized type structs that embed NamedTypeInfo
