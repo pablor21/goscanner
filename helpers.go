@@ -4,6 +4,8 @@ import (
 	"runtime"
 	"strings"
 	"syscall"
+
+	"github.com/pablor21/gonnotation"
 )
 
 // isExported reports whether name is an exported Go symbol
@@ -54,4 +56,38 @@ func parseComments(doc string) []string {
 	}
 
 	return comments
+}
+
+// parseAnnotations extracts annotation lines (those starting with @) from documentation
+func parseAnnotations(doc string) []gonnotation.Annotation {
+	if doc == "" {
+		return nil
+	}
+
+	// Split the documentation text into lines
+	lines := strings.Split(doc, "\n")
+	if len(lines) == 0 {
+		return nil
+	}
+
+	var annotationLines []string
+	for _, line := range lines {
+		// Trim leading and trailing whitespace
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+
+		if strings.HasPrefix(line, "@") {
+			annotationLines = append(annotationLines, line)
+		}
+	}
+
+	if len(annotationLines) == 0 {
+		return nil
+	}
+
+	// Join annotation lines and parse them
+	annotationText := strings.Join(annotationLines, "\n")
+	return gonnotation.ParseAnnotationsFromText(annotationText)
 }

@@ -19,6 +19,10 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+
+		// Trigger comment and annotation extraction
+		_ = v.GetComments()
+		_ = v.GetAnnotations()
 	}
 
 	// convert the ret to a json

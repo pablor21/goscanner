@@ -100,6 +100,9 @@ type NamedTypeInfo struct {
 	obj         types.Object
 	pkg         *packages.Package
 	doc         *doc.Type
+
+	// Comment extraction state
+	commentsExtracted bool
 }
 
 // NewNamedTypeInfo creates a new type info with eager basic data and lazy details
@@ -116,6 +119,35 @@ func NewNamedTypeInfo(kind TypeKind, name string, pkg string, comments []string,
 		Comments:    comments,
 		Annotations: annotations,
 		loader:      loader,
+	}
+}
+
+// NewNamedTypeInfoFromTypes creates a new type info with type objects for unified comment extraction
+func NewNamedTypeInfoFromTypes(kind TypeKind, typesObj types.Object, pkgInfo *packages.Package, docType *doc.Type, loader func() (*DetailedTypeInfo, error)) *NamedTypeInfo {
+	name := ""
+	pkg := ""
+	descriptor := ""
+
+	if typesObj != nil {
+		name = typesObj.Name()
+		if typesObj.Pkg() != nil {
+			pkg = typesObj.Pkg().Path()
+			descriptor = pkg + "." + name
+		} else {
+			descriptor = name
+		}
+	}
+
+	return &NamedTypeInfo{
+		Kind:       kind,
+		Name:       name,
+		Package:    pkg,
+		Descriptor: descriptor,
+		obj:        typesObj,
+		pkg:        pkgInfo,
+		doc:        docType,
+		loader:     loader,
+		// Comments and Annotations will be lazy-loaded
 	}
 }
 
@@ -141,10 +173,28 @@ func (nt *NamedTypeInfo) GetCannonicalName() string {
 }
 
 func (nt *NamedTypeInfo) GetAnnotations() []gonnotation.Annotation {
+	nt.extractCommentsAndAnnotations()
 	return nt.Annotations
 }
 
+// extractCommentsAndAnnotations lazily extracts comments and annotations from type objects
+func (nt *NamedTypeInfo) extractCommentsAndAnnotations() {
+	if nt.commentsExtracted {
+		return
+	}
+
+	var docString string
+	if nt.doc != nil {
+		docString = nt.doc.Doc
+	}
+
+	nt.Comments = parseComments(docString)
+	nt.Annotations = parseAnnotations(docString)
+	nt.commentsExtracted = true
+}
+
 func (nt *NamedTypeInfo) GetComments() []string {
+	nt.extractCommentsAndAnnotations()
 	return nt.Comments
 }
 
@@ -525,13 +575,23 @@ type EnumInfo struct {
 }
 
 type EnumValue struct {
-	Name  string `json:"Name"`
-	Value any    `json:"Value"`
+	Name        string                   `json:"Name"`
+	Value       any                      `json:"Value"`
+	Comments    []string                 `json:"Comments,omitempty"`
+	Annotations []gonnotation.Annotation `json:"Annotations,omitempty"`
 }
 
 func NewEnumInfo(name string, pkg string, enumTypeRef string, comments []string, annotations []gonnotation.Annotation, loader func() (*DetailedTypeInfo, error)) *EnumInfo {
 	return &EnumInfo{
 		NamedTypeInfo: NewNamedTypeInfo(TypeKindEnum, name, pkg, comments, annotations, loader),
+		EnumTypeRef:   enumTypeRef,
+	}
+}
+
+// NewEnumInfoFromTypes creates an EnumInfo using type objects for unified comment extraction
+func NewEnumInfoFromTypes(name string, pkg string, enumTypeRef string, typesObj types.Object, pkgInfo *packages.Package, docType *doc.Type, loader func() (*DetailedTypeInfo, error)) *EnumInfo {
+	return &EnumInfo{
+		NamedTypeInfo: NewNamedTypeInfoFromTypes(TypeKindEnum, typesObj, pkgInfo, docType, loader),
 		EnumTypeRef:   enumTypeRef,
 	}
 }
@@ -551,6 +611,13 @@ type InterfaceInfo struct {
 func NewInterfaceInfo(name string, pkg string, comments []string, annotations []gonnotation.Annotation, loader func() (*DetailedTypeInfo, error)) *InterfaceInfo {
 	return &InterfaceInfo{
 		NamedTypeInfo: NewNamedTypeInfo(TypeKindInterface, name, pkg, comments, annotations, loader),
+	}
+}
+
+// NewInterfaceInfoFromTypes creates an InterfaceInfo using type objects for unified comment extraction
+func NewInterfaceInfoFromTypes(typesObj types.Object, pkgInfo *packages.Package, docType *doc.Type, loader func() (*DetailedTypeInfo, error)) *InterfaceInfo {
+	return &InterfaceInfo{
+		NamedTypeInfo: NewNamedTypeInfoFromTypes(TypeKindInterface, typesObj, pkgInfo, docType, loader),
 	}
 }
 

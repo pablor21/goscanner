@@ -69,7 +69,7 @@ type Config struct {
 func NewDefaultConfig() *Config {
 	return &Config{
 		// Packages: []string{"golang.org/x/sync/**", "net/**"},
-		Packages: []string{"../examples/**", "!../main"},
+		Packages: []string{"../examples/starwars/generics", "!../main"},
 		ScanMode: ScanModeFull,
 		LogLevel: logger.LogLevelInfo,
 	}

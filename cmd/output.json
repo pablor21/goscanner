@@ -1,542 +1,245 @@
 {
   "Types": {
-    "github.com/pablor21/goscanner/examples/starwars/models.EmbeddedInterface": {
+    "github.com/pablor21/goscanner/examples/starwars/generics.AnotherGeneric[K comparable, V any]": {
+      "Kind": "struct",
+      "Name": "AnotherGeneric",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.AnotherGeneric",
+      "Details": {
+        "Fields": [
+          {
+            "Name": "Key",
+            "TypeRef": "K",
+            "TypeKind": "variable"
+          },
+          {
+            "Name": "Value",
+            "TypeRef": "V",
+            "TypeKind": "variable"
+          }
+        ]
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface[M map[string][]int, S struct{Name string}]": {
       "Kind": "interface",
-      "Name": "EmbeddedInterface",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/models",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.EmbeddedInterface",
+      "Name": "ComplexGenericInterface",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface",
       "Details": {
         "Methods": [
           {
             "Kind": "method",
-            "Name": "MyMethod01",
-            "Package": "github.com/pablor21/goscanner/examples/starwars/models",
-            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.InterfaceExample.MyMethod01",
-            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/models.InterfaceExample",
+            "Name": "HandleStruct",
+            "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface[M map[string][]int, S struct{Name string}].HandleStruct",
+            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface[M map[string][]int, S struct{Name string}]",
             "IsPointerReceiver": false,
-            "Returns": [
-              {
-                "TypeRef": "int",
-                "IsPointer": false
-              }
-            ],
-            "IsVariadic": false,
-            "IsInterfaceMethod": true,
-            "IsPromoted": true,
-            "PromotedFromRef": "github.com/pablor21/goscanner/examples/starwars/models.InterfaceExample"
-          },
-          {
-            "Kind": "method",
-            "Name": "MyMethod02",
-            "Package": "github.com/pablor21/goscanner/examples/starwars/models",
-            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.EmbeddedInterface.MyMethod02",
-            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/models.EmbeddedInterface",
-            "IsPointerReceiver": false,
-            "Returns": [
-              {
-                "TypeRef": "string",
-                "IsPointer": false
-              }
-            ],
-            "IsVariadic": false,
-            "IsInterfaceMethod": true
-          }
-        ]
-      }
-    },
-    "github.com/pablor21/goscanner/examples/starwars/models.EmbeddedStruct": {
-      "Kind": "struct",
-      "Name": "EmbeddedStruct",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/models",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.EmbeddedStruct",
-      "Details": {
-        "Fields": [
-          {
-            "Name": "ID",
-            "TypeRef": "int",
-            "TypeKind": "basic",
-            "Tags": {
-              "json": "id",
-              "schema": "id"
-            }
-          }
-        ],
-        "Methods": [
-          {
-            "Kind": "method",
-            "Name": "GetID",
-            "Package": "github.com/pablor21/goscanner/examples/starwars/models",
-            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.EmbeddedStruct.GetID",
-            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/models.EmbeddedStruct",
-            "IsPointerReceiver": false,
-            "ReceiverName": "e",
-            "Returns": [
-              {
-                "TypeRef": "int",
-                "IsPointer": false
-              }
-            ],
-            "IsVariadic": false,
-            "IsInterfaceMethod": false
-          }
-        ]
-      }
-    },
-    "github.com/pablor21/goscanner/examples/starwars/models.EnumIota": {
-      "Kind": "enum",
-      "Name": "EnumIota",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/models",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.EnumIota",
-      "Details": {
-        "Values": [
-          {
-            "Name": "EnumIota1",
-            "Value": 5
-          },
-          {
-            "Name": "EnumIota2",
-            "Value": 6
-          },
-          {
-            "Name": "EnumIota3",
-            "Value": 7
-          },
-          {
-            "Name": "enumIotaPrivate",
-            "Value": 8
-          }
-        ]
-      },
-      "EnumTypeRef": "int"
-    },
-    "github.com/pablor21/goscanner/examples/starwars/models.EnumString": {
-      "Kind": "enum",
-      "Name": "EnumString",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/models",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.EnumString",
-      "Details": {
-        "Values": [
-          {
-            "Name": "EnumString1",
-            "Value": "Option1"
-          },
-          {
-            "Name": "EnumString2",
-            "Value": "Option2"
-          },
-          {
-            "Name": "EnumString3",
-            "Value": "Option3"
-          }
-        ]
-      },
-      "EnumTypeRef": "string"
-    },
-    "github.com/pablor21/goscanner/examples/starwars/models.Human": {
-      "Kind": "struct",
-      "Name": "Human",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/models",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.Human",
-      "Details": {
-        "Fields": [
-          {
-            "Name": "ID",
-            "TypeRef": "int",
-            "TypeKind": "basic",
-            "Tags": {
-              "json": "id",
-              "schema": "id"
-            },
-            "IsPromoted": true,
-            "PromotedFromRef": "github.com/pablor21/goscanner/examples/starwars/models.EmbeddedStruct"
-          },
-          {
-            "Name": "Name",
-            "TypeRef": "string",
-            "TypeKind": "basic",
-            "IsPointer": true,
-            "Tags": {
-              "json": "name",
-              "schema": "name"
-            }
-          },
-          {
-            "Name": "Family",
-            "TypeKind": "slice",
-            "ElementTypeRef": "github.com/pablor21/goscanner/examples/starwars/models.Human",
-            "ElementKind": "struct",
-            "Tags": {
-              "json": "family",
-              "schema": "family"
-            }
-          },
-          {
-            "Name": "Cannel",
-            "TypeKind": "channel",
-            "ElementIsPointer": true,
-            "ElementIsAnonymous": true,
-            "ElementKind": "slice",
-            "ElementTypeInfo": {
-              "Kind": "slice",
-              "Descriptor": "[]github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-              "ElementTypeRef": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-              "ElementKind": "struct"
-            },
-            "ChanDir": "both",
-            "Tags": {
-              "json": "cannel",
-              "schema": "cannel"
-            }
-          },
-          {
-            "Name": "DeppArray",
-            "TypeKind": "map",
-            "ElementIsAnonymous": true,
-            "ElementKind": "slice",
-            "ElementTypeInfo": {
-              "Kind": "slice",
-              "Descriptor": "[][][][]github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-              "ElementTypeInfo": {
-                "Kind": "slice",
-                "Descriptor": "[][][]github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-                "ElementTypeInfo": {
-                  "Kind": "slice",
-                  "Descriptor": "[][]github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-                  "ElementTypeInfo": {
-                    "Kind": "slice",
-                    "Descriptor": "[]github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-                    "ElementTypeRef": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-                    "ElementKind": "struct"
-                  },
-                  "ElementKind": "slice"
-                },
-                "ElementKind": "slice"
-              },
-              "ElementKind": "slice"
-            },
-            "KeyTypeRef": "string",
-            "KeyKind": "basic",
-            "Tags": {
-              "json": "depp_array",
-              "schema": "depp_array"
-            }
-          },
-          {
-            "Name": "ComplexType",
-            "TypeKind": "channel",
-            "ElementIsPointer": true,
-            "ElementIsAnonymous": true,
-            "ElementKind": "map",
-            "ElementTypeInfo": {
-              "Kind": "map",
-              "Descriptor": "map[string]*[][]*github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-              "ElementTypeInfo": {
-                "Kind": "slice",
-                "Descriptor": "[][]*github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-                "ElementTypeInfo": {
-                  "Kind": "slice",
-                  "Descriptor": "[]*github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-                  "ElementTypeRef": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-                  "ElementIsPointer": true,
-                  "ElementKind": "struct"
-                },
-                "ElementKind": "slice"
-              },
-              "ElementIsPointer": true,
-              "ElementKind": "slice",
-              "KeyTypeRef": "string",
-              "KeyKind": "basic"
-            },
-            "ChanDir": "both"
-          },
-          {
-            "Name": "AnonymousField",
-            "TypeKind": "struct",
-            "IsAnonymous": true,
-            "TypeInfo": {
-              "Kind": "struct",
-              "Descriptor": "__anonymous_struct_1__",
-              "Fields": [
-                {
-                  "Name": "Field1",
-                  "TypeRef": "string",
-                  "TypeKind": "basic"
-                },
-                {
-                  "Name": "Field2",
-                  "TypeRef": "int",
-                  "TypeKind": "basic"
-                }
-              ]
-            },
-            "Tags": {
-              "json": "anonymous",
-              "schema": "anonymous"
-            }
-          },
-          {
-            "Name": "PointerToAnonymousField",
-            "TypeKind": "struct",
-            "IsPointer": true,
-            "IsAnonymous": true,
-            "TypeInfo": {
-              "Kind": "struct",
-              "Descriptor": "__anonymous_struct_2__",
-              "Fields": [
-                {
-                  "Name": "FieldA",
-                  "TypeRef": "float64",
-                  "TypeKind": "basic"
-                },
-                {
-                  "Name": "FieldB",
-                  "TypeRef": "bool",
-                  "TypeKind": "basic"
-                },
-                {
-                  "Name": "FieldC",
-                  "TypeKind": "slice",
-                  "ElementTypeRef": "string",
-                  "ElementKind": "basic"
-                },
-                {
-                  "Name": "FieldD",
-                  "TypeKind": "map",
-                  "ElementTypeRef": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-                  "ElementKind": "struct",
-                  "KeyTypeRef": "int",
-                  "KeyKind": "basic"
-                }
-              ]
-            },
-            "Tags": {
-              "json": "pointer_to_anonymous",
-              "schema": "pointer_to_anonymous"
-            }
-          }
-        ],
-        "Methods": [
-          {
-            "Kind": "method",
-            "Name": "GetID",
-            "Package": "github.com/pablor21/goscanner/examples/starwars/models",
-            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.Human.GetID",
-            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/models.Human",
-            "IsPointerReceiver": false,
-            "Returns": [
-              {
-                "TypeRef": "int",
-                "IsPointer": false
-              }
-            ],
-            "IsVariadic": false,
-            "IsInterfaceMethod": false,
-            "IsPromoted": true,
-            "PromotedFromRef": "github.com/pablor21/goscanner/examples/starwars/models.EmbeddedStruct"
-          }
-        ]
-      }
-    },
-    "github.com/pablor21/goscanner/examples/starwars/models.InterfaceExample": {
-      "Kind": "interface",
-      "Name": "InterfaceExample",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/models",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.InterfaceExample",
-      "Details": {
-        "Methods": [
-          {
-            "Kind": "method",
-            "Name": "MyMethod01",
-            "Package": "github.com/pablor21/goscanner/examples/starwars/models",
-            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.InterfaceExample.MyMethod01",
-            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/models.InterfaceExample",
-            "IsPointerReceiver": false,
-            "Returns": [
-              {
-                "TypeRef": "int",
-                "IsPointer": false
-              }
-            ],
-            "IsVariadic": false,
-            "IsInterfaceMethod": true
-          }
-        ]
-      }
-    },
-    "github.com/pablor21/goscanner/examples/starwars/models.TestEnum1": {
-      "Kind": "enum",
-      "Name": "TestEnum1",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/models",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.TestEnum1",
-      "Details": {
-        "Values": [
-          {
-            "Name": "Test1_A",
-            "Value": 0
-          },
-          {
-            "Name": "Test1_B",
-            "Value": 2
-          },
-          {
-            "Name": "Test1_C",
-            "Value": 4
-          }
-        ]
-      },
-      "EnumTypeRef": "int"
-    },
-    "github.com/pablor21/goscanner/examples/starwars/models.TestEnum2": {
-      "Kind": "enum",
-      "Name": "TestEnum2",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/models",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.TestEnum2",
-      "Details": {
-        "Values": [
-          {
-            "Name": "Test2_A",
-            "Value": -1
-          },
-          {
-            "Name": "Test2_B",
-            "Value": 0
-          },
-          {
-            "Name": "Test2_C",
-            "Value": 1
-          }
-        ]
-      },
-      "EnumTypeRef": "int"
-    },
-    "github.com/pablor21/goscanner/examples/starwars/models.TestEnum3": {
-      "Kind": "enum",
-      "Name": "TestEnum3",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/models",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.TestEnum3",
-      "Details": {
-        "Values": [
-          {
-            "Name": "Test3_A",
-            "Value": 100
-          },
-          {
-            "Name": "Test3_B",
-            "Value": 101
-          },
-          {
-            "Name": "Test3_C",
-            "Value": 102
-          }
-        ]
-      },
-      "EnumTypeRef": "int"
-    },
-    "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct": {
-      "Kind": "struct",
-      "Name": "OtherStruct",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/outofscope",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-      "Details": {
-        "Fields": [
-          {
-            "Name": "Field",
-            "TypeRef": "string",
-            "TypeKind": "basic"
-          },
-          {
-            "Name": "Recursion",
-            "TypeRef": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-            "TypeKind": "struct",
-            "IsPointer": true
-          }
-        ],
-        "Methods": [
-          {
-            "Kind": "method",
-            "Name": "Method",
-            "Package": "github.com/pablor21/goscanner/examples/starwars/outofscope",
-            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct.Method",
-            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-            "IsPointerReceiver": false,
-            "ReceiverName": "os",
-            "Returns": [
-              {
-                "TypeRef": "string",
-                "IsPointer": false
-              }
-            ],
-            "IsVariadic": false,
-            "IsInterfaceMethod": false
-          },
-          {
-            "Kind": "method",
-            "Name": "PointerMethod",
-            "Package": "github.com/pablor21/goscanner/examples/starwars/outofscope",
-            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct.PointerMethod",
-            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-            "IsPointerReceiver": true,
-            "ReceiverName": "os",
-            "Returns": [
-              {
-                "TypeRef": "string",
-                "IsPointer": false
-              }
-            ],
-            "IsVariadic": false,
-            "IsInterfaceMethod": false
-          },
-          {
-            "Kind": "method",
-            "Name": "unexportedMethod",
-            "Package": "github.com/pablor21/goscanner/examples/starwars/outofscope",
-            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct.unexportedMethod",
-            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-            "IsPointerReceiver": false,
-            "ReceiverName": "os",
-            "Returns": [
-              {
-                "TypeRef": "string",
-                "IsPointer": false
-              }
-            ],
-            "IsVariadic": false,
-            "IsInterfaceMethod": false
-          },
-          {
-            "Kind": "method",
-            "Name": "MixedMethod",
-            "Package": "github.com/pablor21/goscanner/examples/starwars/outofscope",
-            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct.MixedMethod",
-            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
-            "IsPointerReceiver": false,
-            "ReceiverName": "os",
             "Parameters": [
               {
-                "Name": "param1",
+                "Name": "s",
+                "TypeRef": "S",
+                "IsPointer": false,
+                "IsVariadic": false
+              }
+            ],
+            "Returns": [
+              {
                 "TypeRef": "string",
+                "IsPointer": false
+              }
+            ],
+            "IsVariadic": false,
+            "IsInterfaceMethod": true
+          },
+          {
+            "Kind": "method",
+            "Name": "ProcessMap",
+            "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface[M map[string][]int, S struct{Name string}].ProcessMap",
+            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.ComplexGenericInterface[M map[string][]int, S struct{Name string}]",
+            "IsPointerReceiver": false,
+            "Parameters": [
+              {
+                "Name": "data",
+                "TypeRef": "M",
+                "IsPointer": false,
+                "IsVariadic": false
+              }
+            ],
+            "Returns": [
+              {
+                "TypeRef": "int",
+                "IsPointer": false
+              }
+            ],
+            "IsVariadic": false,
+            "IsInterfaceMethod": true
+          }
+        ]
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/generics.GenericInterface[A any]": {
+      "Kind": "interface",
+      "Name": "GenericInterface",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericInterface",
+      "Details": {
+        "Methods": [
+          {
+            "Kind": "method",
+            "Name": "DoSomething",
+            "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericInterface[A any].DoSomething",
+            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.GenericInterface[A any]",
+            "IsPointerReceiver": false,
+            "Parameters": [
+              {
+                "Name": "param",
+                "TypeRef": "A",
+                "IsPointer": false,
+                "IsVariadic": false
+              }
+            ],
+            "Returns": [
+              {
+                "TypeRef": "A",
+                "IsPointer": false
+              }
+            ],
+            "IsVariadic": false,
+            "IsInterfaceMethod": true
+          }
+        ]
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/generics.GenericStructWithMethods[T any]": {
+      "Kind": "struct",
+      "Name": "GenericStructWithMethods",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericStructWithMethods",
+      "Details": {
+        "Fields": [
+          {
+            "Name": "Value",
+            "TypeRef": "T",
+            "TypeKind": "variable"
+          }
+        ],
+        "Methods": [
+          {
+            "Kind": "method",
+            "Name": "GetValue",
+            "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericStructWithMethods.GetValue",
+            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.GenericStructWithMethods",
+            "IsPointerReceiver": true,
+            "ReceiverName": "g",
+            "Returns": [
+              {
+                "TypeRef": "T",
+                "IsPointer": false
+              }
+            ],
+            "IsVariadic": false,
+            "IsInterfaceMethod": false
+          },
+          {
+            "Kind": "method",
+            "Name": "SetValue",
+            "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericStructWithMethods.SetValue",
+            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.GenericStructWithMethods",
+            "IsPointerReceiver": true,
+            "ReceiverName": "g",
+            "Parameters": [
+              {
+                "Name": "val",
+                "TypeRef": "T",
+                "IsPointer": false,
+                "IsVariadic": false
+              }
+            ],
+            "IsVariadic": false,
+            "IsInterfaceMethod": false
+          }
+        ]
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/generics.GenericStruct[T any, U interface{MethodU() string}]": {
+      "Kind": "struct",
+      "Name": "GenericStruct",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericStruct",
+      "Details": {
+        "Fields": [
+          {
+            "Name": "Field1",
+            "TypeRef": "T",
+            "TypeKind": "variable"
+          },
+          {
+            "Name": "Field2",
+            "TypeRef": "U",
+            "TypeKind": "variable"
+          }
+        ]
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/generics.GenericWithConstraints[T interface{ConstraintMethod() bool}]": {
+      "Kind": "struct",
+      "Name": "GenericWithConstraints",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.GenericWithConstraints",
+      "Details": {
+        "Fields": [
+          {
+            "Name": "GenericField",
+            "TypeRef": "T",
+            "TypeKind": "variable"
+          }
+        ]
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/generics.MultiGenericInterface[P, Q any]": {
+      "Kind": "interface",
+      "Name": "MultiGenericInterface",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.MultiGenericInterface",
+      "Details": {
+        "Methods": [
+          {
+            "Kind": "method",
+            "Name": "Combine",
+            "Package": "github.com/pablor21/goscanner/examples/starwars/generics",
+            "Descriptor": "github.com/pablor21/goscanner/examples/starwars/generics.MultiGenericInterface[P, Q any].Combine",
+            "ReceiverTypeRef": "github.com/pablor21/goscanner/examples/starwars/generics.MultiGenericInterface[P, Q any]",
+            "IsPointerReceiver": false,
+            "Parameters": [
+              {
+                "Name": "p",
+                "TypeRef": "P",
                 "IsPointer": false,
                 "IsVariadic": false
               },
               {
-                "Name": "param2",
-                "TypeRef": "*int",
-                "IsPointer": true,
+                "Name": "q",
+                "TypeRef": "Q",
+                "IsPointer": false,
                 "IsVariadic": false
               }
             ],
             "Returns": [
               {
-                "TypeRef": "string",
+                "TypeRef": "P",
                 "IsPointer": false
               },
               {
-                "TypeRef": "error",
+                "TypeRef": "Q",
                 "IsPointer": false
               }
             ],
             "IsVariadic": false,
-            "IsInterfaceMethod": false
+            "IsInterfaceMethod": true
           }
         ]
       }

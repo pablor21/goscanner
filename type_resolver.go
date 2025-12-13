@@ -5,6 +5,7 @@ import (
 	"go/ast"
 	"go/constant"
 	"go/doc"
+	"go/token"
 	"go/types"
 	"strings"
 
@@ -233,8 +234,9 @@ func (r *defaultTypeResolver) makeStructTypeInfo(t types.Type, typeName string) 
 
 	// Extract name and package info
 	var name, pkg string
+	var obj types.Object
 	if named, ok := t.(*types.Named); ok {
-		obj := named.Obj()
+		obj = named.Obj()
 		name = obj.Name()
 		if obj.Pkg() != nil {
 			pkg = obj.Pkg().Path()
@@ -290,16 +292,20 @@ func (r *defaultTypeResolver) makeStructTypeInfo(t types.Type, typeName string) 
 		return details, nil
 	}
 
-	// Create StructInfo with proper NamedTypeInfo
+	// Create StructInfo with proper NamedTypeInfo using type objects
+	canonicalName := r.GetCannonicalName(t)
+	docType := r.docTypes[canonicalName]
+
+	// Use the new constructor if we have a type object, otherwise fallback
+	var namedTypeInfo *NamedTypeInfo
+	if obj != nil {
+		namedTypeInfo = NewNamedTypeInfoFromTypes(TypeKindStruct, obj, r.currentPkg, docType, loader)
+	} else {
+		namedTypeInfo = NewNamedTypeInfo(TypeKindStruct, name, pkg, []string{}, []gonnotation.Annotation{}, loader)
+	}
+
 	return &StructInfo{
-		NamedTypeInfo: NewNamedTypeInfo(
-			TypeKindStruct,
-			name,
-			pkg,
-			[]string{},                 // No comments from types.Type
-			[]gonnotation.Annotation{}, // No annotations from types.Type
-			loader,
-		),
+		NamedTypeInfo: namedTypeInfo,
 	}
 }
 
@@ -682,22 +688,27 @@ func (r *defaultTypeResolver) makeEnumTypeInfo(t types.Type, typeName string) Ty
 	// Get the underlying type reference
 	underlyingTypeRef := r.GetCannonicalName(named.Underlying())
 
+	// Get the doc type for this enum
+	canonicalName := r.GetCannonicalName(named)
+	docType := r.docTypes[canonicalName]
+
 	// Create loader for lazy loading enum details
 	loader := func() (*DetailedTypeInfo, error) {
 		return r.createEnumDetails(named)
 	}
 
-	return NewEnumInfo(
+	return NewEnumInfoFromTypes(
 		name,
 		pkg,
 		underlyingTypeRef,
-		[]string{},                 // TODO: Extract comments
-		[]gonnotation.Annotation{}, // TODO: Extract annotations
+		obj,
+		r.currentPkg,
+		docType,
 		loader,
 	)
 }
 
-// createEnumDetails extracts enum constant values
+// createEnumDetails extracts enum constant values with comments and annotations
 func (r *defaultTypeResolver) createEnumDetails(named *types.Named) (*DetailedTypeInfo, error) {
 	details := &DetailedTypeInfo{}
 
@@ -708,6 +719,37 @@ func (r *defaultTypeResolver) createEnumDetails(named *types.Named) (*DetailedTy
 	obj := named.Obj()
 	if obj == nil || obj.Pkg() == nil {
 		return details, nil
+	}
+
+	// Create a map of constant names to their documentation using AST parsing (the go/doc package doesn't provide per-constant docs)
+	constDocs := make(map[string]string)
+	if r.currentPkg != nil && r.currentPkg.Syntax != nil {
+		for _, file := range r.currentPkg.Syntax {
+			for _, decl := range file.Decls {
+				if genDecl, ok := decl.(*ast.GenDecl); ok && genDecl.Tok == token.CONST {
+					// Parse each constant specification in the declaration
+					for _, spec := range genDecl.Specs {
+						if valueSpec, ok := spec.(*ast.ValueSpec); ok {
+							// Get the comment for this specific value spec
+							var docText string
+							if valueSpec.Doc != nil {
+								docText = valueSpec.Doc.Text()
+							} else if genDecl.Doc != nil && len(genDecl.Specs) == 1 {
+								// If no individual doc, use the general declaration doc for single specs
+								docText = genDecl.Doc.Text()
+							}
+
+							// Associate this documentation with all names in this spec
+							for _, nameIdent := range valueSpec.Names {
+								if docText != "" {
+									constDocs[nameIdent.Name] = docText
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	// Collect all constants with this type
@@ -753,9 +795,19 @@ func (r *defaultTypeResolver) createEnumDetails(named *types.Named) (*DetailedTy
 						value = constVal.String()
 					}
 
+					// Extract comments and annotations for this constant
+					var comments []string
+					var annotations []gonnotation.Annotation
+					if docText, exists := constDocs[constObj.Name()]; exists && docText != "" {
+						comments = parseComments(docText)
+						annotations = parseAnnotations(docText)
+					}
+
 					enumValues = append(enumValues, EnumValue{
-						Name:  constObj.Name(),
-						Value: value,
+						Name:        constObj.Name(),
+						Value:       value,
+						Comments:    comments,
+						Annotations: annotations,
 					})
 				}
 			}
@@ -792,8 +844,9 @@ func (r *defaultTypeResolver) makeInterfaceTypeInfo(t types.Type, typeName strin
 
 	// Extract name and package info
 	var name, pkg string
+	var obj types.Object
 	if named, ok := t.(*types.Named); ok {
-		obj := named.Obj()
+		obj = named.Obj()
 		name = obj.Name()
 		if obj.Pkg() != nil {
 			pkg = obj.Pkg().Path()
@@ -809,14 +862,16 @@ func (r *defaultTypeResolver) makeInterfaceTypeInfo(t types.Type, typeName strin
 		return r.createInterfaceDetails(interfaceType, typeName)
 	}
 
-	// Create InterfaceInfo with proper NamedTypeInfo
-	return NewInterfaceInfo(
-		name,
-		pkg,
-		[]string{},                 // No comments from types.Type
-		[]gonnotation.Annotation{}, // No annotations from types.Type
-		loader,
-	)
+	// Create InterfaceInfo with proper NamedTypeInfo using type objects
+	canonicalName := r.GetCannonicalName(t)
+	docType := r.docTypes[canonicalName]
+
+	// Use the new constructor if we have a type object, otherwise fallback
+	if obj != nil {
+		return NewInterfaceInfoFromTypes(obj, r.currentPkg, docType, loader)
+	} else {
+		return NewInterfaceInfo(name, pkg, []string{}, []gonnotation.Annotation{}, loader)
+	}
 }
 
 // createInterfaceDetails creates DetailedTypeInfo for interface types
