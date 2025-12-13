@@ -3,7 +3,7 @@ module github.com/pablor21/goscanner
 go 1.25.5
 
 require (
-	github.com/pablor21/gonnotation v0.0.0
+	github.com/pablor21/gonnotation v0.0.8
 	golang.org/x/tools v0.40.0
 )
 
