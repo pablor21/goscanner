@@ -887,7 +887,7 @@ func NewMethodInfo(name string, pkg string, receiverTypeRef string, isPointerRec
 	}
 
 	// Fix the descriptor after creation
-	result.NamedTypeInfo.Descriptor = descriptor
+	result.Descriptor = descriptor
 	return result
 }
 

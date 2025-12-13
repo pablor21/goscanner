@@ -2882,7 +2882,7 @@ func (r *defaultTypeResolver) expandEmbeddedType(embeddedType types.Type, embedd
 		}
 
 		// Fix the descriptor to show the parent type, not embedded type
-		methodInfo.NamedTypeInfo.Descriptor = parentTypeRef + "." + method.Name()
+		methodInfo.Descriptor = parentTypeRef + "." + method.Name()
 
 		// Parse method signature
 		err := r.populateMethodSignature(methodInfo, sig, nil)
