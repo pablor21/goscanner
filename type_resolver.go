@@ -708,10 +708,12 @@ func (r *defaultTypeResolver) createMethodInfoWithSubstitution(method types.Obje
 		paramTypeRef := r.substituteTypeRef(param.Type(), paramMap)
 
 		paramInfo := ParameterInfo{
-			Name:       param.Name(),
-			TypeRef:    paramTypeRef,
-			IsPointer:  r.isPointerType(param.Type()),
-			IsVariadic: i == params.Len()-1 && sig.Variadic(),
+			BaseTypeDetailInfo: BaseTypeDetailInfo{
+				Name:        param.Name(),
+				TypeRef:     paramTypeRef,
+				PointerFlag: r.isPointerType(param.Type()),
+			},
+			IsVariadicParam: i == params.Len()-1 && sig.Variadic(),
 		}
 		methodInfo.Parameters = append(methodInfo.Parameters, paramInfo)
 	}
@@ -723,8 +725,10 @@ func (r *defaultTypeResolver) createMethodInfoWithSubstitution(method types.Obje
 		resultTypeRef := r.substituteTypeRef(result.Type(), paramMap)
 
 		returnInfo := ReturnInfo{
-			TypeRef:   resultTypeRef,
-			IsPointer: r.isPointerType(result.Type()),
+			BaseTypeDetailInfo: BaseTypeDetailInfo{
+				TypeRef:     resultTypeRef,
+				PointerFlag: r.isPointerType(result.Type()),
+			},
 		}
 		methodInfo.Returns = append(methodInfo.Returns, returnInfo)
 	}
@@ -886,6 +890,9 @@ func (r *defaultTypeResolver) createFunctionInfo(funcDecl *ast.FuncDecl, pkg *pa
 		annotations = parseAnnotations(commentText.String())
 	}
 
+	// Check if function is generic
+	isGeneric := funcDecl.Type.TypeParams != nil && len(funcDecl.Type.TypeParams.List) > 0
+
 	// Create NamedTypeInfo for the function
 	namedTypeInfo := NewNamedTypeInfo(
 		TypeKindFunction,
@@ -899,11 +906,14 @@ func (r *defaultTypeResolver) createFunctionInfo(funcDecl *ast.FuncDecl, pkg *pa
 	namedTypeInfo.Descriptor = pkg.PkgPath + "." + funcName
 
 	// Handle generic functions (if type parameters exist)
-	if funcDecl.Type.TypeParams != nil {
-		// For generic functions, add type parameters to details
+	if isGeneric {
+		// For generic functions, populate type parameters directly in the flattened structure
+		namedTypeInfo.TypeParameters = r.extractTypeParametersFromAST(funcDecl.Type.TypeParams)
+		// Also set up loader for any future details that might be needed
 		namedTypeInfo.loader = func() (*DetailedTypeInfo, error) {
 			details := &DetailedTypeInfo{}
-			details.TypeParameters = r.extractTypeParametersFromAST(funcDecl.Type.TypeParams)
+			// TypeParameters are already populated in the flattened structure
+			details.TypeParameters = namedTypeInfo.TypeParameters
 			return details, nil
 		}
 	}
@@ -922,9 +932,7 @@ func (r *defaultTypeResolver) createFunctionInfo(funcDecl *ast.FuncDecl, pkg *pa
 	}
 
 	return functionInfo, nil
-}
-
-// populateFunctionSignatureFromAST populates function parameters and returns from AST function type
+} // populateFunctionSignatureFromAST populates function parameters and returns from AST function type
 func (r *defaultTypeResolver) populateFunctionSignatureFromAST(functionInfo *FunctionInfo, funcType *ast.FuncType, pkg *packages.Package) error {
 	// Parse parameters from AST
 	if funcType.Params != nil {
@@ -1040,7 +1048,7 @@ func (r *defaultTypeResolver) extractTypeParametersFromAST(fieldList *ast.FieldL
 				// Extract constraints if present
 				if field.Type != nil {
 					// For now, create a simple constraint reference
-					constraintRef := r.extractTypeRefFromAST(field.Type, r.currentPkg)
+					constraintRef := r.normalizeEmptyInterface(r.extractTypeRefFromAST(field.Type, r.currentPkg))
 					// Create a simple type reference for the constraint - use StructInfo as container
 					constraint := &StructInfo{
 						NamedTypeInfo: NewNamedTypeInfo(
@@ -1373,7 +1381,9 @@ func (r *defaultTypeResolver) makeTypeAliasInfo(t types.Type, typeName string) T
 	return &StructInfo{
 		NamedTypeInfo: namedTypeInfo,
 	}
-} // findAliasedType finds what type this alias points to by examining the AST
+}
+
+// findAliasedType finds what type this alias points to by examining the AST
 func (r *defaultTypeResolver) findAliasedType(named *types.Named) string {
 	obj := named.Obj()
 	if obj == nil || obj.Pkg() == nil {
@@ -1470,7 +1480,7 @@ func (r *defaultTypeResolver) extractTypeRefFromAST(expr ast.Expr, pkg *packages
 		elemType := r.extractTypeRefFromAST(t.X, pkg)
 		return "*" + elemType
 	case *ast.InterfaceType:
-		return "interface{}"
+		return "any"
 	case *ast.StructType:
 		return "struct{}"
 	case *ast.FuncType:
@@ -1504,7 +1514,7 @@ func (r *defaultTypeResolver) extractTypeParameters(named *types.Named) []TypePa
 			switch constraintType := constraint.(type) {
 			case *types.Interface:
 				// Check if it's a built-in constraint like comparable
-				if constraintType.String() == "comparable" || constraintType.String() == "interface{}" {
+				if constraintType.String() == "comparable" || constraintType.String() == "interface{}" || constraintType.String() == "any" {
 					// Built-in constraint - create simple reference without caching
 					constraintInfo := r.makeSimpleTypeReference(constraintType, constraintType.String())
 					if constraintInfo != nil {
@@ -2724,12 +2734,14 @@ func (r *defaultTypeResolver) createParameterInfo(param *types.Var, pkg *package
 	}
 
 	paramInfo := ParameterInfo{
-		Name:        param.Name(),
-		TypeRef:     typeRef,
-		IsPointer:   isPointer,
-		IsVariadic:  false, // TODO: Check for variadic
-		Annotations: []gonnotation.Annotation{},
-		Comments:    []string{},
+		BaseTypeDetailInfo: BaseTypeDetailInfo{
+			Name:        param.Name(),
+			TypeRef:     typeRef,
+			PointerFlag: isPointer,
+			Annotations: []gonnotation.Annotation{},
+			Comments:    []string{},
+		},
+		IsVariadicParam: false, // TODO: Check for variadic
 	}
 
 	// Handle anonymous types
@@ -2752,9 +2764,11 @@ func (r *defaultTypeResolver) createReturnInfo(result *types.Var, pkg *packages.
 	}
 
 	returnInfo := ReturnInfo{
-		Name:      result.Name(),
-		TypeRef:   typeRef,
-		IsPointer: isPointer,
+		BaseTypeDetailInfo: BaseTypeDetailInfo{
+			Name:        result.Name(),
+			TypeRef:     typeRef,
+			PointerFlag: isPointer,
+		},
 	}
 
 	// Handle anonymous types
@@ -3230,22 +3244,22 @@ func (r *defaultTypeResolver) createParameterInfoFromAST(typeExpr ast.Expr, name
 		actualType = ellipsis.Elt
 	}
 
-	// Get type reference - for AST we need to construct the type string
-	typeRef := r.getTypeStringFromAST(actualType)
-
+	// Create ParameterInfo
 	paramInfo := ParameterInfo{
-		Name:        name,
-		TypeRef:     typeRef,
-		IsPointer:   isPointer,
-		IsVariadic:  isVariadic,
-		Annotations: []gonnotation.Annotation{},
-		Comments:    []string{},
+		BaseTypeDetailInfo: BaseTypeDetailInfo{
+			Name:        name,
+			PointerFlag: isPointer,
+			Annotations: []gonnotation.Annotation{},
+			Comments:    []string{},
+		},
+		IsVariadicParam: isVariadic,
 	}
 
-	return paramInfo
-}
+	// Analyze the type and populate detailed information
+	r.analyzeTypeForBaseTypeDetailInfo(&paramInfo.BaseTypeDetailInfo, actualType, pkg)
 
-// createReturnInfoFromAST creates ReturnInfo from AST type expression
+	return paramInfo
+} // createReturnInfoFromAST creates ReturnInfo from AST type expression
 func (r *defaultTypeResolver) createReturnInfoFromAST(typeExpr ast.Expr, name string, pkg *packages.Package) ReturnInfo {
 	isPointer := false
 	actualType := typeExpr
@@ -3256,17 +3270,19 @@ func (r *defaultTypeResolver) createReturnInfoFromAST(typeExpr ast.Expr, name st
 		actualType = starExpr.X
 	}
 
-	// Get type reference - for AST we need to construct the type string
-	typeRef := r.getTypeStringFromAST(actualType)
-
-	return ReturnInfo{
-		Name:      name,
-		TypeRef:   typeRef,
-		IsPointer: isPointer,
+	// Create ReturnInfo
+	returnInfo := ReturnInfo{
+		BaseTypeDetailInfo: BaseTypeDetailInfo{
+			Name:        name,
+			PointerFlag: isPointer,
+		},
 	}
-}
 
-// getTypeStringFromAST converts AST type expression to string representation
+	// Analyze the type and populate detailed information
+	r.analyzeTypeForBaseTypeDetailInfo(&returnInfo.BaseTypeDetailInfo, actualType, pkg)
+
+	return returnInfo
+} // getTypeStringFromAST converts AST type expression to string representation
 func (r *defaultTypeResolver) getTypeStringFromAST(typeExpr ast.Expr) string {
 	switch t := typeExpr.(type) {
 	case *ast.Ident:
@@ -3280,22 +3296,249 @@ func (r *defaultTypeResolver) getTypeStringFromAST(typeExpr ast.Expr) string {
 		return "*" + r.getTypeStringFromAST(t.X)
 	case *ast.ArrayType:
 		if t.Len == nil {
+			// Slice
+			return "[]" + r.getTypeStringFromAST(t.Elt)
+		} else {
+			// Array - for simplicity, use [] without length
 			return "[]" + r.getTypeStringFromAST(t.Elt)
 		}
-		return "[]" + r.getTypeStringFromAST(t.Elt)
 	case *ast.MapType:
 		return "map[" + r.getTypeStringFromAST(t.Key) + "]" + r.getTypeStringFromAST(t.Value)
 	case *ast.ChanType:
-		return "chan " + r.getTypeStringFromAST(t.Value)
+		switch t.Dir {
+		case ast.SEND:
+			return "chan<- " + r.getTypeStringFromAST(t.Value)
+		case ast.RECV:
+			return "<-chan " + r.getTypeStringFromAST(t.Value)
+		default:
+			return "chan " + r.getTypeStringFromAST(t.Value)
+		}
 	case *ast.InterfaceType:
 		return "interface{}"
 	case *ast.StructType:
 		return "struct{}"
 	case *ast.FuncType:
 		return "func"
+	case *ast.Ellipsis:
+		return "..." + r.getTypeStringFromAST(t.Elt)
 	default:
 		return "unknown"
 	}
 }
 
-// }
+// extractBaseTypeRefFromAST extracts the base type reference based on the type kind
+func (r *defaultTypeResolver) extractBaseTypeRefFromAST(typeExpr ast.Expr, typeKind TypeKind) string {
+	switch typeKind {
+	case TypeKindSlice:
+		if arrayType, ok := typeExpr.(*ast.ArrayType); ok && arrayType.Len == nil {
+			// For slice []T, return just T
+			return r.getTypeStringFromAST(arrayType.Elt)
+		}
+	case TypeKindArray:
+		if arrayType, ok := typeExpr.(*ast.ArrayType); ok && arrayType.Len != nil {
+			// For array [N]T, return just T
+			return r.getTypeStringFromAST(arrayType.Elt)
+		}
+	case TypeKindMap:
+		if mapType, ok := typeExpr.(*ast.MapType); ok {
+			// For map[K]V, return V (value type)
+			return r.getTypeStringFromAST(mapType.Value)
+		}
+	case TypeKindChannel:
+		if chanType, ok := typeExpr.(*ast.ChanType); ok {
+			// For chan T, return T
+			return r.getTypeStringFromAST(chanType.Value)
+		}
+	default:
+		// For other types (basic, struct, interface, etc.), return the full type string
+		return r.getTypeStringFromAST(typeExpr)
+	}
+
+	// Fallback - return the full type string
+	return r.getTypeStringFromAST(typeExpr)
+}
+
+// analyzeTypeForBaseTypeDetailInfo analyzes a type and populates detailed information in BaseTypeDetailInfo
+func (r *defaultTypeResolver) analyzeTypeForBaseTypeDetailInfo(baseInfo *BaseTypeDetailInfo, typeExpr ast.Expr, pkg *packages.Package) {
+	r.analyzeTypeDetails(typeExpr, pkg,
+		func(typeRef string, typeKind TypeKind, isAnonymous bool) {
+			baseInfo.TypeRef = typeRef
+			baseInfo.TypeKind = typeKind
+			baseInfo.AnonymousFlag = isAnonymous
+		},
+		func(elemTypeRef string, elemKind TypeKind, elemIsPointer, elemIsAnonymous bool, structure string) {
+			baseInfo.ElementTypeRef = elemTypeRef
+			baseInfo.ElementKind = elemKind
+			baseInfo.ElementIsPointerFlag = elemIsPointer
+			baseInfo.ElementIsAnonymousFlag = elemIsAnonymous
+			baseInfo.ElementStructure = structure
+		},
+		func(keyTypeRef string, keyKind TypeKind, keyIsPointer, keyIsAnonymous bool, keyStructure string) {
+			baseInfo.KeyTypeRef = keyTypeRef
+			baseInfo.KeyKind = keyKind
+			baseInfo.KeyIsPointerFlag = keyIsPointer
+			baseInfo.KeyIsAnonymousFlag = keyIsAnonymous
+			baseInfo.KeyStructure = keyStructure
+		},
+		func(chanDir ChannelDirection) {
+			baseInfo.ChanDir = chanDir
+		},
+	)
+} // analyzeTypeDetails analyzes an AST type and calls appropriate callbacks with detailed information
+func (r *defaultTypeResolver) analyzeTypeDetails(
+	typeExpr ast.Expr,
+	pkg *packages.Package,
+	setBasicInfo func(typeRef string, typeKind TypeKind, isAnonymous bool),
+	setElementInfo func(elemTypeRef string, elemKind TypeKind, elemIsPointer, elemIsAnonymous bool, structure string),
+	setKeyInfo func(keyTypeRef string, keyKind TypeKind, keyIsPointer, keyIsAnonymous bool, keyStructure string),
+	setChanInfo func(chanDir ChannelDirection),
+) {
+	switch t := typeExpr.(type) {
+	case *ast.ArrayType:
+		if t.Len == nil {
+			// Slice type []T
+			setBasicInfo("", TypeKindSlice, false)
+			r.analyzeElementType(t.Elt, "[]", pkg, setElementInfo)
+		} else {
+			// Array type [N]T
+			setBasicInfo("", TypeKindArray, false)
+			r.analyzeElementType(t.Elt, "[]", pkg, setElementInfo) // Use [] for simplicity
+		}
+
+	case *ast.MapType:
+		// Map type map[K]V
+		setBasicInfo("", TypeKindMap, false)
+		// Analyze key type
+		r.analyzeElementType(t.Key, "", pkg, func(keyTypeRef string, keyKind TypeKind, keyIsPointer, keyIsAnonymous bool, _ string) {
+			setKeyInfo(keyTypeRef, keyKind, keyIsPointer, keyIsAnonymous, "")
+		})
+		// Analyze value type
+		r.analyzeElementType(t.Value, "", pkg, setElementInfo)
+
+	case *ast.ChanType:
+		// Channel type chan T
+		setBasicInfo("", TypeKindChannel, false)
+		// Set channel direction
+		switch t.Dir {
+		case ast.SEND:
+			setChanInfo(ChanDirSend)
+		case ast.RECV:
+			setChanInfo(ChanDirRecv)
+		default:
+			setChanInfo(ChanDirBoth)
+		}
+		// Analyze element type
+		r.analyzeElementType(t.Value, "", pkg, setElementInfo)
+
+	case *ast.Ident:
+		// Simple identifier - could be basic type, named type, or type parameter
+		typeRef := t.Name
+		typeKind := r.determineBasicOrGenericKind(t.Name)
+		setBasicInfo(typeRef, typeKind, false)
+
+	case *ast.SelectorExpr:
+		// Qualified type reference (pkg.Type)
+		typeRef := r.getTypeStringFromAST(typeExpr)
+		setBasicInfo(typeRef, TypeKindStruct, false) // Default assumption
+
+	case *ast.StructType:
+		// Inline struct type
+		setBasicInfo("struct{}", TypeKindStruct, true)
+
+	case *ast.InterfaceType:
+		// Inline interface type
+		setBasicInfo("any", TypeKindInterface, true)
+
+	case *ast.FuncType:
+		// Function type
+		setBasicInfo("func", TypeKindFunction, true)
+
+	default:
+		// Fallback
+		typeRef := r.getTypeStringFromAST(typeExpr)
+		setBasicInfo(typeRef, TypeKindUnknown, false)
+	}
+}
+
+// analyzeElementType analyzes element types for slices, arrays, maps, and channels
+func (r *defaultTypeResolver) analyzeElementType(
+	elemExpr ast.Expr,
+	currentStructure string,
+	pkg *packages.Package,
+	setElementInfo func(elemTypeRef string, elemKind TypeKind, elemIsPointer, elemIsAnonymous bool, structure string),
+) {
+	elemIsPointer := false
+	actualElemType := elemExpr
+
+	// Handle pointer elements
+	if starExpr, ok := elemExpr.(*ast.StarExpr); ok {
+		elemIsPointer = true
+		actualElemType = starExpr.X
+	}
+
+	switch t := actualElemType.(type) {
+	case *ast.ArrayType:
+		if t.Len == nil {
+			// Nested slice [][]T
+			newStructure := currentStructure + "[]"
+			r.analyzeElementType(t.Elt, newStructure, pkg, setElementInfo)
+		} else {
+			// Nested array [][N]T
+			newStructure := currentStructure + "[]"
+			r.analyzeElementType(t.Elt, newStructure, pkg, setElementInfo)
+		}
+
+	case *ast.Ident:
+		// Simple element type
+		elemTypeRef := t.Name
+		elemKind := r.determineBasicOrGenericKind(t.Name)
+		setElementInfo(elemTypeRef, elemKind, elemIsPointer, false, currentStructure)
+
+	case *ast.SelectorExpr:
+		// Qualified element type
+		elemTypeRef := r.getTypeStringFromAST(actualElemType)
+		setElementInfo(elemTypeRef, TypeKindStruct, elemIsPointer, false, currentStructure)
+
+	case *ast.StructType:
+		// Inline struct element
+		setElementInfo("struct{}", TypeKindStruct, elemIsPointer, true, currentStructure)
+
+	case *ast.InterfaceType:
+		// Inline interface element
+		setElementInfo("any", TypeKindInterface, elemIsPointer, true, currentStructure)
+
+	default:
+		// Fallback
+		elemTypeRef := r.getTypeStringFromAST(actualElemType)
+		setElementInfo(elemTypeRef, TypeKindUnknown, elemIsPointer, false, currentStructure)
+	}
+}
+
+// determineBasicOrGenericKind determines if a type name is basic, generic, or other
+func (r *defaultTypeResolver) determineBasicOrGenericKind(typeName string) TypeKind {
+	// Check if it's a Go builtin type
+	if r.isBuiltinType(typeName) {
+		return TypeKindBasic
+	}
+
+	// Check if it's a single letter (likely generic type parameter)
+	if len(typeName) == 1 && typeName[0] >= 'A' && typeName[0] <= 'Z' {
+		return TypeKindGeneric
+	}
+
+	// Check for common generic type parameter names
+	if typeName == "T" || typeName == "U" || typeName == "V" || typeName == "K" {
+		return TypeKindGeneric
+	}
+
+	// Default to basic for now - could be improved with more context
+	return TypeKindBasic
+}
+
+// normalizeEmptyInterface converts "interface{}" to "any" for consistency
+func (r *defaultTypeResolver) normalizeEmptyInterface(typeRef string) string {
+	if typeRef == "interface{}" {
+		return "any"
+	}
+	return typeRef
+}

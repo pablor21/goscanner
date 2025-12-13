@@ -24,6 +24,7 @@ const (
 	TypeKindArray     TypeKind = "array"
 	TypeKindChannel   TypeKind = "channel"
 	TypeKindBasic     TypeKind = "basic"   // For built-in types like string, int, bool
+	TypeKindGeneric   TypeKind = "generic" // For generic type parameters like T, U, etc.
 	TypeKindUnknown   TypeKind = "unknown" // For unrecognized types
 )
 
@@ -102,6 +103,76 @@ type TypeInfo interface {
 	GetTypeParameters() ([]TypeParameterInfo, error)
 }
 
+// TypeDetailInfo represents common interface for detailed type information (parameters, returns, fields)
+type TypeDetailInfo interface {
+	GetName() string
+	GetTypeRef() string
+	GetTypeKind() TypeKind
+	IsPointer() bool
+	IsAnonymous() bool
+	IsVariadic() bool // Only meaningful for parameters
+
+	// Element info (for slices, arrays, channels)
+	GetElementInfo() (typeRef string, kind TypeKind, isPointer, isAnonymous bool, structure string)
+
+	// Key info (for maps)
+	GetKeyInfo() (typeRef string, kind TypeKind, isPointer, isAnonymous bool, structure string)
+
+	// Channel info
+	GetChannelDirection() ChannelDirection
+
+	GetAnnotations() []gonnotation.Annotation
+	GetComments() []string
+}
+
+// BaseTypeDetailInfo provides common implementation for detailed type information
+type BaseTypeDetailInfo struct {
+	Name          string   `json:"Name,omitempty"`        // Name (parameter/return/field name)
+	TypeRef       string   `json:"TypeRef"`               // Type reference
+	TypeKind      TypeKind `json:"TypeKind,omitempty"`    // Type kind (slice, map, etc.)
+	PointerFlag   bool     `json:"IsPointer"`             // Is pointer type
+	AnonymousFlag bool     `json:"IsAnonymous,omitempty"` // Whether the type is anonymous/inline
+
+	// For slices and arrays
+	ElementTypeRef         string   `json:"ElementTypeRef,omitempty"`     // Reference to element type
+	ElementIsPointerFlag   bool     `json:"ElementIsPointer,omitempty"`   // Whether element type is a pointer
+	ElementIsAnonymousFlag bool     `json:"ElementIsAnonymous,omitempty"` // Whether element type is anonymous/inline
+	ElementKind            TypeKind `json:"ElementKind,omitempty"`        // Kind of the element type
+	ElementStructure       string   `json:"ElementStructure,omitempty"`   // Describes nesting structure: "[]", "[][][]", etc.
+
+	// For maps
+	KeyTypeRef         string   `json:"KeyTypeRef,omitempty"`     // Reference to key type
+	KeyIsPointerFlag   bool     `json:"KeyIsPointer,omitempty"`   // Whether key type is a pointer
+	KeyIsAnonymousFlag bool     `json:"KeyIsAnonymous,omitempty"` // Whether key type is anonymous/inline
+	KeyKind            TypeKind `json:"KeyKind,omitempty"`        // Kind of the key type
+	KeyStructure       string   `json:"KeyStructure,omitempty"`   // Describes key nesting if composite
+
+	// For channels
+	ChanDir ChannelDirection `json:"ChanDir,omitempty"` // Channel direction
+
+	AnonymousTypeInfo *AnonymousTypeInfo       `json:"AnonymousTypeInfo,omitempty"` // For inline types
+	Annotations       []gonnotation.Annotation `json:"Annotations,omitempty"`       // Annotations
+	Comments          []string                 `json:"Comments,omitempty"`          // Comments
+}
+
+// Interface implementation for BaseTypeDetailInfo
+func (b *BaseTypeDetailInfo) GetName() string       { return b.Name }
+func (b *BaseTypeDetailInfo) GetTypeRef() string    { return b.TypeRef }
+func (b *BaseTypeDetailInfo) GetTypeKind() TypeKind { return b.TypeKind }
+
+func (b *BaseTypeDetailInfo) IsPointer() bool   { return b.PointerFlag }
+func (b *BaseTypeDetailInfo) IsAnonymous() bool { return b.AnonymousFlag }
+func (b *BaseTypeDetailInfo) IsVariadic() bool  { return false } // Base implementation - overridden in ParameterInfo
+func (b *BaseTypeDetailInfo) GetElementInfo() (string, TypeKind, bool, bool, string) {
+	return b.ElementTypeRef, b.ElementKind, b.ElementIsPointerFlag, b.ElementIsAnonymousFlag, b.ElementStructure
+}
+func (b *BaseTypeDetailInfo) GetKeyInfo() (string, TypeKind, bool, bool, string) {
+	return b.KeyTypeRef, b.KeyKind, b.KeyIsPointerFlag, b.KeyIsAnonymousFlag, b.KeyStructure
+}
+func (b *BaseTypeDetailInfo) GetChannelDirection() ChannelDirection    { return b.ChanDir }
+func (b *BaseTypeDetailInfo) GetAnnotations() []gonnotation.Annotation { return b.Annotations }
+func (b *BaseTypeDetailInfo) GetComments() []string                    { return b.Comments }
+
 type NamedTypeInfo struct {
 	// Eagerly loaded basic info
 	Kind        TypeKind                 `json:"Kind,omitempty"`
@@ -120,14 +191,27 @@ type NamedTypeInfo struct {
 	IsTypeAlias  bool   `json:"IsTypeAlias,omitempty"`  // Whether this is a type alias
 	TypeAliasRef string `json:"TypeAliasRef,omitempty"` // Reference to the aliased type
 
-	// Lazy loading mechanism
-	Details     *DetailedTypeInfo `json:"Details,omitempty"`
-	detailsOnce sync.Once
-	detailsErr  error
-	loader      func() (*DetailedTypeInfo, error)
-	obj         types.Object
-	pkg         *packages.Package
-	doc         *doc.Type
+	// Flattened lazy-loaded details
+	TypeParameters   []TypeParameterInfo `json:"TypeParameters,omitempty"`
+	Fields           []FieldInfo         `json:"Fields,omitempty"`
+	Methods          []MethodInfo        `json:"Methods,omitempty"`
+	MapFlag          bool                `json:"IsMap,omitempty"`
+	KeyType          TypeInfo            `json:"MapKeyType,omitempty"`
+	KeyTypePtrFlag   bool                `json:"IsMapKeyPointer,omitempty"`
+	ValueType        TypeInfo            `json:"ValueType,omitempty"`
+	ValueTypePtrFlag bool                `json:"IsValuePointer,omitempty"`
+	SliceFlag        bool                `json:"IsSlice,omitempty"`
+	ElementType      TypeInfo            `json:"ElementType,omitempty"`
+	ChanFlag         bool                `json:"IsChan,omitempty"`
+	ChanDir          int                 `json:"ChanDir,omitempty"`
+
+	// Lazy loading mechanism (not exported to JSON)
+	detailsOnce sync.Once                         `json:"-"`
+	detailsErr  error                             `json:"-"`
+	loader      func() (*DetailedTypeInfo, error) `json:"-"`
+	obj         types.Object                      `json:"-"`
+	pkg         *packages.Package                 `json:"-"`
+	doc         *doc.Type                         `json:"-"`
 
 	// Comment extraction state
 	commentsExtracted bool
@@ -239,59 +323,98 @@ func (nt *NamedTypeInfo) GetTypeDescriptor() string {
 func (nt *NamedTypeInfo) GetDetails() (*DetailedTypeInfo, error) {
 	nt.detailsOnce.Do(func() {
 		if nt.loader != nil {
-			nt.Details, nt.detailsErr = nt.loader()
+			details, err := nt.loader()
+			if err != nil {
+				nt.detailsErr = err
+				return
+			}
+			// Populate flattened fields from details
+			if details != nil {
+				nt.TypeParameters = details.TypeParameters
+				nt.Fields = details.Fields
+				nt.Methods = details.Methods
+				nt.MapFlag = details.MapFlag
+				nt.KeyType = details.KeyType
+				nt.KeyTypePtrFlag = details.KeyTypePtrFlag
+				nt.ValueType = details.ValueType
+				nt.ValueTypePtrFlag = details.ValueTypePtrFlag
+				nt.SliceFlag = details.SliceFlag
+				nt.ElementType = details.ElementType
+				nt.ChanFlag = details.ChanFlag
+				nt.ChanDir = details.ChanDir
+			}
 		}
 	})
-	return nt.Details, nt.detailsErr
+
+	if nt.detailsErr != nil {
+		return nil, nt.detailsErr
+	}
+
+	// Return a DetailedTypeInfo struct that references the flattened fields
+	// for backward compatibility
+	return &DetailedTypeInfo{
+		TypeParameters:   nt.TypeParameters,
+		Fields:           nt.Fields,
+		Methods:          nt.Methods,
+		MapFlag:          nt.MapFlag,
+		KeyType:          nt.KeyType,
+		KeyTypePtrFlag:   nt.KeyTypePtrFlag,
+		ValueType:        nt.ValueType,
+		ValueTypePtrFlag: nt.ValueTypePtrFlag,
+		SliceFlag:        nt.SliceFlag,
+		ElementType:      nt.ElementType,
+		ChanFlag:         nt.ChanFlag,
+		ChanDir:          nt.ChanDir,
+	}, nil
 }
 
 // Convenience methods that trigger lazy loading when needed
 func (nt *NamedTypeInfo) IsMap() bool {
-	details, err := nt.GetDetails()
-	if err != nil || details == nil {
+	_, err := nt.GetDetails() // Trigger loading
+	if err != nil {
 		return false
 	}
-	return details.MapFlag
+	return nt.MapFlag
 }
 
 func (nt *NamedTypeInfo) GetMapKeyType() TypeInfo {
-	details, err := nt.GetDetails()
-	if err != nil || details == nil {
+	_, err := nt.GetDetails() // Trigger loading
+	if err != nil {
 		return nil
 	}
-	return details.KeyType
+	return nt.KeyType
 }
 
 func (nt *NamedTypeInfo) IsMapKeyPointer() bool {
-	details, err := nt.GetDetails()
-	if err != nil || details == nil {
+	_, err := nt.GetDetails() // Trigger loading
+	if err != nil {
 		return false
 	}
-	return details.KeyTypePtrFlag
+	return nt.KeyTypePtrFlag
 }
 
 func (nt *NamedTypeInfo) IsSlice() bool {
-	details, err := nt.GetDetails()
-	if err != nil || details == nil {
+	_, err := nt.GetDetails() // Trigger loading
+	if err != nil {
 		return false
 	}
-	return details.SliceFlag
+	return nt.SliceFlag
 }
 
 func (nt *NamedTypeInfo) GetElementType() TypeInfo {
-	details, err := nt.GetDetails()
-	if err != nil || details == nil {
+	_, err := nt.GetDetails() // Trigger loading
+	if err != nil {
 		return nil
 	}
-	return details.ElementType
+	return nt.ElementType
 }
 
 func (nt *NamedTypeInfo) IsElementPointer() bool {
-	details, err := nt.GetDetails()
-	if err != nil || details == nil {
+	_, err := nt.GetDetails() // Trigger loading
+	if err != nil {
 		return false
 	}
-	return details.ValueTypePtrFlag
+	return nt.ValueTypePtrFlag
 }
 
 func (nt *NamedTypeInfo) IsBasic() bool {
@@ -308,24 +431,24 @@ func (nt *NamedTypeInfo) IsBasic() bool {
 }
 
 func (nt *NamedTypeInfo) IsChannel() bool {
-	details, err := nt.GetDetails()
-	if err != nil || details == nil {
+	_, err := nt.GetDetails() // Trigger loading
+	if err != nil {
 		return false
 	}
-	return details.ChanFlag
+	return nt.ChanFlag
 }
 
 func (nt *NamedTypeInfo) IsGeneric() bool {
-	details, err := nt.GetDetails()
-	return err == nil && details != nil && len(details.TypeParameters) > 0
+	_, err := nt.GetDetails() // Trigger loading
+	return err == nil && len(nt.TypeParameters) > 0
 }
 
 func (nt *NamedTypeInfo) GetTypeParameters() ([]TypeParameterInfo, error) {
-	details, err := nt.GetDetails()
-	if err != nil || details == nil {
+	_, err := nt.GetDetails() // Trigger loading
+	if err != nil {
 		return nil, err
 	}
-	return details.TypeParameters, nil
+	return nt.TypeParameters, nil
 }
 
 // AnonymousTypeInfo represents composite/anonymous types like maps, slices, etc.
@@ -601,21 +724,18 @@ type MethodInfo struct {
 
 // ParameterInfo represents a method or function parameter
 type ParameterInfo struct {
-	Name              string                   `json:"Name"`                        // Parameter name
-	TypeRef           string                   `json:"TypeRef"`                     // Type reference
-	IsPointer         bool                     `json:"IsPointer"`                   // Is pointer type
-	IsVariadic        bool                     `json:"IsVariadic"`                  // Is ...args parameter
-	AnonymousTypeInfo *AnonymousTypeInfo       `json:"AnonymousTypeInfo,omitempty"` // For inline types
-	Annotations       []gonnotation.Annotation `json:"Annotations,omitempty"`       // Parameter annotations
-	Comments          []string                 `json:"Comments,omitempty"`          // Parameter comments
+	BaseTypeDetailInfo
+	IsVariadicParam bool `json:"IsVariadic"` // Is ...args parameter - using different field name to avoid method conflict
+}
+
+// Override IsVariadic method for ParameterInfo
+func (p *ParameterInfo) IsVariadic() bool {
+	return p.IsVariadicParam
 }
 
 // ReturnInfo represents a method or function return value
 type ReturnInfo struct {
-	Name              string             `json:"Name,omitempty"`              // Return variable name (if named)
-	TypeRef           string             `json:"TypeRef"`                     // Type reference
-	IsPointer         bool               `json:"IsPointer"`                   // Is pointer type
-	AnonymousTypeInfo *AnonymousTypeInfo `json:"AnonymousTypeInfo,omitempty"` // For inline types
+	BaseTypeDetailInfo
 }
 
 // FunctionInfo represents a standalone function (not a method)

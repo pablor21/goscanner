@@ -9,6 +9,7 @@
         {
           "Name": "x",
           "TypeRef": "float64",
+          "TypeKind": "basic",
           "IsPointer": false,
           "IsVariadic": false
         }
@@ -16,6 +17,7 @@
       "Returns": [
         {
           "TypeRef": "error",
+          "TypeKind": "basic",
           "IsPointer": false
         }
       ],
@@ -30,12 +32,14 @@
         {
           "Name": "a",
           "TypeRef": "int",
+          "TypeKind": "basic",
           "IsPointer": false,
           "IsVariadic": false
         },
         {
           "Name": "b",
           "TypeRef": "int",
+          "TypeKind": "basic",
           "IsPointer": false,
           "IsVariadic": false
         }
@@ -43,14 +47,17 @@
       "Returns": [
         {
           "TypeRef": "int",
+          "TypeKind": "basic",
           "IsPointer": false
         },
         {
           "TypeRef": "int",
+          "TypeKind": "basic",
           "IsPointer": false
         },
         {
           "TypeRef": "error",
+          "TypeKind": "basic",
           "IsPointer": false
         }
       ],
@@ -64,6 +71,7 @@
       "Returns": [
         {
           "TypeRef": "string",
+          "TypeKind": "basic",
           "IsPointer": false
         }
       ],
@@ -78,6 +86,7 @@
         {
           "Name": "a",
           "TypeRef": "string",
+          "TypeKind": "basic",
           "IsPointer": false,
           "IsVariadic": false
         }
@@ -89,24 +98,23 @@
       "Name": "GenericFunction",
       "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
       "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunction",
-      "Details": {
-        "TypeParameters": [
-          {
-            "Name": "T",
-            "Constraints": [
-              {
-                "Kind": "interface",
-                "Name": "any",
-                "Descriptor": "any"
-              }
-            ]
-          }
-        ]
-      },
+      "TypeParameters": [
+        {
+          "Name": "T",
+          "Constraints": [
+            {
+              "Kind": "interface",
+              "Name": "any",
+              "Descriptor": "any"
+            }
+          ]
+        }
+      ],
       "Parameters": [
         {
           "Name": "input",
           "TypeRef": "T",
+          "TypeKind": "generic",
           "IsPointer": false,
           "IsVariadic": false
         }
@@ -114,6 +122,7 @@
       "Returns": [
         {
           "TypeRef": "T",
+          "TypeKind": "generic",
           "IsPointer": false
         }
       ],
@@ -124,32 +133,36 @@
       "Name": "GenericFunctionReturningGeneric",
       "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
       "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionReturningGeneric",
-      "Details": {
-        "TypeParameters": [
-          {
-            "Name": "T",
-            "Constraints": [
-              {
-                "Kind": "interface",
-                "Name": "any",
-                "Descriptor": "any"
-              }
-            ]
-          }
-        ]
-      },
+      "TypeParameters": [
+        {
+          "Name": "T",
+          "Constraints": [
+            {
+              "Kind": "interface",
+              "Name": "any",
+              "Descriptor": "any"
+            }
+          ]
+        }
+      ],
       "Parameters": [
         {
           "Name": "input",
           "TypeRef": "T",
+          "TypeKind": "generic",
           "IsPointer": false,
           "IsVariadic": false
         }
       ],
       "Returns": [
         {
-          "TypeRef": "[]T",
-          "IsPointer": false
+          "TypeRef": "",
+          "TypeKind": "slice",
+          "IsPointer": true,
+          "ElementTypeRef": "T",
+          "ElementIsPointer": true,
+          "ElementKind": "generic",
+          "ElementStructure": "[]"
         }
       ],
       "IsVariadic": false
@@ -159,24 +172,23 @@
       "Name": "GenericFunctionWithConstraints",
       "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
       "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionWithConstraints",
-      "Details": {
-        "TypeParameters": [
-          {
-            "Name": "T",
-            "Constraints": [
-              {
-                "Kind": "interface",
-                "Name": "interface{}",
-                "Descriptor": "interface{}"
-              }
-            ]
-          }
-        ]
-      },
+      "TypeParameters": [
+        {
+          "Name": "T",
+          "Constraints": [
+            {
+              "Kind": "interface",
+              "Name": "any",
+              "Descriptor": "any"
+            }
+          ]
+        }
+      ],
       "Parameters": [
         {
           "Name": "input",
           "TypeRef": "T",
+          "TypeKind": "generic",
           "IsPointer": false,
           "IsVariadic": false
         }
@@ -184,6 +196,7 @@
       "Returns": [
         {
           "TypeRef": "T",
+          "TypeKind": "generic",
           "IsPointer": false
         }
       ],
@@ -194,24 +207,23 @@
       "Name": "GenericFunctionWithConstraintsAndMultipleReturns",
       "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
       "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionWithConstraintsAndMultipleReturns",
-      "Details": {
-        "TypeParameters": [
-          {
-            "Name": "T",
-            "Constraints": [
-              {
-                "Kind": "interface",
-                "Name": "interface{}",
-                "Descriptor": "interface{}"
-              }
-            ]
-          }
-        ]
-      },
+      "TypeParameters": [
+        {
+          "Name": "T",
+          "Constraints": [
+            {
+              "Kind": "interface",
+              "Name": "any",
+              "Descriptor": "any"
+            }
+          ]
+        }
+      ],
       "Parameters": [
         {
           "Name": "input",
           "TypeRef": "T",
+          "TypeKind": "generic",
           "IsPointer": false,
           "IsVariadic": false
         }
@@ -219,14 +231,17 @@
       "Returns": [
         {
           "TypeRef": "T",
+          "TypeKind": "generic",
           "IsPointer": false
         },
         {
           "TypeRef": "T",
+          "TypeKind": "generic",
           "IsPointer": false
         },
         {
           "TypeRef": "error",
+          "TypeKind": "basic",
           "IsPointer": false
         }
       ],
@@ -237,40 +252,40 @@
       "Name": "GenericFunctionWithMultipleTypeParams",
       "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
       "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionWithMultipleTypeParams",
-      "Details": {
-        "TypeParameters": [
-          {
-            "Name": "T",
-            "Constraints": [
-              {
-                "Kind": "interface",
-                "Name": "any",
-                "Descriptor": "any"
-              }
-            ]
-          },
-          {
-            "Name": "U",
-            "Constraints": [
-              {
-                "Kind": "interface",
-                "Name": "any",
-                "Descriptor": "any"
-              }
-            ]
-          }
-        ]
-      },
+      "TypeParameters": [
+        {
+          "Name": "T",
+          "Constraints": [
+            {
+              "Kind": "interface",
+              "Name": "any",
+              "Descriptor": "any"
+            }
+          ]
+        },
+        {
+          "Name": "U",
+          "Constraints": [
+            {
+              "Kind": "interface",
+              "Name": "any",
+              "Descriptor": "any"
+            }
+          ]
+        }
+      ],
       "Parameters": [
         {
           "Name": "input1",
           "TypeRef": "T",
+          "TypeKind": "generic",
           "IsPointer": false,
           "IsVariadic": false
         },
         {
           "Name": "input2",
           "TypeRef": "U",
+          "TypeKind": "generic",
           "IsPointer": false,
           "IsVariadic": false
         }
@@ -278,10 +293,12 @@
       "Returns": [
         {
           "TypeRef": "T",
+          "TypeKind": "generic",
           "IsPointer": false
         },
         {
           "TypeRef": "U",
+          "TypeKind": "generic",
           "IsPointer": false
         }
       ],
@@ -292,23 +309,22 @@
       "Name": "GenericFunctionWithNoParams",
       "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
       "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionWithNoParams",
-      "Details": {
-        "TypeParameters": [
-          {
-            "Name": "T",
-            "Constraints": [
-              {
-                "Kind": "interface",
-                "Name": "any",
-                "Descriptor": "any"
-              }
-            ]
-          }
-        ]
-      },
+      "TypeParameters": [
+        {
+          "Name": "T",
+          "Constraints": [
+            {
+              "Kind": "interface",
+              "Name": "any",
+              "Descriptor": "any"
+            }
+          ]
+        }
+      ],
       "Returns": [
         {
           "TypeRef": "T",
+          "TypeKind": "generic",
           "IsPointer": false
         }
       ],
@@ -319,24 +335,23 @@
       "Name": "GenericFunctionWithNoReturns",
       "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
       "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionWithNoReturns",
-      "Details": {
-        "TypeParameters": [
-          {
-            "Name": "T",
-            "Constraints": [
-              {
-                "Kind": "interface",
-                "Name": "any",
-                "Descriptor": "any"
-              }
-            ]
-          }
-        ]
-      },
+      "TypeParameters": [
+        {
+          "Name": "T",
+          "Constraints": [
+            {
+              "Kind": "interface",
+              "Name": "any",
+              "Descriptor": "any"
+            }
+          ]
+        }
+      ],
       "Parameters": [
         {
           "Name": "input",
           "TypeRef": "T",
+          "TypeKind": "generic",
           "IsPointer": false,
           "IsVariadic": false
         }
@@ -348,30 +363,30 @@
       "Name": "GenericVariadicFunction",
       "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
       "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.GenericVariadicFunction",
-      "Details": {
-        "TypeParameters": [
-          {
-            "Name": "T",
-            "Constraints": [
-              {
-                "Kind": "interface",
-                "Name": "any",
-                "Descriptor": "any"
-              }
-            ]
-          }
-        ]
-      },
+      "TypeParameters": [
+        {
+          "Name": "T",
+          "Constraints": [
+            {
+              "Kind": "interface",
+              "Name": "any",
+              "Descriptor": "any"
+            }
+          ]
+        }
+      ],
       "Parameters": [
         {
           "Name": "prefix",
           "TypeRef": "string",
+          "TypeKind": "basic",
           "IsPointer": false,
           "IsVariadic": false
         },
         {
           "Name": "values",
           "TypeRef": "T",
+          "TypeKind": "generic",
           "IsPointer": false,
           "IsVariadic": true
         }
@@ -379,6 +394,7 @@
       "Returns": [
         {
           "TypeRef": "string",
+          "TypeKind": "basic",
           "IsPointer": false
         }
       ],
@@ -393,12 +409,14 @@
         {
           "Name": "a",
           "TypeRef": "int",
+          "TypeKind": "basic",
           "IsPointer": false,
           "IsVariadic": false
         },
         {
           "Name": "b",
           "TypeRef": "string",
+          "TypeKind": "basic",
           "IsPointer": false,
           "IsVariadic": false
         }
@@ -406,6 +424,7 @@
       "Returns": [
         {
           "TypeRef": "bool",
+          "TypeKind": "basic",
           "IsPointer": false
         }
       ],
@@ -420,12 +439,14 @@
         {
           "Name": "prefix",
           "TypeRef": "string",
+          "TypeKind": "basic",
           "IsPointer": false,
           "IsVariadic": false
         },
         {
           "Name": "values",
           "TypeRef": "int",
+          "TypeKind": "basic",
           "IsPointer": false,
           "IsVariadic": true
         }
@@ -433,6 +454,7 @@
       "Returns": [
         {
           "TypeRef": "string",
+          "TypeKind": "basic",
           "IsPointer": false
         }
       ],
