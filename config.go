@@ -9,18 +9,18 @@ import (
 type ScanMode uint8
 
 const (
-	ScanModeNone        ScanMode = 0
-	ScanModeTypes       ScanMode = 1 << iota // Basic type information
-	ScanModeMethods                          // Include methods
-	ScanModeFields                           // Include struct fields
-	ScanModeFunctions                        // Include standalone functions
-	ScanModeDocs                             // Include documentation
-	ScanModeAnnotations                      // Parse annotations from docs
+	ScanModeNone      ScanMode = 0
+	ScanModeTypes     ScanMode = 1 << iota // Basic type information
+	ScanModeMethods                        // Include methods
+	ScanModeFields                         // Include struct fields
+	ScanModeFunctions                      // Include standalone functions
+	ScanModeDocs                           // Include documentation
+	ScanModeComments                       // Parse and extract comments
 
 	// Predefined combinations
 	ScanModeBasic   = ScanModeTypes | ScanModeDocs
-	ScanModeDefault = ScanModeTypes | ScanModeMethods | ScanModeDocs | ScanModeAnnotations
-	ScanModeFull    = ScanModeTypes | ScanModeMethods | ScanModeFields | ScanModeFunctions | ScanModeDocs | ScanModeAnnotations
+	ScanModeDefault = ScanModeTypes | ScanModeMethods | ScanModeDocs | ScanModeComments
+	ScanModeFull    = ScanModeTypes | ScanModeMethods | ScanModeFields | ScanModeFunctions | ScanModeDocs | ScanModeComments
 )
 
 func (m ScanMode) String() string {
@@ -52,10 +52,8 @@ func (m ScanMode) FromString(str string) ScanMode {
 			m |= ScanModeFields
 		case "functions":
 			m |= ScanModeFunctions
-		case "docs":
+		case "docs", "annotations", "comments":
 			m |= ScanModeDocs
-		case "annotations":
-			m |= ScanModeAnnotations
 		default:
 			panic("unknown scan mode " + v)
 		}

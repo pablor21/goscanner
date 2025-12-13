@@ -20,9 +20,8 @@ func main() {
 			panic(err)
 		}
 
-		// Trigger comment and annotation extraction
+		// Trigger comment extraction
 		_ = v.GetComments()
-		_ = v.GetAnnotations()
 	}
 
 	// convert the ret to a json

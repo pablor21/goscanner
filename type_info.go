@@ -6,7 +6,6 @@ import (
 	"go/types"
 	"sync"
 
-	"github.com/pablor21/gonnotation"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -81,7 +80,6 @@ type TypeInfo interface {
 	GetName() string
 	GetPackage() string
 	GetCannonicalName() string
-	GetAnnotations() []gonnotation.Annotation
 	GetComments() []string
 
 	// New methods for anonymous type support
@@ -122,7 +120,6 @@ type TypeDetailInfo interface {
 	// Channel info
 	GetChannelDirection() ChannelDirection
 
-	GetAnnotations() []gonnotation.Annotation
 	GetComments() []string
 }
 
@@ -151,9 +148,8 @@ type BaseTypeDetailInfo struct {
 	// For channels
 	ChanDir ChannelDirection `json:"ChanDir,omitempty"` // Channel direction
 
-	AnonymousTypeInfo *AnonymousTypeInfo       `json:"AnonymousTypeInfo,omitempty"` // For inline types
-	Annotations       []gonnotation.Annotation `json:"Annotations,omitempty"`       // Annotations
-	Comments          []string                 `json:"Comments,omitempty"`          // Comments
+	AnonymousTypeInfo *AnonymousTypeInfo `json:"AnonymousTypeInfo,omitempty"` // For inline types
+	Comments          []string           `json:"Comments,omitempty"`          // Comments
 }
 
 // Interface implementation for BaseTypeDetailInfo
@@ -170,18 +166,16 @@ func (b *BaseTypeDetailInfo) GetElementInfo() (string, TypeKind, bool, bool, str
 func (b *BaseTypeDetailInfo) GetKeyInfo() (string, TypeKind, bool, bool, string) {
 	return b.KeyTypeRef, b.KeyKind, b.KeyIsPointerFlag, b.KeyIsAnonymousFlag, b.KeyStructure
 }
-func (b *BaseTypeDetailInfo) GetChannelDirection() ChannelDirection    { return b.ChanDir }
-func (b *BaseTypeDetailInfo) GetAnnotations() []gonnotation.Annotation { return b.Annotations }
-func (b *BaseTypeDetailInfo) GetComments() []string                    { return b.Comments }
+func (b *BaseTypeDetailInfo) GetChannelDirection() ChannelDirection { return b.ChanDir }
+func (b *BaseTypeDetailInfo) GetComments() []string                 { return b.Comments }
 
 type NamedTypeInfo struct {
 	// Eagerly loaded basic info
-	Kind        TypeKind                 `json:"Kind,omitempty"`
-	Name        string                   `json:"Name,omitempty"`
-	Package     string                   `json:"Package,omitempty"`
-	Descriptor  string                   `json:"Descriptor,omitempty"` // Type descriptor
-	Annotations []gonnotation.Annotation `json:"Annotations,omitempty"`
-	Comments    []string                 `json:"Comments,omitempty"`
+	Kind       TypeKind `json:"Kind,omitempty"`
+	Name       string   `json:"Name,omitempty"`
+	Package    string   `json:"Package,omitempty"`
+	Descriptor string   `json:"Descriptor,omitempty"` // Type descriptor
+	Comments   []string `json:"Comments,omitempty"`
 
 	// Generic instantiation info (eagerly loaded)
 	IsGenericInstantiation bool                  `json:"IsGenericInstantiation,omitempty"`
@@ -286,12 +280,7 @@ func (nt *NamedTypeInfo) GetCannonicalName() string {
 	return nt.GetPackage() + "." + nt.GetName()
 }
 
-func (nt *NamedTypeInfo) GetAnnotations() []gonnotation.Annotation {
-	nt.extractCommentsAndAnnotations()
-	return nt.Annotations
-}
-
-// extractCommentsAndAnnotations lazily extracts comments and annotations from type objects
+// extractCommentsAndAnnotations lazily extracts comments from type objects
 func (nt *NamedTypeInfo) extractCommentsAndAnnotations() {
 	if nt.commentsExtracted {
 		return
@@ -303,7 +292,6 @@ func (nt *NamedTypeInfo) extractCommentsAndAnnotations() {
 	}
 
 	nt.Comments = parseComments(docString)
-	nt.Annotations = parseAnnotations(docString)
 	nt.commentsExtracted = true
 }
 
@@ -346,21 +334,19 @@ func (nt *NamedTypeInfo) Load() (*DetailedTypeInfo, error) {
 				nt.ChanDir = details.ChanDir
 				nt.EnumValues = details.EnumValues
 
-				// For enums, ensure all enum values have their comments and annotations loaded
+				// For enums, ensure all enum values have their comments loaded
 				if nt.Kind == TypeKindEnum && len(details.EnumValues) > 0 {
 					for i := range details.EnumValues {
-						// Trigger lazy loading of comments and annotations for each enum value
+						// Trigger lazy loading of comments for each enum value
 						_ = details.EnumValues[i].GetComments()
-						_ = details.EnumValues[i].GetAnnotations()
 					}
 				}
 
-				// For structs, ensure all field comments and annotations are loaded
+				// For structs, ensure all field comments are loaded
 				if nt.Kind == TypeKindStruct && len(details.Fields) > 0 {
 					for i := range details.Fields {
-						// Trigger lazy loading of comments and annotations for each field
+						// Trigger lazy loading of comments for each field
 						_ = details.Fields[i].GetComments()
-						_ = details.Fields[i].GetAnnotations()
 					}
 				}
 			}
@@ -520,10 +506,6 @@ func (at *AnonymousTypeInfo) GetCannonicalName() string {
 	return "" // Anonymous types don't have canonical names
 }
 
-func (at *AnonymousTypeInfo) GetAnnotations() []gonnotation.Annotation {
-	return nil // Anonymous types don't have annotations
-}
-
 func (at *AnonymousTypeInfo) GetComments() []string {
 	return nil // Anonymous types don't have comments
 }
@@ -643,9 +625,8 @@ type FieldInfo struct {
 	IsPromoted      bool   `json:"IsPromoted,omitempty"`      // Whether this field is promoted from an embedded type
 	PromotedFromRef string `json:"PromotedFromRef,omitempty"` // Full qualified name of the embedded type that promoted this field
 
-	// Comments and annotations (lazy loaded)
-	Comments    []string                 `json:"Comments,omitempty"`
-	Annotations []gonnotation.Annotation `json:"Annotations,omitempty"`
+	// Comments (lazy loaded)
+	Comments []string `json:"Comments,omitempty"`
 
 	// Documentation (not exported to JSON) - lazy loaded
 	docField          *ast.Field `json:"-"`
@@ -662,15 +643,7 @@ func (fi *FieldInfo) GetComments() []string {
 	return fi.Comments
 }
 
-// GetAnnotations extracts annotations from field documentation
-func (fi *FieldInfo) GetAnnotations() []gonnotation.Annotation {
-	if !fi.commentsExtracted {
-		fi.extractFieldCommentsAndAnnotations()
-	}
-	return fi.Annotations
-}
-
-// extractFieldCommentsAndAnnotations lazily extracts comments and annotations from field doc
+// extractFieldCommentsAndAnnotations lazily extracts comments from field doc
 func (fi *FieldInfo) extractFieldCommentsAndAnnotations() {
 	if fi.commentsExtracted {
 		return
@@ -682,7 +655,6 @@ func (fi *FieldInfo) extractFieldCommentsAndAnnotations() {
 	}
 
 	fi.Comments = parseComments(docString)
-	fi.Annotations = parseAnnotations(docString)
 	fi.commentsExtracted = true
 }
 
@@ -744,15 +716,7 @@ func (fi *FunctionInfo) GetComments() []string {
 	return fi.Comments
 }
 
-// GetAnnotations extracts annotations from function documentation
-func (fi *FunctionInfo) GetAnnotations() []gonnotation.Annotation {
-	if !fi.commentsExtracted {
-		fi.extractFunctionCommentsAndAnnotations()
-	}
-	return fi.Annotations
-}
-
-// extractFunctionCommentsAndAnnotations lazily extracts comments and annotations from doc.Func
+// extractFunctionCommentsAndAnnotations lazily extracts comments from doc.Func
 func (fi *FunctionInfo) extractFunctionCommentsAndAnnotations() {
 	if fi.commentsExtracted {
 		return
@@ -764,7 +728,6 @@ func (fi *FunctionInfo) extractFunctionCommentsAndAnnotations() {
 	}
 
 	fi.Comments = parseComments(docString)
-	fi.Annotations = parseAnnotations(docString)
 	fi.commentsExtracted = true
 }
 
@@ -777,9 +740,8 @@ type EnumValue struct {
 	Name  string `json:"Name"`
 	Value any    `json:"Value"`
 
-	// Comments and annotations (lazy loaded)
-	Comments    []string                 `json:"Comments,omitempty"`
-	Annotations []gonnotation.Annotation `json:"Annotations,omitempty"`
+	// Comments (lazy loaded)
+	Comments []string `json:"Comments,omitempty"`
 
 	// Documentation (not exported to JSON) - lazy loaded
 	docComment        *ast.Comment `json:"-"`
@@ -794,15 +756,7 @@ func (ev *EnumValue) GetComments() []string {
 	return ev.Comments
 }
 
-// GetAnnotations extracts annotations from enum value documentation
-func (ev *EnumValue) GetAnnotations() []gonnotation.Annotation {
-	if !ev.commentsExtracted {
-		ev.extractCommentsAndAnnotations()
-	}
-	return ev.Annotations
-}
-
-// extractCommentsAndAnnotations lazily extracts comments and annotations from enum value doc
+// extractCommentsAndAnnotations lazily extracts comments from enum value doc
 func (ev *EnumValue) extractCommentsAndAnnotations() {
 	if ev.commentsExtracted {
 		return
@@ -814,7 +768,6 @@ func (ev *EnumValue) extractCommentsAndAnnotations() {
 	}
 
 	ev.Comments = parseComments(docString)
-	ev.Annotations = parseAnnotations(docString)
 	ev.commentsExtracted = true
 }
 

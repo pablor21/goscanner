@@ -9,7 +9,6 @@ import (
 	"go/types"
 	"strings"
 
-	"github.com/pablor21/gonnotation"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -2116,12 +2115,11 @@ func (r *defaultTypeResolver) createInterfaceDetailsWithGeneric(interfaceType *t
 		}
 
 		ownerType := &NamedTypeInfo{
-			Name:        interfaceName,
-			Descriptor:  packagePath + "." + interfaceName, // Use clean base name for descriptor
-			Kind:        TypeKindInterface,
-			Package:     packagePath,
-			Comments:    []string{},
-			Annotations: []gonnotation.Annotation{},
+			Name:       interfaceName,
+			Descriptor: packagePath + "." + interfaceName, // Use clean base name for descriptor
+			Kind:       TypeKindInterface,
+			Package:    packagePath,
+			Comments:   []string{},
 		}
 
 		methodInfo, err := r.createMethodInfoFromTypes(method, ownerType, r.currentPkg, true)
@@ -2590,7 +2588,6 @@ func (r *defaultTypeResolver) createParameterInfo(param *types.Var, pkg *package
 			Name:        param.Name(),
 			TypeRef:     typeRef,
 			PointerFlag: isPointer,
-			Annotations: []gonnotation.Annotation{},
 			Comments:    []string{},
 		},
 		IsVariadicParam: false, // TODO: Check for variadic
@@ -3037,7 +3034,6 @@ func (r *defaultTypeResolver) createParameterInfoFromAST(typeExpr ast.Expr, name
 		BaseTypeDetailInfo: BaseTypeDetailInfo{
 			Name:        name,
 			PointerFlag: isPointer,
-			Annotations: []gonnotation.Annotation{},
 			Comments:    []string{},
 		},
 		IsVariadicParam: isVariadic,
