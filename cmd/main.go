@@ -15,7 +15,7 @@ func main() {
 
 	// load details for each type
 	for _, v := range ret.Types {
-		_, err = v.GetDetails()
+		_, err = v.Load()
 		if err != nil {
 			panic(err)
 		}

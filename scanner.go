@@ -256,11 +256,11 @@ func (s *DefaultScanner) loadTypeDetails(obj types.Object, pkg *packages.Package
 				}
 
 				fieldInfo := FieldInfo{
-					Name:        field.Name(),
-					TypeRef:     fieldType.GetCannonicalName(),
-					TypeKind:    fieldType.GetKind(),
-					IsPointer:   isPointer,
-					Annotations: annotations,
+					Name:      field.Name(),
+					TypeRef:   fieldType.GetCannonicalName(),
+					TypeKind:  fieldType.GetKind(),
+					IsPointer: isPointer,
+					// Don't populate Annotations directly - use lazy loading
 				}
 				details.Fields = append(details.Fields, fieldInfo)
 			}

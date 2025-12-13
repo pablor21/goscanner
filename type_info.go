@@ -1,6 +1,7 @@
 package goscanner
 
 import (
+	"go/ast"
 	"go/doc"
 	"go/types"
 	"sync"
@@ -88,7 +89,7 @@ type TypeInfo interface {
 	GetTypeDescriptor() string
 
 	// Lazy-loaded details
-	GetDetails() (*DetailedTypeInfo, error)
+	Load() (*DetailedTypeInfo, error)
 
 	// Convenience methods that may trigger lazy loading
 	IsMap() bool
@@ -205,6 +206,9 @@ type NamedTypeInfo struct {
 	ChanFlag         bool                `json:"IsChan,omitempty"`
 	ChanDir          int                 `json:"ChanDir,omitempty"`
 
+	// Enum values (flattened from details)
+	EnumValues []EnumValue `json:"Values,omitempty"`
+
 	// Lazy loading mechanism (not exported to JSON)
 	detailsOnce sync.Once                         `json:"-"`
 	detailsErr  error                             `json:"-"`
@@ -320,7 +324,7 @@ func (nt *NamedTypeInfo) GetTypeDescriptor() string {
 }
 
 // Lazy loading method
-func (nt *NamedTypeInfo) GetDetails() (*DetailedTypeInfo, error) {
+func (nt *NamedTypeInfo) Load() (*DetailedTypeInfo, error) {
 	nt.detailsOnce.Do(func() {
 		if nt.loader != nil {
 			details, err := nt.loader()
@@ -342,6 +346,25 @@ func (nt *NamedTypeInfo) GetDetails() (*DetailedTypeInfo, error) {
 				nt.ElementType = details.ElementType
 				nt.ChanFlag = details.ChanFlag
 				nt.ChanDir = details.ChanDir
+				nt.EnumValues = details.EnumValues
+
+				// For enums, ensure all enum values have their comments and annotations loaded
+				if nt.Kind == TypeKindEnum && len(details.EnumValues) > 0 {
+					for i := range details.EnumValues {
+						// Trigger lazy loading of comments and annotations for each enum value
+						_ = details.EnumValues[i].GetComments()
+						_ = details.EnumValues[i].GetAnnotations()
+					}
+				}
+
+				// For structs, ensure all field comments and annotations are loaded
+				if nt.Kind == TypeKindStruct && len(details.Fields) > 0 {
+					for i := range details.Fields {
+						// Trigger lazy loading of comments and annotations for each field
+						_ = details.Fields[i].GetComments()
+						_ = details.Fields[i].GetAnnotations()
+					}
+				}
 			}
 		}
 	})
@@ -365,12 +388,13 @@ func (nt *NamedTypeInfo) GetDetails() (*DetailedTypeInfo, error) {
 		ElementType:      nt.ElementType,
 		ChanFlag:         nt.ChanFlag,
 		ChanDir:          nt.ChanDir,
+		EnumValues:       nt.EnumValues, // Include enum values
 	}, nil
 }
 
 // Convenience methods that trigger lazy loading when needed
 func (nt *NamedTypeInfo) IsMap() bool {
-	_, err := nt.GetDetails() // Trigger loading
+	_, err := nt.Load() // Trigger loading
 	if err != nil {
 		return false
 	}
@@ -378,7 +402,7 @@ func (nt *NamedTypeInfo) IsMap() bool {
 }
 
 func (nt *NamedTypeInfo) GetMapKeyType() TypeInfo {
-	_, err := nt.GetDetails() // Trigger loading
+	_, err := nt.Load() // Trigger loading
 	if err != nil {
 		return nil
 	}
@@ -386,7 +410,7 @@ func (nt *NamedTypeInfo) GetMapKeyType() TypeInfo {
 }
 
 func (nt *NamedTypeInfo) IsMapKeyPointer() bool {
-	_, err := nt.GetDetails() // Trigger loading
+	_, err := nt.Load() // Trigger loading
 	if err != nil {
 		return false
 	}
@@ -394,7 +418,7 @@ func (nt *NamedTypeInfo) IsMapKeyPointer() bool {
 }
 
 func (nt *NamedTypeInfo) IsSlice() bool {
-	_, err := nt.GetDetails() // Trigger loading
+	_, err := nt.Load() // Trigger loading
 	if err != nil {
 		return false
 	}
@@ -402,7 +426,7 @@ func (nt *NamedTypeInfo) IsSlice() bool {
 }
 
 func (nt *NamedTypeInfo) GetElementType() TypeInfo {
-	_, err := nt.GetDetails() // Trigger loading
+	_, err := nt.Load() // Trigger loading
 	if err != nil {
 		return nil
 	}
@@ -410,7 +434,7 @@ func (nt *NamedTypeInfo) GetElementType() TypeInfo {
 }
 
 func (nt *NamedTypeInfo) IsElementPointer() bool {
-	_, err := nt.GetDetails() // Trigger loading
+	_, err := nt.Load() // Trigger loading
 	if err != nil {
 		return false
 	}
@@ -431,7 +455,7 @@ func (nt *NamedTypeInfo) IsBasic() bool {
 }
 
 func (nt *NamedTypeInfo) IsChannel() bool {
-	_, err := nt.GetDetails() // Trigger loading
+	_, err := nt.Load() // Trigger loading
 	if err != nil {
 		return false
 	}
@@ -439,12 +463,12 @@ func (nt *NamedTypeInfo) IsChannel() bool {
 }
 
 func (nt *NamedTypeInfo) IsGeneric() bool {
-	_, err := nt.GetDetails() // Trigger loading
+	_, err := nt.Load() // Trigger loading
 	return err == nil && len(nt.TypeParameters) > 0
 }
 
 func (nt *NamedTypeInfo) GetTypeParameters() ([]TypeParameterInfo, error) {
-	_, err := nt.GetDetails() // Trigger loading
+	_, err := nt.Load() // Trigger loading
 	if err != nil {
 		return nil, err
 	}
@@ -514,7 +538,7 @@ func (at *AnonymousTypeInfo) GetTypeDescriptor() string {
 	return at.Descriptor
 }
 
-func (at *AnonymousTypeInfo) GetDetails() (*DetailedTypeInfo, error) {
+func (at *AnonymousTypeInfo) Load() (*DetailedTypeInfo, error) {
 	return nil, nil // Anonymous types don't use DetailedTypeInfo
 }
 
@@ -564,83 +588,9 @@ type StructInfo struct {
 	*NamedTypeInfo
 }
 
-func NewTypeInfoLegacy(name string, pkg string, comments []string, annotations []gonnotation.Annotation, loader func() (*DetailedTypeInfo, error)) *StructInfo {
-	return &StructInfo{
-		NamedTypeInfo: NewNamedTypeInfo(TypeKindStruct, name, pkg, comments, annotations, loader),
-	}
-}
-
-// func NewTypeInfo(ctx *ScanningContext, t *doc.Type, pkg *packages.Package) (TypeInfo, error) {
-// 	if t == nil {
-// 		return nil, nil
-// 	}
-
-// 	// check the kind of the type and process accordingly
-// 	// get the name of the type
-// 	obj := pkg.Types.Scope().Lookup(t.Name)
-// 	if obj == nil || obj.Type() == nil {
-// 		return nil, nil
-// 	}
-
-// 	parts := []string{pkg.PkgPath, t.Name}
-// 	cannonicalName := strings.Join(parts, ".")
-
-// 	// if the type is in the cache, skip processing
-// 	if _, exists := ctx.typesCache[cannonicalName]; exists {
-// 		return ctx.typesCache[cannonicalName], nil
-// 	}
-
-// 	annotations := gonnotation.ParseAnnotationsFromText(t.Doc)
-// 	// Parse comments from the type's documentation
-// 	comments := parseComments(t.Doc)
-
-// 	switch obj.Type().Underlying().(type) {
-// 	case *types.Struct:
-
-// 		// Create loader function for lazy loading struct details
-// 		loader := func() (*DetailedTypeInfo, error) {
-// 			// check if the context scanningmode contains fields
-// 			if (ctx.ScanMode & ScanModeFields) == 0 {
-// 				return nil, nil
-// 			}
-// 			structInfo := &StructInfo{
-// 				NamedTypeInfo: &NamedTypeInfo{
-// 					Kind: TypeKindStruct,
-// 					Name: obj.Name(),
-// 					// loader:      loader,
-// 					Package:     pkg.PkgPath,
-// 					Comments:    comments,
-// 					Annotations: annotations,
-// 					pkg:         pkg,
-// 					obj:         obj,
-// 					doc:         t,
-// 				},
-// 			}
-// 		}
-
-// 		structInfo := &StructInfo{
-// 			NamedTypeInfo: &NamedTypeInfo{
-// 				Kind:        TypeKindStruct,
-// 				Name:        obj.Name(),
-// 				loader:      loader,
-// 				Package:     pkg.PkgPath,
-// 				Comments:    comments,
-// 				Annotations: annotations,
-// 				pkg:         pkg,
-// 				obj:         obj,
-// 				doc:         t,
-// 			},
-// 		}
-// 		return structInfo, nil
-// 	}
-
-// 	return nil, nil
-
-// }
-
 // Helper method to get struct-specific details
 func (si *StructInfo) GetFields() ([]FieldInfo, error) {
-	details, err := si.GetDetails()
+	details, err := si.Load()
 	if err != nil || details == nil {
 		return nil, err
 	}
@@ -648,7 +598,7 @@ func (si *StructInfo) GetFields() ([]FieldInfo, error) {
 }
 
 func (si *StructInfo) GetMethods() ([]MethodInfo, error) {
-	details, err := si.GetDetails()
+	details, err := si.Load()
 	if err != nil || details == nil {
 		return nil, err
 	}
@@ -669,7 +619,7 @@ type FieldInfo struct {
 	ElementKind        TypeKind `json:"ElementKind,omitempty"`        // Kind of the element type
 	ElementStructure   string   `json:"ElementStructure,omitempty"`   // Describes nesting structure: "[]", "[][][]", "[5][10]", etc.
 	elementTypeInfo    TypeInfo
-	// NEW: Inline type info for anonymous/composite element types
+	// Inline type info for anonymous/composite element types
 	ElementTypeInfo *AnonymousTypeInfo `json:"ElementTypeInfo,omitempty"`
 
 	// For maps
@@ -679,13 +629,13 @@ type FieldInfo struct {
 	KeyKind        TypeKind `json:"KeyKind,omitempty"`        // Kind of the key type
 	KeyStructure   string   `json:"KeyStructure,omitempty"`   // Describes key nesting if composite: "[]", "map[string]", etc.
 	keyTypeInfo    TypeInfo
-	// NEW: Inline type info for anonymous/composite key types
+	// Inline type info for anonymous/composite key types
 	KeyTypeInfo *AnonymousTypeInfo `json:"KeyTypeInfo,omitempty"`
 
 	// For channels
 	ChanDir ChannelDirection `json:"ChanDir,omitempty"` // Channel direction: "both", "send", "recv"
 
-	// NEW: Inline type info for anonymous/composite main field types
+	// Inline type info for anonymous/composite main field types
 	InlineTypeInfo *AnonymousTypeInfo `json:"TypeInfo,omitempty"`
 
 	// Struct tags
@@ -695,10 +645,47 @@ type FieldInfo struct {
 	IsPromoted      bool   `json:"IsPromoted,omitempty"`      // Whether this field is promoted from an embedded type
 	PromotedFromRef string `json:"PromotedFromRef,omitempty"` // Full qualified name of the embedded type that promoted this field
 
-	Annotations []gonnotation.Annotation `json:"Annotations,omitempty"`
+	// Comments and annotations (lazy loaded)
 	Comments    []string                 `json:"Comments,omitempty"`
+	Annotations []gonnotation.Annotation `json:"Annotations,omitempty"`
+
+	// Documentation (not exported to JSON) - lazy loaded
+	docField          *ast.Field `json:"-"`
+	commentsExtracted bool       `json:"-"`
 
 	typeInfo TypeInfo
+}
+
+// GetComments extracts comments from field documentation
+func (fi *FieldInfo) GetComments() []string {
+	if !fi.commentsExtracted {
+		fi.extractFieldCommentsAndAnnotations()
+	}
+	return fi.Comments
+}
+
+// GetAnnotations extracts annotations from field documentation
+func (fi *FieldInfo) GetAnnotations() []gonnotation.Annotation {
+	if !fi.commentsExtracted {
+		fi.extractFieldCommentsAndAnnotations()
+	}
+	return fi.Annotations
+}
+
+// extractFieldCommentsAndAnnotations lazily extracts comments and annotations from field doc
+func (fi *FieldInfo) extractFieldCommentsAndAnnotations() {
+	if fi.commentsExtracted {
+		return
+	}
+
+	var docString string
+	if fi.docField != nil && fi.docField.Doc != nil {
+		docString = fi.docField.Doc.Text()
+	}
+
+	fi.Comments = parseComments(docString)
+	fi.Annotations = parseAnnotations(docString)
+	fi.commentsExtracted = true
 }
 
 type MethodInfo struct {
@@ -789,10 +776,48 @@ type EnumInfo struct {
 }
 
 type EnumValue struct {
-	Name        string                   `json:"Name"`
-	Value       any                      `json:"Value"`
+	Name  string `json:"Name"`
+	Value any    `json:"Value"`
+
+	// Comments and annotations (lazy loaded)
 	Comments    []string                 `json:"Comments,omitempty"`
 	Annotations []gonnotation.Annotation `json:"Annotations,omitempty"`
+
+	// Documentation (not exported to JSON) - lazy loaded
+	docComment        *ast.Comment `json:"-"`
+	commentsExtracted bool         `json:"-"`
+}
+
+// GetComments extracts comments from enum value documentation
+func (ev *EnumValue) GetComments() []string {
+	if !ev.commentsExtracted {
+		ev.extractCommentsAndAnnotations()
+	}
+	return ev.Comments
+}
+
+// GetAnnotations extracts annotations from enum value documentation
+func (ev *EnumValue) GetAnnotations() []gonnotation.Annotation {
+	if !ev.commentsExtracted {
+		ev.extractCommentsAndAnnotations()
+	}
+	return ev.Annotations
+}
+
+// extractCommentsAndAnnotations lazily extracts comments and annotations from enum value doc
+func (ev *EnumValue) extractCommentsAndAnnotations() {
+	if ev.commentsExtracted {
+		return
+	}
+
+	var docString string
+	if ev.docComment != nil {
+		docString = ev.docComment.Text
+	}
+
+	ev.Comments = parseComments(docString)
+	ev.Annotations = parseAnnotations(docString)
+	ev.commentsExtracted = true
 }
 
 func NewEnumInfo(name string, pkg string, enumTypeRef string, comments []string, annotations []gonnotation.Annotation, loader func() (*DetailedTypeInfo, error)) *EnumInfo {
@@ -811,7 +836,7 @@ func NewEnumInfoFromTypes(name string, pkg string, enumTypeRef string, typesObj 
 }
 
 func (ei *EnumInfo) GetValues() ([]EnumValue, error) {
-	details, err := ei.GetDetails()
+	details, err := ei.Load()
 	if err != nil || details == nil {
 		return nil, err
 	}
@@ -836,7 +861,7 @@ func NewInterfaceInfoFromTypes(typesObj types.Object, pkgInfo *packages.Package,
 }
 
 func (ii *InterfaceInfo) GetMethods() ([]MethodInfo, error) {
-	details, err := ii.GetDetails()
+	details, err := ii.Load()
 	if err != nil || details == nil {
 		return nil, err
 	}
