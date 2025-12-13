@@ -23,7 +23,8 @@ const (
 	TypeKindSlice     TypeKind = "slice"
 	TypeKindArray     TypeKind = "array"
 	TypeKindChannel   TypeKind = "channel"
-	TypeKindBasic     TypeKind = "basic" // For built-in types like string, int, bool
+	TypeKindBasic     TypeKind = "basic"   // For built-in types like string, int, bool
+	TypeKindUnknown   TypeKind = "unknown" // For unrecognized types
 )
 
 type ChannelDirection string
@@ -256,7 +257,8 @@ type AnonymousTypeInfo struct {
 	ChanDir ChannelDirection `json:"ChanDir,omitempty"`
 
 	// For anonymous structs
-	Fields []FieldInfo `json:"Fields,omitempty"` // Fields for anonymous struct types
+	Fields  []FieldInfo  `json:"Fields,omitempty"`  // Fields for anonymous struct types
+	Methods []MethodInfo `json:"Methods,omitempty"` // Methods for anonymous interface types
 } // NewAnonymousTypeInfo creates a new anonymous type info
 func NewAnonymousTypeInfo(kind TypeKind, descriptor string) *AnonymousTypeInfo {
 	return &AnonymousTypeInfo{
@@ -464,6 +466,13 @@ type FieldInfo struct {
 	// NEW: Inline type info for anonymous/composite main field types
 	InlineTypeInfo *AnonymousTypeInfo `json:"TypeInfo,omitempty"`
 
+	// Struct tags
+	Tags map[string]string `json:"Tags,omitempty"` // Parsed tag map: {"json": "name,omitempty", "xml": "name"}
+
+	// Embedded/promoted field tracking
+	IsPromoted      bool   `json:"IsPromoted,omitempty"`      // Whether this field is promoted from an embedded type
+	PromotedFromRef string `json:"PromotedFromRef,omitempty"` // Full qualified name of the embedded type that promoted this field
+
 	Annotations []gonnotation.Annotation `json:"Annotations,omitempty"`
 	Comments    []string                 `json:"Comments,omitempty"`
 
@@ -472,6 +481,42 @@ type FieldInfo struct {
 
 type MethodInfo struct {
 	*NamedTypeInfo
+
+	// Receiver information
+	ReceiverTypeRef   string `json:"ReceiverTypeRef"`        // Type that owns this method
+	IsPointerReceiver bool   `json:"IsPointerReceiver"`      // true for *T, false for T
+	ReceiverName      string `json:"ReceiverName,omitempty"` // receiver variable name
+
+	// Method signature
+	Parameters []ParameterInfo `json:"Parameters,omitempty"` // Method parameters
+	Returns    []ReturnInfo    `json:"Returns,omitempty"`    // Return values
+	IsVariadic bool            `json:"IsVariadic"`           // Has ...args parameter
+
+	// Method context
+	IsInterfaceMethod bool `json:"IsInterfaceMethod"` // true if from interface, false if concrete
+
+	// Embedded/promoted method tracking
+	IsPromoted      bool   `json:"IsPromoted,omitempty"`      // Whether this method is promoted from an embedded type
+	PromotedFromRef string `json:"PromotedFromRef,omitempty"` // Full qualified name of the embedded type that promoted this method
+}
+
+// ParameterInfo represents a method or function parameter
+type ParameterInfo struct {
+	Name              string                   `json:"Name"`                        // Parameter name
+	TypeRef           string                   `json:"TypeRef"`                     // Type reference
+	IsPointer         bool                     `json:"IsPointer"`                   // Is pointer type
+	IsVariadic        bool                     `json:"IsVariadic"`                  // Is ...args parameter
+	AnonymousTypeInfo *AnonymousTypeInfo       `json:"AnonymousTypeInfo,omitempty"` // For inline types
+	Annotations       []gonnotation.Annotation `json:"Annotations,omitempty"`       // Parameter annotations
+	Comments          []string                 `json:"Comments,omitempty"`          // Parameter comments
+}
+
+// ReturnInfo represents a method or function return value
+type ReturnInfo struct {
+	Name              string             `json:"Name,omitempty"`              // Return variable name (if named)
+	TypeRef           string             `json:"TypeRef"`                     // Type reference
+	IsPointer         bool               `json:"IsPointer"`                   // Is pointer type
+	AnonymousTypeInfo *AnonymousTypeInfo `json:"AnonymousTypeInfo,omitempty"` // For inline types
 }
 
 type EnumInfo struct {
@@ -518,6 +563,25 @@ func NewFunctionInfo(name string, pkg string, comments []string, annotations []g
 	return &FunctionInfo{
 		NamedTypeInfo: NewNamedTypeInfo(TypeKindFunction, name, pkg, comments, annotations, loader),
 	}
+}
+
+func NewMethodInfo(name string, pkg string, comments []string, annotations []gonnotation.Annotation, receiverTypeRef string, isPointerReceiver bool, loader func() (*DetailedTypeInfo, error)) *MethodInfo {
+	// Create descriptor as receiverType.methodName
+	descriptor := receiverTypeRef + "." + name
+
+	result := &MethodInfo{
+		NamedTypeInfo:     NewNamedTypeInfo(TypeKindMethod, name, pkg, comments, annotations, loader),
+		ReceiverTypeRef:   receiverTypeRef,
+		IsPointerReceiver: isPointerReceiver,
+		Parameters:        []ParameterInfo{},
+		Returns:           []ReturnInfo{},
+		IsVariadic:        false,
+		IsInterfaceMethod: false,
+	}
+
+	// Fix the descriptor after creation
+	result.NamedTypeInfo.Descriptor = descriptor
+	return result
 }
 
 type VariableInfo struct {

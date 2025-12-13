@@ -61,7 +61,7 @@ func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (ret *ScanningRes
 	now := time.Now()
 	memoryUsage := RSS()
 	defer func() {
-		ctx.Logger.Info(fmt.Sprintf("Scan completed in %v, found %d types, accross %d packages, memory usage: %dKB", time.Since(now), len(ctx.typesCache), totalPackages, memoryUsage))
+		ctx.Logger.Info(fmt.Sprintf("Scan completed in %v, found %d types, accross %d packages, memory usage: %dKB", time.Since(now), len(s.TypeResolver.GetTypeInfos()), totalPackages, memoryUsage))
 	}()
 
 	if ctx == nil || ctx.Config == nil {
