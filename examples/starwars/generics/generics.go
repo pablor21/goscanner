@@ -65,6 +65,10 @@ func (c ConcreteType) ConstraintMethod() bool {
 	return len(c.Data) > 0
 }
 
+// This is a simple description of a concrete generic type
+// @schema("ConcreteGeneric")
 type ConcreteGeneric = GenericWithConstraints[ConcreteType]
 
+// Alias for a generic struct with methods instantiated with ConcreteType
+// @schema("AliasGeneric")
 type AliasGeneric GenericStructWithMethods[ConcreteType]

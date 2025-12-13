@@ -13,13 +13,14 @@ const (
 	ScanModeTypes       ScanMode = 1 << iota // Basic type information
 	ScanModeMethods                          // Include methods
 	ScanModeFields                           // Include struct fields
+	ScanModeFunctions                        // Include standalone functions
 	ScanModeDocs                             // Include documentation
 	ScanModeAnnotations                      // Parse annotations from docs
 
 	// Predefined combinations
 	ScanModeBasic   = ScanModeTypes | ScanModeDocs
 	ScanModeDefault = ScanModeTypes | ScanModeMethods | ScanModeDocs | ScanModeAnnotations
-	ScanModeFull    = ScanModeTypes | ScanModeMethods | ScanModeFields | ScanModeDocs | ScanModeAnnotations
+	ScanModeFull    = ScanModeTypes | ScanModeMethods | ScanModeFields | ScanModeFunctions | ScanModeDocs | ScanModeAnnotations
 )
 
 func (m ScanMode) String() string {
@@ -49,6 +50,8 @@ func (m ScanMode) FromString(str string) ScanMode {
 			m |= ScanModeMethods
 		case "fields":
 			m |= ScanModeFields
+		case "functions":
+			m |= ScanModeFunctions
 		case "docs":
 			m |= ScanModeDocs
 		case "annotations":
@@ -69,7 +72,7 @@ type Config struct {
 func NewDefaultConfig() *Config {
 	return &Config{
 		// Packages: []string{"golang.org/x/sync/**", "net/**"},
-		Packages: []string{"../examples/starwars/generics", "!../main"},
+		Packages: []string{"../examples/starwars/functions/**", "!../main"},
 		ScanMode: ScanModeFull,
 		LogLevel: logger.LogLevelInfo,
 	}

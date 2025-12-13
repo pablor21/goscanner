@@ -141,6 +141,14 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 		}
 	}
 
+	// 3. Process standalone functions if ScanModeFunctions is enabled
+	if r.scanMode.Has(ScanModeFunctions) {
+		err = r.processFunctions(pkg)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -747,8 +755,10 @@ func (r *defaultTypeResolver) processTypeAliases(pkg *packages.Package) error {
 					if typeSpec, ok := spec.(*ast.TypeSpec); ok && typeSpec.Assign.IsValid() {
 						// This is a type alias
 						aliasName := typeSpec.Name.Name
-						canonicalName := pkg.PkgPath + "." + aliasName // Extract the aliased type reference from AST
-						aliasedTypeRef := r.extractTypeRefFromAST(typeSpec.Type, pkg)
+						canonicalName := pkg.PkgPath + "." + aliasName
+
+						// Extract the aliased type reference from AST with full qualification
+						aliasedTypeRef := r.extractFullyQualifiedTypeRefFromAST(typeSpec.Type, pkg)
 
 						// Get documentation for this alias if available
 						var docComments []string
@@ -769,7 +779,7 @@ func (r *defaultTypeResolver) processTypeAliases(pkg *packages.Package) error {
 						// Determine the kind based on the AST type
 						kind := r.determineTypeKindFromAST(typeSpec.Type)
 
-						// Create type alias info
+						// Create type alias info with proper details inheritance
 						namedTypeInfo := NewNamedTypeInfo(
 							kind,
 							aliasName,
@@ -777,25 +787,26 @@ func (r *defaultTypeResolver) processTypeAliases(pkg *packages.Package) error {
 							docComments,
 							annotations,
 							func() (*DetailedTypeInfo, error) {
-								details := &DetailedTypeInfo{}
-								// For type aliases, check if they have type parameters
-								if typeSpec.TypeParams != nil {
-									details.TypeParameters = r.extractTypeParametersFromAST(typeSpec.TypeParams)
-								}
-
-								// For concrete instantiations (like ConcreteGeneric), try to inherit details
-								// from the aliased type if it exists in our type system
-								if len(details.TypeParameters) == 0 {
-									r.inheritDetailsFromAliasedType(details, aliasedTypeRef)
-								}
-
-								return details, nil
+								// For type aliases, inherit details from the aliased type
+								return r.inheritDetailsFromAliasedType(typeSpec.Type, pkg)
 							},
 						)
 
 						namedTypeInfo.Descriptor = canonicalName
 						namedTypeInfo.IsTypeAlias = true
 						namedTypeInfo.TypeAliasRef = aliasedTypeRef
+
+						// Check if the aliased type is a generic instantiation
+						if r.isGenericInstantiationAST(typeSpec.Type) {
+							namedTypeInfo.IsGenericInstantiation = true
+							// Extract generic type reference and arguments from AST
+							if baseTypeRef, args, err := r.extractGenericInfoFromAST(typeSpec.Type, pkg); err == nil {
+								namedTypeInfo.GenericTypeRef = baseTypeRef
+								// For type aliases to generic instantiations, TypeAliasRef should be the base type, not the full instantiation
+								namedTypeInfo.TypeAliasRef = baseTypeRef
+								namedTypeInfo.GenericArguments = args
+							}
+						}
 
 						// Create appropriate TypeInfo based on kind
 						var typeInfo TypeInfo
@@ -825,6 +836,140 @@ func (r *defaultTypeResolver) processTypeAliases(pkg *packages.Package) error {
 			}
 		}
 	}
+	return nil
+}
+
+// processFunctions discovers and parses standalone functions from the AST
+func (r *defaultTypeResolver) processFunctions(pkg *packages.Package) error {
+	for _, file := range pkg.Syntax {
+		for _, decl := range file.Decls {
+			if funcDecl, ok := decl.(*ast.FuncDecl); ok {
+				// Skip methods (functions with receivers)
+				if funcDecl.Recv != nil {
+					continue
+				}
+
+				// Parse standalone function
+				functionInfo, err := r.createFunctionInfo(funcDecl, pkg)
+				if err != nil {
+					continue // Skip functions that can't be parsed
+				}
+
+				// Store function in types map using canonical name
+				canonicalName := pkg.PkgPath + "." + funcDecl.Name.Name
+				r.types[canonicalName] = functionInfo
+
+				fmt.Println("found function:", canonicalName)
+			}
+		}
+	}
+	return nil
+}
+
+// createFunctionInfo creates FunctionInfo from AST function declaration
+func (r *defaultTypeResolver) createFunctionInfo(funcDecl *ast.FuncDecl, pkg *packages.Package) (*FunctionInfo, error) {
+	funcName := funcDecl.Name.Name
+
+	// Get documentation and annotations
+	var docComments []string
+	var annotations []gonnotation.Annotation
+
+	if funcDecl.Doc != nil {
+		var commentText strings.Builder
+		for _, comment := range funcDecl.Doc.List {
+			docComments = append(docComments, comment.Text)
+			commentText.WriteString(comment.Text)
+			commentText.WriteString("\n")
+		}
+
+		// Extract annotations from comments
+		annotations = parseAnnotations(commentText.String())
+	}
+
+	// Create NamedTypeInfo for the function
+	namedTypeInfo := NewNamedTypeInfo(
+		TypeKindFunction,
+		funcName,
+		pkg.PkgPath,
+		docComments,
+		annotations,
+		nil, // Functions don't need lazy loading for now
+	)
+
+	namedTypeInfo.Descriptor = pkg.PkgPath + "." + funcName
+
+	// Handle generic functions (if type parameters exist)
+	if funcDecl.Type.TypeParams != nil {
+		// For generic functions, add type parameters to details
+		namedTypeInfo.loader = func() (*DetailedTypeInfo, error) {
+			details := &DetailedTypeInfo{}
+			details.TypeParameters = r.extractTypeParametersFromAST(funcDecl.Type.TypeParams)
+			return details, nil
+		}
+	}
+
+	// Create FunctionInfo
+	functionInfo := &FunctionInfo{
+		NamedTypeInfo: namedTypeInfo,
+	}
+
+	// Parse function signature
+	if funcDecl.Type != nil {
+		err := r.populateFunctionSignatureFromAST(functionInfo, funcDecl.Type, pkg)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return functionInfo, nil
+}
+
+// populateFunctionSignatureFromAST populates function parameters and returns from AST function type
+func (r *defaultTypeResolver) populateFunctionSignatureFromAST(functionInfo *FunctionInfo, funcType *ast.FuncType, pkg *packages.Package) error {
+	// Parse parameters from AST
+	if funcType.Params != nil {
+		for _, field := range funcType.Params.List {
+			// Handle multiple names with same type: func(a, b int)
+			if len(field.Names) == 0 {
+				// Unnamed parameter
+				paramInfo := r.createParameterInfoFromAST(field.Type, "", pkg)
+				functionInfo.Parameters = append(functionInfo.Parameters, paramInfo)
+			} else {
+				// Named parameters
+				for _, name := range field.Names {
+					paramInfo := r.createParameterInfoFromAST(field.Type, name.Name, pkg)
+					functionInfo.Parameters = append(functionInfo.Parameters, paramInfo)
+				}
+			}
+		}
+	}
+
+	// Check for variadic (ellipsis in last parameter)
+	if funcType.Params != nil && len(funcType.Params.List) > 0 {
+		lastParam := funcType.Params.List[len(funcType.Params.List)-1]
+		if _, ok := lastParam.Type.(*ast.Ellipsis); ok {
+			functionInfo.IsVariadic = true
+		}
+	}
+
+	// Parse return values from AST
+	if funcType.Results != nil {
+		for _, field := range funcType.Results.List {
+			// Handle multiple names with same type: func() (a, b int)
+			if len(field.Names) == 0 {
+				// Unnamed return
+				returnInfo := r.createReturnInfoFromAST(field.Type, "", pkg)
+				functionInfo.Returns = append(functionInfo.Returns, returnInfo)
+			} else {
+				// Named returns
+				for _, name := range field.Names {
+					returnInfo := r.createReturnInfoFromAST(field.Type, name.Name, pkg)
+					functionInfo.Returns = append(functionInfo.Returns, returnInfo)
+				}
+			}
+		}
+	}
+
 	return nil
 }
 
@@ -917,55 +1062,150 @@ func (r *defaultTypeResolver) extractTypeParametersFromAST(fieldList *ast.FieldL
 	return params
 }
 
+// extractFullyQualifiedTypeRefFromAST extracts a fully qualified type reference from AST
+func (r *defaultTypeResolver) extractFullyQualifiedTypeRefFromAST(expr ast.Expr, pkg *packages.Package) string {
+	switch t := expr.(type) {
+	case *ast.Ident:
+		// Simple identifier - add package prefix if it's not a builtin
+		if t.Obj != nil || r.isBuiltinType(t.Name) {
+			// If it's a local type or builtin, make it fully qualified
+			if r.isBuiltinType(t.Name) {
+				return t.Name
+			}
+			return pkg.Types.Path() + "." + t.Name
+		}
+		return t.Name
+	case *ast.SelectorExpr:
+		// Qualified identifier - package.Type
+		if pkgIdent, ok := t.X.(*ast.Ident); ok {
+			// Find the imported package
+			for _, imp := range pkg.Imports {
+				if imp.Name == pkgIdent.Name {
+					return imp.PkgPath + "." + t.Sel.Name
+				}
+			}
+		}
+		return t.Sel.Name
+	case *ast.IndexExpr:
+		// Generic instantiation - Type[Arg]
+		baseType := r.extractFullyQualifiedTypeRefFromAST(t.X, pkg)
+		argType := r.extractFullyQualifiedTypeRefFromAST(t.Index, pkg)
+		return baseType + "[" + argType + "]"
+	case *ast.IndexListExpr:
+		// Multi-argument generic - Type[T1, T2, ...]
+		baseType := r.extractFullyQualifiedTypeRefFromAST(t.X, pkg)
+		var args []string
+		for _, index := range t.Indices {
+			args = append(args, r.extractFullyQualifiedTypeRefFromAST(index, pkg))
+		}
+		return baseType + "[" + strings.Join(args, ", ") + "]"
+	case *ast.ArrayType:
+		elemType := r.extractFullyQualifiedTypeRefFromAST(t.Elt, pkg)
+		if t.Len == nil {
+			return "[]" + elemType
+		}
+		return "[]" + elemType
+	case *ast.MapType:
+		keyType := r.extractFullyQualifiedTypeRefFromAST(t.Key, pkg)
+		valueType := r.extractFullyQualifiedTypeRefFromAST(t.Value, pkg)
+		return "map[" + keyType + "]" + valueType
+	case *ast.ChanType:
+		elemType := r.extractFullyQualifiedTypeRefFromAST(t.Value, pkg)
+		switch t.Dir {
+		case ast.SEND:
+			return "chan<- " + elemType
+		case ast.RECV:
+			return "<-chan " + elemType
+		default:
+			return "chan " + elemType
+		}
+	case *ast.StarExpr:
+		elemType := r.extractFullyQualifiedTypeRefFromAST(t.X, pkg)
+		return "*" + elemType
+	case *ast.InterfaceType:
+		return "interface{}"
+	case *ast.StructType:
+		return "struct{}"
+	case *ast.FuncType:
+		return "func"
+	default:
+		return "unknown"
+	}
+}
+
+// isBuiltinType checks if a type name is a Go builtin type
+func (r *defaultTypeResolver) isBuiltinType(name string) bool {
+	builtins := map[string]bool{
+		"bool": true, "byte": true, "complex64": true, "complex128": true,
+		"error": true, "float32": true, "float64": true, "int": true,
+		"int8": true, "int16": true, "int32": true, "int64": true,
+		"rune": true, "string": true, "uint": true, "uint8": true,
+		"uint16": true, "uint32": true, "uint64": true, "uintptr": true,
+		"any": true, "comparable": true,
+	}
+	return builtins[name]
+}
+
 // inheritDetailsFromAliasedType attempts to inherit details from the aliased type
-func (r *defaultTypeResolver) inheritDetailsFromAliasedType(details *DetailedTypeInfo, aliasedTypeRef string) {
-	// For generic instantiations like GenericWithConstraints[ConcreteType],
-	// extract the base type name and try to inherit from it
-	baseTypeRef := aliasedTypeRef
-	var typeArgs []string
+func (r *defaultTypeResolver) inheritDetailsFromAliasedType(astType ast.Expr, pkg *packages.Package) (*DetailedTypeInfo, error) {
+	details := &DetailedTypeInfo{}
 
-	// Parse generic instantiation syntax
-	if strings.Contains(aliasedTypeRef, "[") && strings.Contains(aliasedTypeRef, "]") {
-		openBracket := strings.Index(aliasedTypeRef, "[")
-		baseTypeRef = aliasedTypeRef[:openBracket]
+	// For generic instantiations, we need to find the base type and substitute type parameters
+	if indexExpr, ok := astType.(*ast.IndexExpr); ok {
+		// This is a generic instantiation like GenericWithConstraints[ConcreteType]
+		baseTypeAST := indexExpr.X
+		argTypeAST := indexExpr.Index
 
-		// Extract type arguments
-		closeBracket := strings.LastIndex(aliasedTypeRef, "]")
-		if closeBracket > openBracket {
-			argsStr := aliasedTypeRef[openBracket+1 : closeBracket]
-			// Split by comma but handle nested generics properly
-			typeArgs = strings.Split(argsStr, ", ")
-			for i, arg := range typeArgs {
-				typeArgs[i] = strings.TrimSpace(arg)
+		// Get the base type name
+		baseTypeName := r.extractFullyQualifiedTypeRefFromAST(baseTypeAST, pkg)
+		argTypeName := r.extractFullyQualifiedTypeRefFromAST(argTypeAST, pkg)
+
+		// Try to find the base type in our types map
+		if baseTypeInfo, exists := r.types[baseTypeName]; exists {
+			// Get the details from the base type
+			baseDetails, err := baseTypeInfo.GetDetails()
+			if err != nil {
+				return details, nil // Return empty details if we can't get base details
 			}
-		}
-	}
 
-	// Try to find the base type in our type system
-	if baseType, exists := r.types[baseTypeRef]; exists {
-		if baseDetails, err := baseType.GetDetails(); err == nil && baseDetails != nil {
-			// Inherit fields with type parameter substitution
+			// Copy fields and substitute type parameters
 			if len(baseDetails.Fields) > 0 {
-				details.Fields = make([]FieldInfo, len(baseDetails.Fields))
-				for i, field := range baseDetails.Fields {
-					details.Fields[i] = field
-					// TODO: Substitute type parameters in field.TypeRef using typeArgs
-					// For now, copy as-is
-				}
-			}
-
-			// Inherit methods with type parameter substitution
-			if len(baseDetails.Methods) > 0 {
-				details.Methods = make([]MethodInfo, len(baseDetails.Methods))
-				for i, method := range baseDetails.Methods {
-					details.Methods[i] = method
-					// TODO: Substitute type parameters in method signatures using typeArgs
-					// For now, copy as-is
+				for _, field := range baseDetails.Fields {
+					newField := field
+					// Substitute type parameters - for now, simple substitution
+					if len(baseDetails.TypeParameters) > 0 && len(baseDetails.TypeParameters) == 1 {
+						// Single type parameter case - substitute T with concrete type
+						paramName := baseDetails.TypeParameters[0].Name
+						if field.TypeRef == paramName {
+							newField.TypeRef = argTypeName
+							newField.TypeKind = r.determineTypeKindFromString(argTypeName)
+						}
+					}
+					details.Fields = append(details.Fields, newField)
 				}
 			}
 		}
 	}
-} // isPointerReceiver checks if the receiver type is a pointer
+
+	return details, nil
+}
+
+// determineTypeKindFromString determines TypeKind from a type name string
+func (r *defaultTypeResolver) determineTypeKindFromString(typeName string) TypeKind {
+	if r.isBuiltinType(typeName) {
+		return TypeKindBasic
+	}
+
+	// Try to look up in types map
+	if typeInfo, exists := r.types[typeName]; exists {
+		return typeInfo.GetKind()
+	}
+
+	// Default fallback
+	return TypeKindStruct
+}
+
+// isPointerReceiver checks if the receiver type is a pointer
 func (r *defaultTypeResolver) isPointerReceiver(t types.Type) bool {
 	_, isPointer := t.(*types.Pointer)
 	return isPointer
@@ -1007,7 +1247,92 @@ func (r *defaultTypeResolver) isTypeAlias(named *types.Named) bool {
 	}
 
 	return false
-} // makeTypeAliasInfo creates a TypeInfo for a type alias
+}
+
+// isGenericInstantiationAST checks if an AST expression represents a generic instantiation
+func (r *defaultTypeResolver) isGenericInstantiationAST(expr ast.Expr) bool {
+	switch expr.(type) {
+	case *ast.IndexExpr, *ast.IndexListExpr:
+		return true
+	default:
+		return false
+	}
+}
+
+// extractGenericInfoFromAST extracts generic type reference and arguments from AST
+func (r *defaultTypeResolver) extractGenericInfoFromAST(expr ast.Expr, pkg *packages.Package) (string, []GenericArgumentInfo, error) {
+	switch t := expr.(type) {
+	case *ast.IndexExpr:
+		// Single generic argument: BaseType[Arg]
+		baseTypeRef := r.extractFullyQualifiedTypeRefFromAST(t.X, pkg)
+		argTypeRef := r.extractFullyQualifiedTypeRefFromAST(t.Index, pkg)
+
+		// Determine argument kind
+		argKind := r.determineTypeKindFromString(argTypeRef)
+
+		// Try to get actual parameter name from base type
+		paramName := "T" // Default
+		if baseType, exists := r.types[baseTypeRef]; exists {
+			if details, err := baseType.GetDetails(); err == nil && len(details.TypeParameters) > 0 {
+				paramName = details.TypeParameters[0].Name
+			}
+		}
+
+		args := []GenericArgumentInfo{
+			{
+				ParameterName:    paramName,
+				ParameterTypeRef: argTypeRef,
+				ParameterKind:    argKind,
+				IsPointer:        false,
+			},
+		}
+
+		return baseTypeRef, args, nil
+
+	case *ast.IndexListExpr:
+		// Multiple generic arguments: BaseType[T1, T2, ...]
+		baseTypeRef := r.extractFullyQualifiedTypeRefFromAST(t.X, pkg)
+		var args []GenericArgumentInfo
+
+		// Try to get actual parameter names from base type
+		var paramNames []string
+		if baseType, exists := r.types[baseTypeRef]; exists {
+			if details, err := baseType.GetDetails(); err == nil {
+				for _, param := range details.TypeParameters {
+					paramNames = append(paramNames, param.Name)
+				}
+			}
+		}
+
+		for i, index := range t.Indices {
+			argTypeRef := r.extractFullyQualifiedTypeRefFromAST(index, pkg)
+			argKind := r.determineTypeKindFromString(argTypeRef)
+
+			// Use actual parameter name if available, otherwise generic name
+			paramName := fmt.Sprintf("T%d", i+1)
+			if i == 0 {
+				paramName = "T"
+			}
+			if i < len(paramNames) {
+				paramName = paramNames[i]
+			}
+
+			args = append(args, GenericArgumentInfo{
+				ParameterName:    paramName,
+				ParameterTypeRef: argTypeRef,
+				ParameterKind:    argKind,
+				IsPointer:        false,
+			})
+		}
+
+		return baseTypeRef, args, nil
+
+	default:
+		return "", nil, fmt.Errorf("not a generic instantiation")
+	}
+}
+
+// makeTypeAliasInfo creates a TypeInfo for a type alias
 func (r *defaultTypeResolver) makeTypeAliasInfo(t types.Type, typeName string) TypeInfo {
 	named, ok := t.(*types.Named)
 	if !ok {

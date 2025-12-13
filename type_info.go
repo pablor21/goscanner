@@ -618,6 +618,16 @@ type ReturnInfo struct {
 	AnonymousTypeInfo *AnonymousTypeInfo `json:"AnonymousTypeInfo,omitempty"` // For inline types
 }
 
+// FunctionInfo represents a standalone function (not a method)
+type FunctionInfo struct {
+	*NamedTypeInfo
+
+	// Function signature
+	Parameters []ParameterInfo `json:"Parameters,omitempty"` // Function parameters
+	Returns    []ReturnInfo    `json:"Returns,omitempty"`    // Return values
+	IsVariadic bool            `json:"IsVariadic"`           // Has ...args parameter
+}
+
 type EnumInfo struct {
 	*NamedTypeInfo
 	EnumTypeRef string `json:"EnumTypeRef,omitempty"`
@@ -676,10 +686,6 @@ func (ii *InterfaceInfo) GetMethods() ([]MethodInfo, error) {
 		return nil, err
 	}
 	return details.Methods, nil
-}
-
-type FunctionInfo struct {
-	*NamedTypeInfo
 }
 
 func NewFunctionInfo(name string, pkg string, comments []string, annotations []gonnotation.Annotation, loader func() (*DetailedTypeInfo, error)) *FunctionInfo {
