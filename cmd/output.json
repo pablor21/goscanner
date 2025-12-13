@@ -405,6 +405,19 @@
       "Name": "RegularFunction",
       "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
       "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.RegularFunction",
+      "Annotations": [
+        {
+          "Name": "info",
+          "Params": {
+            "": "This is a regular function",
+            "returns": "boolean indicating if b equals the rune of a"
+          },
+          "RawText": "@info(\"This is a regular function\", returns=\"boolean indicating if b equals the rune of a\")"
+        }
+      ],
+      "Comments": [
+        "RegularFunction is a simple function that takes two parameters and returns a boolean"
+      ],
       "Parameters": [
         {
           "Name": "a",

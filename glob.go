@@ -154,6 +154,9 @@ func (g *PackageGlob) LoadPackages(mode ScanMode) ([]*packages.Package, error) {
 	}
 	cfg := &packages.Config{
 		Mode: loadMode,
+		// ParseFile: func(fset *token.FileSet, filename string, src []byte) (*ast.File, error) {
+		// 	return parser.ParseFile(fset, filename, src, parser.ParseComments)
+		// },
 	}
 
 	var allPackages []*packages.Package

@@ -746,6 +746,41 @@ type FunctionInfo struct {
 	Parameters []ParameterInfo `json:"Parameters,omitempty"` // Function parameters
 	Returns    []ReturnInfo    `json:"Returns,omitempty"`    // Return values
 	IsVariadic bool            `json:"IsVariadic"`           // Has ...args parameter
+
+	// Documentation (not exported to JSON)
+	docFunc *doc.Func `json:"-"`
+}
+
+// GetComments extracts comments from function documentation
+func (fi *FunctionInfo) GetComments() []string {
+	if !fi.commentsExtracted {
+		fi.extractFunctionCommentsAndAnnotations()
+	}
+	return fi.Comments
+}
+
+// GetAnnotations extracts annotations from function documentation
+func (fi *FunctionInfo) GetAnnotations() []gonnotation.Annotation {
+	if !fi.commentsExtracted {
+		fi.extractFunctionCommentsAndAnnotations()
+	}
+	return fi.Annotations
+}
+
+// extractFunctionCommentsAndAnnotations lazily extracts comments and annotations from doc.Func
+func (fi *FunctionInfo) extractFunctionCommentsAndAnnotations() {
+	if fi.commentsExtracted {
+		return
+	}
+
+	var docString string
+	if fi.docFunc != nil {
+		docString = fi.docFunc.Doc
+	}
+
+	fi.Comments = parseComments(docString)
+	fi.Annotations = parseAnnotations(docString)
+	fi.commentsExtracted = true
 }
 
 type EnumInfo struct {

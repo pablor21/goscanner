@@ -5,8 +5,10 @@ import (
 	"go/ast"
 	"go/constant"
 	"go/doc"
+	"go/parser"
 	"go/token"
 	"go/types"
+	"os"
 	"strings"
 
 	"github.com/pablor21/gonnotation"
@@ -78,6 +80,9 @@ func (r *defaultTypeResolver) loadPackage(pkgPath string) (*packages.Package, er
 
 	cfg := &packages.Config{
 		Mode: loadMode,
+		ParseFile: func(fset *token.FileSet, filename string, src []byte) (*ast.File, error) {
+			return parser.ParseFile(fset, filename, src, parser.ParseComments)
+		},
 	}
 	pkgs, err := packages.Load(cfg, pkgPath)
 	if err != nil {
@@ -143,7 +148,7 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 
 	// 3. Process standalone functions if ScanModeFunctions is enabled
 	if r.scanMode.Has(ScanModeFunctions) {
-		err = r.processFunctions(pkg)
+		err = r.processFunctions(pkg, docPkg)
 		if err != nil {
 			return err
 		}
@@ -777,7 +782,7 @@ func (r *defaultTypeResolver) processTypeAliases(pkg *packages.Package) error {
 							}
 
 							// Extract annotations from comments using existing helper
-							annotations = parseAnnotations(commentText.String())
+							annotations = gonnotation.ParseAnnotationsFromText(commentText.String())
 						}
 
 						// Determine the kind based on the AST type
@@ -844,28 +849,43 @@ func (r *defaultTypeResolver) processTypeAliases(pkg *packages.Package) error {
 }
 
 // processFunctions discovers and parses standalone functions from the AST
-func (r *defaultTypeResolver) processFunctions(pkg *packages.Package) error {
-	for _, file := range pkg.Syntax {
-		for _, decl := range file.Decls {
-			if funcDecl, ok := decl.(*ast.FuncDecl); ok {
-				// Skip methods (functions with receivers)
-				if funcDecl.Recv != nil {
-					continue
+func (r *defaultTypeResolver) processFunctions(pkg *packages.Package, docPkg *doc.Package) error {
+
+	// Process functions using doc.Package which has proper comment extraction
+	for _, docFunc := range docPkg.Funcs {
+		// Find the corresponding AST FuncDecl
+		var funcDecl *ast.FuncDecl
+		for _, file := range pkg.Syntax {
+			for _, decl := range file.Decls {
+				if astFunc, ok := decl.(*ast.FuncDecl); ok && astFunc.Name.Name == docFunc.Name {
+					funcDecl = astFunc
+					break
 				}
-
-				// Parse standalone function
-				functionInfo, err := r.createFunctionInfo(funcDecl, pkg)
-				if err != nil {
-					continue // Skip functions that can't be parsed
-				}
-
-				// Store function in types map using canonical name
-				canonicalName := pkg.PkgPath + "." + funcDecl.Name.Name
-				r.types[canonicalName] = functionInfo
-
-				fmt.Println("found function:", canonicalName)
+			}
+			if funcDecl != nil {
+				break
 			}
 		}
+
+		if funcDecl == nil {
+			continue
+		}
+
+		// Create function info using doc info for comments
+		functionInfo, err := r.createFunctionInfoFromDoc(funcDecl, docFunc, pkg)
+		if err != nil {
+			continue // Skip functions that can't be parsed
+		}
+
+		// Store function in types map using canonical name
+		canonicalName := pkg.PkgPath + "." + funcDecl.Name.Name
+		r.types[canonicalName] = functionInfo
+
+		if functionInfo.GetName() == "RegularFunction" {
+			fmt.Println(fmt.Sprintf("debug %d", len(functionInfo.GetComments())))
+		}
+
+		//fmt.Println("found function:", canonicalName)
 	}
 	return nil
 }
@@ -887,7 +907,7 @@ func (r *defaultTypeResolver) createFunctionInfo(funcDecl *ast.FuncDecl, pkg *pa
 		}
 
 		// Extract annotations from comments
-		annotations = parseAnnotations(commentText.String())
+		annotations = gonnotation.ParseAnnotationsFromText(commentText.String())
 	}
 
 	// Check if function is generic
@@ -932,7 +952,9 @@ func (r *defaultTypeResolver) createFunctionInfo(funcDecl *ast.FuncDecl, pkg *pa
 	}
 
 	return functionInfo, nil
-} // populateFunctionSignatureFromAST populates function parameters and returns from AST function type
+}
+
+// populateFunctionSignatureFromAST populates function parameters and returns from AST function type
 func (r *defaultTypeResolver) populateFunctionSignatureFromAST(functionInfo *FunctionInfo, funcType *ast.FuncType, pkg *packages.Package) error {
 	// Parse parameters from AST
 	if funcType.Params != nil {
@@ -2083,7 +2105,7 @@ func (r *defaultTypeResolver) createEnumDetails(named *types.Named) (*DetailedTy
 					var annotations []gonnotation.Annotation
 					if docText, exists := constDocs[constObj.Name()]; exists && docText != "" {
 						comments = parseComments(docText)
-						annotations = parseAnnotations(docText)
+						annotations = gonnotation.ParseAnnotationsFromText(docText)
 					}
 
 					enumValues = append(enumValues, EnumValue{
@@ -2671,9 +2693,8 @@ func (r *defaultTypeResolver) createMethodInfoFromTypes(method *types.Func, owne
 		return nil, fmt.Errorf("method has no signature")
 	}
 
-	// Parse comments and annotations (would need AST lookup for full comments)
-	comments := []string{}
-	annotations := []gonnotation.Annotation{}
+	// Extract comments and annotations from AST
+	comments, annotations := r.extractMethodCommentsFromAST(method, pkg)
 
 	// Determine receiver info - use clean base name instead of canonical name
 	var receiverType string
@@ -2720,6 +2741,197 @@ func (r *defaultTypeResolver) createMethodInfoFromTypes(method *types.Func, owne
 	}
 
 	return methodInfo, nil
+}
+
+// extractMethodCommentsFromAST extracts comments and annotations for a method by searching the AST
+func (r *defaultTypeResolver) extractMethodCommentsFromAST(method *types.Func, pkg *packages.Package) ([]string, []gonnotation.Annotation) {
+	comments := []string{}
+	annotations := []gonnotation.Annotation{}
+
+	// Find the method in the AST by iterating through all files
+	for _, file := range pkg.Syntax {
+		for _, decl := range file.Decls {
+			if funcDecl, ok := decl.(*ast.FuncDecl); ok {
+				// Check if this is the method we're looking for
+				if funcDecl.Name.Name == method.Name() {
+					// Check if it's a method (has receiver) and matches the receiver type
+					if funcDecl.Recv != nil && len(funcDecl.Recv.List) > 0 {
+						// Extract receiver type for comparison
+						receiverType := r.extractTypeRefFromAST(funcDecl.Recv.List[0].Type, pkg)
+						// Remove pointer prefix if present
+						if strings.HasPrefix(receiverType, "*") {
+							receiverType = receiverType[1:]
+						}
+
+						// Check if this matches our method's receiver
+						if sig := method.Type().(*types.Signature); sig.Recv() != nil {
+							methodReceiverType := sig.Recv().Type()
+							// Handle pointer receivers
+							if ptr, ok := methodReceiverType.(*types.Pointer); ok {
+								methodReceiverType = ptr.Elem()
+							}
+							methodReceiverName := r.GetCannonicalName(methodReceiverType)
+
+							// Compare receiver types
+							if strings.HasSuffix(methodReceiverName, receiverType) {
+								// Extract comments and annotations
+								if funcDecl.Doc != nil {
+									var commentText strings.Builder
+									for _, comment := range funcDecl.Doc.List {
+										comments = append(comments, comment.Text)
+										commentText.WriteString(comment.Text)
+										commentText.WriteString("\n")
+									}
+									// Extract annotations
+									annotations = gonnotation.ParseAnnotationsFromText(commentText.String())
+								}
+								return comments, annotations
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return comments, annotations
+}
+
+// extractCommentsForFunction manually extracts comments for a function from AST
+func (r *defaultTypeResolver) extractCommentsForFunction(funcDecl *ast.FuncDecl, pkg *packages.Package) []string {
+	var comments []string
+
+	if pkg.Syntax == nil {
+		return comments
+	}
+
+	// Find the file containing this function
+	var targetFile *ast.File
+	for _, file := range pkg.Syntax {
+		for _, decl := range file.Decls {
+			if decl == funcDecl {
+				targetFile = file
+				break
+			}
+		}
+		if targetFile != nil {
+			break
+		}
+	}
+
+	if targetFile == nil {
+		return comments
+	}
+
+	// Look for comments immediately before the function
+	funcPos := funcDecl.Pos()
+
+	// Search through all comment groups in the file
+	for _, commentGroup := range targetFile.Comments {
+		// Check if this comment group is right before our function
+		if commentGroup.End() < funcPos {
+			// Calculate if this comment group is close enough to be the function's doc
+			// In Go, doc comments should be immediately before the declaration
+			nextCommentEnd := commentGroup.End()
+			if funcPos-nextCommentEnd < 100 { // Allow some whitespace
+				for _, comment := range commentGroup.List {
+					comments = append(comments, comment.Text)
+				}
+			}
+		}
+	}
+
+	return comments
+}
+
+// extractFunctionCommentsFromSource extracts comments for a function by re-parsing source files
+func (r *defaultTypeResolver) extractFunctionCommentsFromSource(funcDecl *ast.FuncDecl, pkg *packages.Package) ([]string, []gonnotation.Annotation) {
+	var docComments []string
+	var annotations []gonnotation.Annotation
+
+	// Find the source file containing this function
+	for filename, file := range pkg.Syntax {
+		_ = filename
+		for _, decl := range file.Decls {
+			if decl == funcDecl {
+				// Found the function, now re-parse this specific file with comments
+				if filename := pkg.Fset.Position(file.Package).Filename; filename != "" {
+					if src, err := os.ReadFile(filename); err == nil {
+						if parsedFile, err := parser.ParseFile(pkg.Fset, filename, src, parser.ParseComments); err == nil {
+							// Find the function in the newly parsed file
+							for _, newDecl := range parsedFile.Decls {
+								if newFuncDecl, ok := newDecl.(*ast.FuncDecl); ok {
+									if newFuncDecl.Name.Name == funcDecl.Name.Name {
+										if newFuncDecl.Doc != nil {
+											var commentText strings.Builder
+											for _, comment := range newFuncDecl.Doc.List {
+												docComments = append(docComments, comment.Text)
+												commentText.WriteString(comment.Text)
+												commentText.WriteString("\n")
+											}
+											annotations = gonnotation.ParseAnnotationsFromText(commentText.String())
+										}
+										return docComments, annotations
+									}
+								}
+							}
+						}
+					}
+				}
+				break
+			}
+		}
+	}
+
+	return docComments, annotations
+}
+
+// createFunctionInfoFromDoc creates function info using doc.Func for proper comment extraction
+func (r *defaultTypeResolver) createFunctionInfoFromDoc(funcDecl *ast.FuncDecl, docFunc *doc.Func, pkg *packages.Package) (TypeInfo, error) {
+	funcName := funcDecl.Name.Name
+
+	// Check if function is generic
+	isGeneric := funcDecl.Type.TypeParams != nil && len(funcDecl.Type.TypeParams.List) > 0
+
+	// Create NamedTypeInfo for the function - no immediate comment extraction
+	namedTypeInfo := NewNamedTypeInfo(
+		TypeKindFunction,
+		funcName,
+		pkg.PkgPath,
+		nil, // Don't extract comments here
+		nil, // Don't extract annotations here
+		nil, // Functions don't need complex lazy loading for now
+	)
+
+	namedTypeInfo.Descriptor = pkg.PkgPath + "." + funcName
+
+	// Handle generic functions (if type parameters exist)
+	if isGeneric {
+		// For generic functions, populate type parameters directly in the flattened structure
+		namedTypeInfo.TypeParameters = r.extractTypeParametersFromAST(funcDecl.Type.TypeParams)
+		// Also set up loader for any future details that might be needed
+		namedTypeInfo.loader = func() (*DetailedTypeInfo, error) {
+			details := &DetailedTypeInfo{}
+			// TypeParameters are already populated in the flattened structure
+			details.TypeParameters = namedTypeInfo.TypeParameters
+			return details, nil
+		}
+	}
+
+	// Create FunctionInfo wrapper
+	functionInfo := &FunctionInfo{
+		NamedTypeInfo: namedTypeInfo,
+		IsVariadic:    false,   // Will be set when parsing parameters
+		docFunc:       docFunc, // Store doc.Func for lazy comment extraction
+	}
+
+	// Parse function signature for parameters and returns
+	err := r.populateFunctionSignatureFromAST(functionInfo, funcDecl.Type, pkg)
+	if err != nil {
+		return nil, err
+	}
+
+	return functionInfo, nil
 }
 
 // createParameterInfo creates ParameterInfo from go/types.Var
