@@ -3,6 +3,7 @@ package goscanner
 import (
 	"fmt"
 	"go/ast"
+	"go/constant"
 	"go/doc"
 	"go/types"
 	"strings"
@@ -171,9 +172,20 @@ func (r *defaultTypeResolver) ResolveType(t types.Type) TypeInfo {
 			}
 		case *types.Interface:
 			// Complex types - cache them
-			ti = r.makeInterfaceTypeInfo(t, typeName) // TODO: implement proper interface handling
+			ti = r.makeInterfaceTypeInfo(t, typeName)
 			if ti != nil {
 				r.types[typeName] = ti
+			}
+		case *types.Basic:
+			// Check if this is an enum (named type with basic underlying type + constants)
+			if r.isEnum(ut) {
+				ti = r.makeEnumTypeInfo(t, typeName)
+				if ti != nil {
+					r.types[typeName] = ti
+				}
+			} else {
+				// Other named types (type aliases, etc.) - simple reference
+				ti = r.makeSimpleTypeReference(t, typeName)
 			}
 		default:
 			// Other named types (type aliases, etc.) - simple reference
@@ -624,6 +636,134 @@ func (r *defaultTypeResolver) makeSimpleTypeReference(t types.Type, typeName str
 		[]gonnotation.Annotation{}, // No annotations for simple types
 		loader,
 	)
+}
+
+// isEnum checks if a named type is an enum by looking for associated constants
+func (r *defaultTypeResolver) isEnum(named *types.Named) bool {
+	if r.currentPkg == nil {
+		return false
+	}
+
+	obj := named.Obj()
+	if obj == nil || obj.Pkg() == nil {
+		return false
+	}
+
+	// Look for constants in the same package with this type
+	scope := obj.Pkg().Scope()
+	for _, name := range scope.Names() {
+		if constObj := scope.Lookup(name); constObj != nil {
+			if constObj, ok := constObj.(*types.Const); ok {
+				// Check if the constant's type matches our named type
+				if types.Identical(constObj.Type(), named) {
+					return true
+				}
+			}
+		}
+	}
+
+	return false
+}
+
+// makeEnumTypeInfo creates TypeInfo for enum types
+func (r *defaultTypeResolver) makeEnumTypeInfo(t types.Type, typeName string) TypeInfo {
+	named, ok := t.(*types.Named)
+	if !ok {
+		return nil
+	}
+
+	obj := named.Obj()
+	name := obj.Name()
+	pkg := ""
+	if obj.Pkg() != nil {
+		pkg = obj.Pkg().Path()
+	}
+
+	// Get the underlying type reference
+	underlyingTypeRef := r.GetCannonicalName(named.Underlying())
+
+	// Create loader for lazy loading enum details
+	loader := func() (*DetailedTypeInfo, error) {
+		return r.createEnumDetails(named)
+	}
+
+	return NewEnumInfo(
+		name,
+		pkg,
+		underlyingTypeRef,
+		[]string{},                 // TODO: Extract comments
+		[]gonnotation.Annotation{}, // TODO: Extract annotations
+		loader,
+	)
+}
+
+// createEnumDetails extracts enum constant values
+func (r *defaultTypeResolver) createEnumDetails(named *types.Named) (*DetailedTypeInfo, error) {
+	details := &DetailedTypeInfo{}
+
+	if r.currentPkg == nil {
+		return details, nil
+	}
+
+	obj := named.Obj()
+	if obj == nil || obj.Pkg() == nil {
+		return details, nil
+	}
+
+	// Collect all constants with this type
+	var enumValues []EnumValue
+	scope := obj.Pkg().Scope()
+
+	for _, name := range scope.Names() {
+		if constObj := scope.Lookup(name); constObj != nil {
+			if constObj, ok := constObj.(*types.Const); ok {
+				// Check if the constant's type matches our named type
+				if types.Identical(constObj.Type(), named) {
+					// Extract the actual value based on the constant's kind
+					var value any
+					constVal := constObj.Val()
+					switch constVal.Kind() {
+					case constant.String:
+						// For string constants, extract the string value without quotes
+						value = constant.StringVal(constVal)
+					case constant.Int:
+						// For integer constants, get the int64 value
+						if intVal, exact := constant.Int64Val(constVal); exact {
+							value = intVal
+						} else {
+							value = constVal.String() // fallback
+						}
+					case constant.Float:
+						// For float constants
+						if floatVal, exact := constant.Float64Val(constVal); exact {
+							value = floatVal
+						} else {
+							value = constVal.String() // fallback
+						}
+					case constant.Bool:
+						// For boolean constants
+						// if constant.BoolVal(constVal) {
+						// 	value = true
+						// } else {
+						// 	value = false
+						// }
+						value = constant.BoolVal(constVal)
+					default:
+						// Fallback for other types
+						value = constVal.String()
+					}
+
+					enumValues = append(enumValues, EnumValue{
+						Name:  constObj.Name(),
+						Value: value,
+					})
+				}
+			}
+		}
+	}
+
+	details.EnumValues = enumValues
+	return details, nil
 }
 
 // isBasicUnderlying checks if the underlying type is a basic type

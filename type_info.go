@@ -53,7 +53,7 @@ type DetailedTypeInfo struct {
 	ChanDir          int      `json:"ChanDir,omitempty"`
 
 	// Enum values
-	EnumValues []string `json:"Values,omitempty"`
+	EnumValues []EnumValue `json:"Values,omitempty"`
 }
 
 type TypeInfo interface {
@@ -521,15 +521,22 @@ type ReturnInfo struct {
 
 type EnumInfo struct {
 	*NamedTypeInfo
+	EnumTypeRef string `json:"EnumTypeRef,omitempty"`
 }
 
-func NewEnumInfo(name string, pkg string, comments []string, annotations []gonnotation.Annotation, loader func() (*DetailedTypeInfo, error)) *EnumInfo {
+type EnumValue struct {
+	Name  string `json:"Name"`
+	Value any    `json:"Value"`
+}
+
+func NewEnumInfo(name string, pkg string, enumTypeRef string, comments []string, annotations []gonnotation.Annotation, loader func() (*DetailedTypeInfo, error)) *EnumInfo {
 	return &EnumInfo{
 		NamedTypeInfo: NewNamedTypeInfo(TypeKindEnum, name, pkg, comments, annotations, loader),
+		EnumTypeRef:   enumTypeRef,
 	}
 }
 
-func (ei *EnumInfo) GetValues() ([]string, error) {
+func (ei *EnumInfo) GetValues() ([]EnumValue, error) {
 	details, err := ei.GetDetails()
 	if err != nil || details == nil {
 		return nil, err

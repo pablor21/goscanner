@@ -82,6 +82,56 @@
         ]
       }
     },
+    "github.com/pablor21/goscanner/examples/starwars/models.EnumIota": {
+      "Kind": "enum",
+      "Name": "EnumIota",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/models",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.EnumIota",
+      "Details": {
+        "Values": [
+          {
+            "Name": "EnumIota1",
+            "Value": 5
+          },
+          {
+            "Name": "EnumIota2",
+            "Value": 6
+          },
+          {
+            "Name": "EnumIota3",
+            "Value": 7
+          },
+          {
+            "Name": "enumIotaPrivate",
+            "Value": 8
+          }
+        ]
+      },
+      "EnumTypeRef": "int"
+    },
+    "github.com/pablor21/goscanner/examples/starwars/models.EnumString": {
+      "Kind": "enum",
+      "Name": "EnumString",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/models",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.EnumString",
+      "Details": {
+        "Values": [
+          {
+            "Name": "EnumString1",
+            "Value": "Option1"
+          },
+          {
+            "Name": "EnumString2",
+            "Value": "Option2"
+          },
+          {
+            "Name": "EnumString3",
+            "Value": "Option3"
+          }
+        ]
+      },
+      "EnumTypeRef": "string"
+    },
     "github.com/pablor21/goscanner/examples/starwars/models.Human": {
       "Kind": "struct",
       "Name": "Human",
@@ -312,6 +362,75 @@
           }
         ]
       }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/models.TestEnum1": {
+      "Kind": "enum",
+      "Name": "TestEnum1",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/models",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.TestEnum1",
+      "Details": {
+        "Values": [
+          {
+            "Name": "Test1_A",
+            "Value": 0
+          },
+          {
+            "Name": "Test1_B",
+            "Value": 2
+          },
+          {
+            "Name": "Test1_C",
+            "Value": 4
+          }
+        ]
+      },
+      "EnumTypeRef": "int"
+    },
+    "github.com/pablor21/goscanner/examples/starwars/models.TestEnum2": {
+      "Kind": "enum",
+      "Name": "TestEnum2",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/models",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.TestEnum2",
+      "Details": {
+        "Values": [
+          {
+            "Name": "Test2_A",
+            "Value": -1
+          },
+          {
+            "Name": "Test2_B",
+            "Value": 0
+          },
+          {
+            "Name": "Test2_C",
+            "Value": 1
+          }
+        ]
+      },
+      "EnumTypeRef": "int"
+    },
+    "github.com/pablor21/goscanner/examples/starwars/models.TestEnum3": {
+      "Kind": "enum",
+      "Name": "TestEnum3",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/models",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.TestEnum3",
+      "Details": {
+        "Values": [
+          {
+            "Name": "Test3_A",
+            "Value": 100
+          },
+          {
+            "Name": "Test3_B",
+            "Value": 101
+          },
+          {
+            "Name": "Test3_C",
+            "Value": 102
+          }
+        ]
+      },
+      "EnumTypeRef": "int"
     },
     "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct": {
       "Kind": "struct",
