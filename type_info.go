@@ -222,19 +222,17 @@ type NamedTypeInfo struct {
 }
 
 // NewNamedTypeInfo creates a new type info with eager basic data and lazy details
-func NewNamedTypeInfo(kind TypeKind, name string, pkg string, comments []string, annotations []gonnotation.Annotation, loader func() (*DetailedTypeInfo, error)) *NamedTypeInfo {
+func NewNamedTypeInfo(kind TypeKind, name string, pkg string, loader func() (*DetailedTypeInfo, error)) *NamedTypeInfo {
 	descriptor := name
 	if pkg != "" {
 		descriptor = pkg + "." + name
 	}
 	return &NamedTypeInfo{
-		Kind:        kind,
-		Name:        name,
-		Package:     pkg,
-		Descriptor:  descriptor,
-		Comments:    comments,
-		Annotations: annotations,
-		loader:      loader,
+		Kind:       kind,
+		Name:       name,
+		Package:    pkg,
+		Descriptor: descriptor,
+		loader:     loader,
 	}
 }
 
@@ -820,9 +818,9 @@ func (ev *EnumValue) extractCommentsAndAnnotations() {
 	ev.commentsExtracted = true
 }
 
-func NewEnumInfo(name string, pkg string, enumTypeRef string, comments []string, annotations []gonnotation.Annotation, loader func() (*DetailedTypeInfo, error)) *EnumInfo {
+func NewEnumInfo(name string, pkg string, enumTypeRef string, loader func() (*DetailedTypeInfo, error)) *EnumInfo {
 	return &EnumInfo{
-		NamedTypeInfo: NewNamedTypeInfo(TypeKindEnum, name, pkg, comments, annotations, loader),
+		NamedTypeInfo: NewNamedTypeInfo(TypeKindEnum, name, pkg, loader),
 		EnumTypeRef:   enumTypeRef,
 	}
 }
@@ -847,9 +845,9 @@ type InterfaceInfo struct {
 	*NamedTypeInfo
 }
 
-func NewInterfaceInfo(name string, pkg string, comments []string, annotations []gonnotation.Annotation, loader func() (*DetailedTypeInfo, error)) *InterfaceInfo {
+func NewInterfaceInfo(name string, pkg string, loader func() (*DetailedTypeInfo, error)) *InterfaceInfo {
 	return &InterfaceInfo{
-		NamedTypeInfo: NewNamedTypeInfo(TypeKindInterface, name, pkg, comments, annotations, loader),
+		NamedTypeInfo: NewNamedTypeInfo(TypeKindInterface, name, pkg, loader),
 	}
 }
 
@@ -868,18 +866,18 @@ func (ii *InterfaceInfo) GetMethods() ([]MethodInfo, error) {
 	return details.Methods, nil
 }
 
-func NewFunctionInfo(name string, pkg string, comments []string, annotations []gonnotation.Annotation, loader func() (*DetailedTypeInfo, error)) *FunctionInfo {
+func NewFunctionInfo(name string, pkg string, loader func() (*DetailedTypeInfo, error)) *FunctionInfo {
 	return &FunctionInfo{
-		NamedTypeInfo: NewNamedTypeInfo(TypeKindFunction, name, pkg, comments, annotations, loader),
+		NamedTypeInfo: NewNamedTypeInfo(TypeKindFunction, name, pkg, loader),
 	}
 }
 
-func NewMethodInfo(name string, pkg string, comments []string, annotations []gonnotation.Annotation, receiverTypeRef string, isPointerReceiver bool, loader func() (*DetailedTypeInfo, error)) *MethodInfo {
+func NewMethodInfo(name string, pkg string, receiverTypeRef string, isPointerReceiver bool, loader func() (*DetailedTypeInfo, error)) *MethodInfo {
 	// Create descriptor as receiverType.methodName
 	descriptor := receiverTypeRef + "." + name
 
 	result := &MethodInfo{
-		NamedTypeInfo:     NewNamedTypeInfo(TypeKindMethod, name, pkg, comments, annotations, loader),
+		NamedTypeInfo:     NewNamedTypeInfo(TypeKindMethod, name, pkg, loader),
 		ReceiverTypeRef:   receiverTypeRef,
 		IsPointerReceiver: isPointerReceiver,
 		Parameters:        []ParameterInfo{},

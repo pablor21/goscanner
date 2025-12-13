@@ -5,10 +5,8 @@ import (
 	"go/ast"
 	"go/constant"
 	"go/doc"
-	"go/parser"
 	"go/token"
 	"go/types"
-	"os"
 	"strings"
 
 	"github.com/pablor21/gonnotation"
@@ -52,60 +50,6 @@ func newDefaultTypeResolver(scanMode ScanMode) *defaultTypeResolver {
 func (r *defaultTypeResolver) GetTypeInfos() map[string]TypeInfo {
 	return r.types
 }
-
-// func (r *defaultTypeResolver) loadPackage(pkgPath string) (*packages.Package, error) {
-// 	if r, exists := r.packages[pkgPath]; exists {
-// 		return r, nil
-// 	}
-
-// 	var loadMode packages.LoadMode
-
-// 	// Always need basic package info
-// 	loadMode = packages.NeedName
-
-// 	// Add modes based on ScanMode flags
-// 	if r.scanMode.Has(ScanModeTypes) {
-// 		loadMode |= packages.NeedTypes
-// 	}
-
-// 	if r.scanMode.Has(ScanModeMethods) || r.scanMode.Has(ScanModeFields) || r.scanMode.Has(ScanModeDocs) || r.scanMode.Has(ScanModeAnnotations) {
-// 		// Need syntax tree for detailed analysis
-// 		loadMode |= packages.NeedSyntax | packages.NeedFiles
-// 	}
-
-// 	// Only add heavy TypesInfo if we need method/field details
-// 	if r.scanMode.Has(ScanModeMethods) || r.scanMode.Has(ScanModeFields) {
-// 		loadMode |= packages.NeedTypesInfo
-// 	}
-
-// 	cfg := &packages.Config{
-// 		Mode: loadMode,
-// 		ParseFile: func(fset *token.FileSet, filename string, src []byte) (*ast.File, error) {
-// 			return parser.ParseFile(fset, filename, src, parser.ParseComments)
-// 		},
-// 	}
-// 	pkgs, err := packages.Load(cfg, pkgPath)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	if len(pkgs) == 0 {
-// 		return nil, nil
-// 	}
-// 	pkg := pkgs[0]
-
-// 	// Extract doc.Types from this package
-// 	docPkg, err := doc.NewFromFiles(pkg.Fset, pkg.Syntax, pkg.PkgPath)
-// 	if err == nil {
-// 		for _, docType := range docPkg.Types {
-// 			canonicalName := pkgPath + "." + docType.Name
-// 			r.docTypes[canonicalName] = docType
-// 		}
-// 	}
-
-// 	r.packages[pkgPath] = pkg
-// 	r.loadedPkgs[pkgPath] = true
-// 	return pkg, nil
-// }
 
 func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 	// Set the current package being processed
@@ -390,7 +334,7 @@ func (r *defaultTypeResolver) makeStructTypeInfo(t types.Type, typeName string) 
 	if obj != nil {
 		namedTypeInfo = r.createNamedTypeInfoFromTypes(TypeKindStruct, obj, r.currentPkg, docType, loader)
 	} else {
-		namedTypeInfo = NewNamedTypeInfo(TypeKindStruct, name, pkg, []string{}, []gonnotation.Annotation{}, loader)
+		namedTypeInfo = NewNamedTypeInfo(TypeKindStruct, name, pkg, loader)
 	}
 
 	return &StructInfo{
@@ -686,8 +630,6 @@ func (r *defaultTypeResolver) createMethodInfoWithSubstitution(method types.Obje
 		TypeKindMethod,
 		method.Name(),
 		method.Pkg().Path(),
-		nil, // Don't extract comments directly - use lazy loading
-		nil, // Don't extract annotations directly - use lazy loading
 		nil, // no lazy loader for methods
 	)
 	namedTypeInfo.Descriptor = receiverTypeRef + "." + method.Name()
@@ -776,8 +718,6 @@ func (r *defaultTypeResolver) processTypeAliases(pkg *packages.Package) error {
 							kind,
 							aliasName,
 							pkg.PkgPath,
-							nil, // Don't extract comments directly
-							nil, // Don't extract annotations directly
 							func() (*DetailedTypeInfo, error) {
 								// For type aliases, inherit details from the aliased type
 								return r.inheritDetailsFromAliasedType(typeSpec.Type, pkg)
@@ -818,8 +758,8 @@ func (r *defaultTypeResolver) processTypeAliases(pkg *packages.Package) error {
 						r.types[canonicalName] = typeInfo
 
 						// For type aliases, trigger immediate details loading to ensure inheritance works
-						if _, err := typeInfo.Load(); err == nil {
-							// Details loaded successfully
+						if _, err := typeInfo.Load(); err != nil {
+							return err
 						}
 
 						fmt.Println("found type:" + canonicalName)
@@ -869,118 +809,54 @@ func (r *defaultTypeResolver) processFunctions(pkg *packages.Package, docPkg *do
 	return nil
 }
 
-// // createFunctionInfo creates FunctionInfo from AST function declaration
-// func (r *defaultTypeResolver) createFunctionInfo(funcDecl *ast.FuncDecl, pkg *packages.Package) (*FunctionInfo, error) {
-// 	funcName := funcDecl.Name.Name
+// populateFunctionSignatureFromAST populates function parameters and returns from AST function type
+func (r *defaultTypeResolver) populateFunctionSignatureFromAST(functionInfo *FunctionInfo, funcType *ast.FuncType, pkg *packages.Package) error {
+	// Parse parameters from AST
+	if funcType.Params != nil {
+		for _, field := range funcType.Params.List {
+			// Handle multiple names with same type: func(a, b int)
+			if len(field.Names) == 0 {
+				// Unnamed parameter
+				paramInfo := r.createParameterInfoFromAST(field.Type, "", pkg)
+				functionInfo.Parameters = append(functionInfo.Parameters, paramInfo)
+			} else {
+				// Named parameters
+				for _, name := range field.Names {
+					paramInfo := r.createParameterInfoFromAST(field.Type, name.Name, pkg)
+					functionInfo.Parameters = append(functionInfo.Parameters, paramInfo)
+				}
+			}
+		}
+	}
 
-// 	// Get documentation and annotations
-// 	var docComments []string
-// 	var annotations []gonnotation.Annotation
+	// Check for variadic (ellipsis in last parameter)
+	if funcType.Params != nil && len(funcType.Params.List) > 0 {
+		lastParam := funcType.Params.List[len(funcType.Params.List)-1]
+		if _, ok := lastParam.Type.(*ast.Ellipsis); ok {
+			functionInfo.IsVariadic = true
+		}
+	}
 
-// 	if funcDecl.Doc != nil {
-// 		var commentText strings.Builder
-// 		for _, comment := range funcDecl.Doc.List {
-// 			docComments = append(docComments, comment.Text)
-// 			commentText.WriteString(comment.Text)
-// 			commentText.WriteString("\n")
-// 		}
+	// Parse return values from AST
+	if funcType.Results != nil {
+		for _, field := range funcType.Results.List {
+			// Handle multiple names with same type: func() (a, b int)
+			if len(field.Names) == 0 {
+				// Unnamed return
+				returnInfo := r.createReturnInfoFromAST(field.Type, "", pkg)
+				functionInfo.Returns = append(functionInfo.Returns, returnInfo)
+			} else {
+				// Named returns
+				for _, name := range field.Names {
+					returnInfo := r.createReturnInfoFromAST(field.Type, name.Name, pkg)
+					functionInfo.Returns = append(functionInfo.Returns, returnInfo)
+				}
+			}
+		}
+	}
 
-// 		// Extract annotations from comments
-// 		annotations = gonnotation.ParseAnnotationsFromText(commentText.String())
-// 	}
-
-// 	// Check if function is generic
-// 	isGeneric := funcDecl.Type.TypeParams != nil && len(funcDecl.Type.TypeParams.List) > 0
-
-// 	// Create NamedTypeInfo for the function
-// 	namedTypeInfo := NewNamedTypeInfo(
-// 		TypeKindFunction,
-// 		funcName,
-// 		pkg.PkgPath,
-// 		docComments,
-// 		annotations,
-// 		nil, // Functions don't need lazy loading for now
-// 	)
-
-// 	namedTypeInfo.Descriptor = pkg.PkgPath + "." + funcName
-
-// 	// Handle generic functions (if type parameters exist)
-// 	if isGeneric {
-// 		// For generic functions, populate type parameters directly in the flattened structure
-// 		namedTypeInfo.TypeParameters = r.extractTypeParametersFromAST(funcDecl.Type.TypeParams)
-// 		// Also set up loader for any future details that might be needed
-// 		namedTypeInfo.loader = func() (*DetailedTypeInfo, error) {
-// 			details := &DetailedTypeInfo{}
-// 			// TypeParameters are already populated in the flattened structure
-// 			details.TypeParameters = namedTypeInfo.TypeParameters
-// 			return details, nil
-// 		}
-// 	}
-
-// 	// Create FunctionInfo
-// 	functionInfo := &FunctionInfo{
-// 		NamedTypeInfo: namedTypeInfo,
-// 	}
-
-// 	// Parse function signature
-// 	if funcDecl.Type != nil {
-// 		err := r.populateFunctionSignatureFromAST(functionInfo, funcDecl.Type, pkg)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 	}
-
-// 	return functionInfo, nil
-// }
-
-// // populateFunctionSignatureFromAST populates function parameters and returns from AST function type
-// func (r *defaultTypeResolver) populateFunctionSignatureFromAST(functionInfo *FunctionInfo, funcType *ast.FuncType, pkg *packages.Package) error {
-// 	// Parse parameters from AST
-// 	if funcType.Params != nil {
-// 		for _, field := range funcType.Params.List {
-// 			// Handle multiple names with same type: func(a, b int)
-// 			if len(field.Names) == 0 {
-// 				// Unnamed parameter
-// 				paramInfo := r.createParameterInfoFromAST(field.Type, "", pkg)
-// 				functionInfo.Parameters = append(functionInfo.Parameters, paramInfo)
-// 			} else {
-// 				// Named parameters
-// 				for _, name := range field.Names {
-// 					paramInfo := r.createParameterInfoFromAST(field.Type, name.Name, pkg)
-// 					functionInfo.Parameters = append(functionInfo.Parameters, paramInfo)
-// 				}
-// 			}
-// 		}
-// 	}
-
-// 	// Check for variadic (ellipsis in last parameter)
-// 	if funcType.Params != nil && len(funcType.Params.List) > 0 {
-// 		lastParam := funcType.Params.List[len(funcType.Params.List)-1]
-// 		if _, ok := lastParam.Type.(*ast.Ellipsis); ok {
-// 			functionInfo.IsVariadic = true
-// 		}
-// 	}
-
-// 	// Parse return values from AST
-// 	if funcType.Results != nil {
-// 		for _, field := range funcType.Results.List {
-// 			// Handle multiple names with same type: func() (a, b int)
-// 			if len(field.Names) == 0 {
-// 				// Unnamed return
-// 				returnInfo := r.createReturnInfoFromAST(field.Type, "", pkg)
-// 				functionInfo.Returns = append(functionInfo.Returns, returnInfo)
-// 			} else {
-// 				// Named returns
-// 				for _, name := range field.Names {
-// 					returnInfo := r.createReturnInfoFromAST(field.Type, name.Name, pkg)
-// 					functionInfo.Returns = append(functionInfo.Returns, returnInfo)
-// 				}
-// 			}
-// 		}
-// 	}
-
-// 	return nil
-// }
+	return nil
+}
 
 // determineTypeKindFromAST determines TypeKind from AST expression
 func (r *defaultTypeResolver) determineTypeKindFromAST(expr ast.Expr) TypeKind {
@@ -1056,8 +932,6 @@ func (r *defaultTypeResolver) extractTypeParametersFromAST(fieldList *ast.FieldL
 							TypeKindInterface,
 							constraintRef,
 							"",
-							nil,
-							nil,
 							nil,
 						),
 					}
@@ -1932,8 +1806,6 @@ func (r *defaultTypeResolver) makeSimpleTypeReference(t types.Type, typeName str
 		kind,
 		name,
 		pkg,
-		[]string{},                 // No comments for simple types
-		[]gonnotation.Annotation{}, // No annotations for simple types
 		loader,
 	)
 }
@@ -2158,7 +2030,7 @@ func (r *defaultTypeResolver) makeInterfaceTypeInfo(t types.Type, typeName strin
 			NamedTypeInfo: r.createNamedTypeInfoFromTypes(TypeKindInterface, obj, r.currentPkg, docType, loader),
 		}
 	} else {
-		return NewInterfaceInfo(name, pkg, []string{}, []gonnotation.Annotation{}, loader)
+		return NewInterfaceInfo(name, pkg, loader)
 	}
 }
 
@@ -2284,50 +2156,6 @@ func (r *defaultTypeResolver) getSimpleTypeName(t types.Type) string {
 	default:
 		return t.String()
 	}
-}
-
-// drillToFinalType recursively drills down through composite types to find the final non-composite type
-// Returns: (finalType, structure, isPointer)
-// Examples:
-//
-//	[][][][]*OtherStruct -> (OtherStruct, "[][][][]", true)
-//	[5][10]string -> (string, "[5][10]", false)
-//	chan *[]User -> (User, "[]", true) with channel info handled separately
-//	map[string]*[][]User -> (User, "[][]", true) for map values, key handled separately
-func (r *defaultTypeResolver) drillToFinalType(t types.Type) (types.Type, string, bool) {
-	var structure string
-	isPointer := false
-	current := t
-
-	for {
-		switch ct := current.(type) {
-		case *types.Pointer:
-			isPointer = true
-			current = ct.Elem()
-		case *types.Slice:
-			structure += "[]"
-			current = ct.Elem()
-		case *types.Array:
-			structure += fmt.Sprintf("[%d]", ct.Len())
-			current = ct.Elem()
-		case *types.Map:
-			// For maps, drill through the value type only
-			// Key handling is done separately in map-specific logic
-			current = ct.Elem()
-		case *types.Chan:
-			// For channels, drill through the element type
-			current = ct.Elem()
-		default:
-			// We've reached a non-composite type
-			return current, structure, isPointer
-		}
-	}
-}
-
-// drillToFinalKeyType handles map keys, which can also be composite
-// Returns: (finalKeyType, keyStructure, isPointer)
-func (r *defaultTypeResolver) drillToFinalKeyType(t types.Type) (types.Type, string, bool) {
-	return r.drillToFinalType(t)
 }
 
 // createAnonymousTypeInfo creates an AnonymousTypeInfo for composite types
@@ -2508,24 +2336,6 @@ func (r *defaultTypeResolver) createAnonymousTypeInfo(t types.Type) *AnonymousTy
 	}
 }
 
-// resolveTypeForAnonymous resolves a type that might be used in anonymous contexts
-// Returns TypeInfo for named types, or creates AnonymousTypeInfo for composite types
-func (r *defaultTypeResolver) resolveTypeForAnonymous(t types.Type) TypeInfo {
-	// For named types, use the regular resolver (this will return a reference-based TypeInfo)
-	if _, ok := t.(*types.Named); ok {
-		return r.ResolveType(t)
-	}
-
-	// For composite types, create anonymous TypeInfo only if they're truly composite
-	switch t.(type) {
-	case *types.Map, *types.Slice, *types.Array, *types.Chan:
-		return r.createAnonymousTypeInfo(t)
-	default:
-		// For basic types, create a simple reference (not full inline details)
-		return r.makeSimpleTypeReference(t, t.String())
-	}
-}
-
 // createAnonymousStructInfo creates an AnonymousTypeInfo specifically for anonymous struct types
 func (r *defaultTypeResolver) createAnonymousStructInfo(structType *types.Struct, originalDescriptor string) *AnonymousTypeInfo {
 	r.anonymousCounter++
@@ -2697,8 +2507,6 @@ func (r *defaultTypeResolver) createMethodInfoFromTypes(method *types.Func, owne
 	methodInfo := NewMethodInfo(
 		method.Name(),
 		pkg.PkgPath,
-		nil,          // Don't extract comments directly - use lazy loading
-		nil,          // Don't extract annotations directly - use lazy loading
 		receiverType, // Use clean base name
 		isPointerReceiver,
 		nil, // No lazy loader needed for methods
@@ -2720,149 +2528,6 @@ func (r *defaultTypeResolver) createMethodInfoFromTypes(method *types.Func, owne
 	return methodInfo, nil
 }
 
-// extractMethodCommentsFromAST extracts comments and annotations for a method by searching the AST
-func (r *defaultTypeResolver) extractMethodCommentsFromAST(method *types.Func, pkg *packages.Package) ([]string, []gonnotation.Annotation) {
-	comments := []string{}
-	annotations := []gonnotation.Annotation{}
-
-	// Find the method in the AST by iterating through all files
-	for _, file := range pkg.Syntax {
-		for _, decl := range file.Decls {
-			if funcDecl, ok := decl.(*ast.FuncDecl); ok {
-				// Check if this is the method we're looking for
-				if funcDecl.Name.Name == method.Name() {
-					// Check if it's a method (has receiver) and matches the receiver type
-					if funcDecl.Recv != nil && len(funcDecl.Recv.List) > 0 {
-						// Extract receiver type for comparison
-						receiverType := r.extractTypeRefFromAST(funcDecl.Recv.List[0].Type, pkg)
-						// Remove pointer prefix if present
-						if strings.HasPrefix(receiverType, "*") {
-							receiverType = receiverType[1:]
-						}
-
-						// Check if this matches our method's receiver
-						if sig := method.Type().(*types.Signature); sig.Recv() != nil {
-							methodReceiverType := sig.Recv().Type()
-							// Handle pointer receivers
-							if ptr, ok := methodReceiverType.(*types.Pointer); ok {
-								methodReceiverType = ptr.Elem()
-							}
-							methodReceiverName := r.GetCannonicalName(methodReceiverType)
-
-							// Compare receiver types
-							if strings.HasSuffix(methodReceiverName, receiverType) {
-								// Extract comments and annotations
-								if funcDecl.Doc != nil {
-									var commentText strings.Builder
-									for _, comment := range funcDecl.Doc.List {
-										comments = append(comments, comment.Text)
-										commentText.WriteString(comment.Text)
-										commentText.WriteString("\n")
-									}
-									// Extract annotations
-									annotations = gonnotation.ParseAnnotationsFromText(commentText.String())
-								}
-								return comments, annotations
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	return comments, annotations
-}
-
-// extractCommentsForFunction manually extracts comments for a function from AST
-func (r *defaultTypeResolver) extractCommentsForFunction(funcDecl *ast.FuncDecl, pkg *packages.Package) []string {
-	var comments []string
-
-	if pkg.Syntax == nil {
-		return comments
-	}
-
-	// Find the file containing this function
-	var targetFile *ast.File
-	for _, file := range pkg.Syntax {
-		for _, decl := range file.Decls {
-			if decl == funcDecl {
-				targetFile = file
-				break
-			}
-		}
-		if targetFile != nil {
-			break
-		}
-	}
-
-	if targetFile == nil {
-		return comments
-	}
-
-	// Look for comments immediately before the function
-	funcPos := funcDecl.Pos()
-
-	// Search through all comment groups in the file
-	for _, commentGroup := range targetFile.Comments {
-		// Check if this comment group is right before our function
-		if commentGroup.End() < funcPos {
-			// Calculate if this comment group is close enough to be the function's doc
-			// In Go, doc comments should be immediately before the declaration
-			nextCommentEnd := commentGroup.End()
-			if funcPos-nextCommentEnd < 100 { // Allow some whitespace
-				for _, comment := range commentGroup.List {
-					comments = append(comments, comment.Text)
-				}
-			}
-		}
-	}
-
-	return comments
-}
-
-// extractFunctionCommentsFromSource extracts comments for a function by re-parsing source files
-func (r *defaultTypeResolver) extractFunctionCommentsFromSource(funcDecl *ast.FuncDecl, pkg *packages.Package) ([]string, []gonnotation.Annotation) {
-	var docComments []string
-	var annotations []gonnotation.Annotation
-
-	// Find the source file containing this function
-	for filename, file := range pkg.Syntax {
-		_ = filename
-		for _, decl := range file.Decls {
-			if decl == funcDecl {
-				// Found the function, now re-parse this specific file with comments
-				if filename := pkg.Fset.Position(file.Package).Filename; filename != "" {
-					if src, err := os.ReadFile(filename); err == nil {
-						if parsedFile, err := parser.ParseFile(pkg.Fset, filename, src, parser.ParseComments); err == nil {
-							// Find the function in the newly parsed file
-							for _, newDecl := range parsedFile.Decls {
-								if newFuncDecl, ok := newDecl.(*ast.FuncDecl); ok {
-									if newFuncDecl.Name.Name == funcDecl.Name.Name {
-										if newFuncDecl.Doc != nil {
-											var commentText strings.Builder
-											for _, comment := range newFuncDecl.Doc.List {
-												docComments = append(docComments, comment.Text)
-												commentText.WriteString(comment.Text)
-												commentText.WriteString("\n")
-											}
-											annotations = gonnotation.ParseAnnotationsFromText(commentText.String())
-										}
-										return docComments, annotations
-									}
-								}
-							}
-						}
-					}
-				}
-				break
-			}
-		}
-	}
-
-	return docComments, annotations
-}
-
 // createFunctionInfoFromDoc creates function info using doc.Func for proper comment extraction
 func (r *defaultTypeResolver) createFunctionInfoFromDoc(funcDecl *ast.FuncDecl, docFunc *doc.Func, pkg *packages.Package) (TypeInfo, error) {
 	funcName := funcDecl.Name.Name
@@ -2875,8 +2540,6 @@ func (r *defaultTypeResolver) createFunctionInfoFromDoc(funcDecl *ast.FuncDecl, 
 		TypeKindFunction,
 		funcName,
 		pkg.PkgPath,
-		nil, // Don't extract comments here
-		nil, // Don't extract annotations here
 		nil, // Functions don't need complex lazy loading for now
 	)
 
@@ -3206,8 +2869,6 @@ func (r *defaultTypeResolver) expandEmbeddedType(embeddedType types.Type, embedd
 				TypeKindMethod,
 				method.Name(),
 				method.Pkg().Path(),
-				[]string{},
-				[]gonnotation.Annotation{},
 				nil,
 			),
 			ReceiverTypeRef:   parentTypeRef, // Use parent type, not embedded type
@@ -3325,17 +2986,6 @@ func parseTagParts(tag string) []string {
 	}
 
 	return parts
-} // parseJsonTag extracts the JSON tag value for convenience
-func parseJsonTag(tag string) string {
-	tagMap := parseStructTag(tag)
-	if jsonTag, exists := tagMap["json"]; exists {
-		// Remove omitempty and other options, just return the name
-		parts := strings.Split(jsonTag, ",")
-		if len(parts) > 0 && parts[0] != "-" {
-			return parts[0]
-		}
-	}
-	return ""
 }
 
 // populateMethodSignature populates method parameters and returns from go/types signature
@@ -3358,55 +3008,6 @@ func (r *defaultTypeResolver) populateMethodSignature(methodInfo *MethodInfo, si
 			result := sig.Results().At(i)
 			returnInfo := r.createReturnInfo(result, pkg)
 			methodInfo.Returns = append(methodInfo.Returns, returnInfo)
-		}
-	}
-
-	return nil
-}
-
-// populateMethodSignatureFromAST populates method parameters and returns from AST function type
-func (r *defaultTypeResolver) populateMethodSignatureFromAST(methodInfo *MethodInfo, funcType *ast.FuncType, pkg *packages.Package) error {
-	// Parse parameters from AST
-	if funcType.Params != nil {
-		for _, field := range funcType.Params.List {
-			// Handle multiple names with same type: func(a, b int)
-			if len(field.Names) == 0 {
-				// Unnamed parameter
-				paramInfo := r.createParameterInfoFromAST(field.Type, "", pkg)
-				methodInfo.Parameters = append(methodInfo.Parameters, paramInfo)
-			} else {
-				// Named parameters
-				for _, name := range field.Names {
-					paramInfo := r.createParameterInfoFromAST(field.Type, name.Name, pkg)
-					methodInfo.Parameters = append(methodInfo.Parameters, paramInfo)
-				}
-			}
-		}
-	}
-
-	// Check for variadic (ellipsis in last parameter)
-	if funcType.Params != nil && len(funcType.Params.List) > 0 {
-		lastParam := funcType.Params.List[len(funcType.Params.List)-1]
-		if _, ok := lastParam.Type.(*ast.Ellipsis); ok {
-			methodInfo.IsVariadic = true
-		}
-	}
-
-	// Parse return values from AST
-	if funcType.Results != nil {
-		for _, field := range funcType.Results.List {
-			// Handle multiple names with same type: func() (a, b int)
-			if len(field.Names) == 0 {
-				// Unnamed return
-				returnInfo := r.createReturnInfoFromAST(field.Type, "", pkg)
-				methodInfo.Returns = append(methodInfo.Returns, returnInfo)
-			} else {
-				// Named returns
-				for _, name := range field.Names {
-					returnInfo := r.createReturnInfoFromAST(field.Type, name.Name, pkg)
-					methodInfo.Returns = append(methodInfo.Returns, returnInfo)
-				}
-			}
 		}
 	}
 
@@ -3513,38 +3114,6 @@ func (r *defaultTypeResolver) getTypeStringFromAST(typeExpr ast.Expr) string {
 	}
 }
 
-// extractBaseTypeRefFromAST extracts the base type reference based on the type kind
-func (r *defaultTypeResolver) extractBaseTypeRefFromAST(typeExpr ast.Expr, typeKind TypeKind) string {
-	switch typeKind {
-	case TypeKindSlice:
-		if arrayType, ok := typeExpr.(*ast.ArrayType); ok && arrayType.Len == nil {
-			// For slice []T, return just T
-			return r.getTypeStringFromAST(arrayType.Elt)
-		}
-	case TypeKindArray:
-		if arrayType, ok := typeExpr.(*ast.ArrayType); ok && arrayType.Len != nil {
-			// For array [N]T, return just T
-			return r.getTypeStringFromAST(arrayType.Elt)
-		}
-	case TypeKindMap:
-		if mapType, ok := typeExpr.(*ast.MapType); ok {
-			// For map[K]V, return V (value type)
-			return r.getTypeStringFromAST(mapType.Value)
-		}
-	case TypeKindChannel:
-		if chanType, ok := typeExpr.(*ast.ChanType); ok {
-			// For chan T, return T
-			return r.getTypeStringFromAST(chanType.Value)
-		}
-	default:
-		// For other types (basic, struct, interface, etc.), return the full type string
-		return r.getTypeStringFromAST(typeExpr)
-	}
-
-	// Fallback - return the full type string
-	return r.getTypeStringFromAST(typeExpr)
-}
-
 // analyzeTypeForBaseTypeDetailInfo analyzes a type and populates detailed information in BaseTypeDetailInfo
 func (r *defaultTypeResolver) analyzeTypeForBaseTypeDetailInfo(baseInfo *BaseTypeDetailInfo, typeExpr ast.Expr, pkg *packages.Package) {
 	r.analyzeTypeDetails(typeExpr, pkg,
@@ -3571,7 +3140,9 @@ func (r *defaultTypeResolver) analyzeTypeForBaseTypeDetailInfo(baseInfo *BaseTyp
 			baseInfo.ChanDir = chanDir
 		},
 	)
-} // analyzeTypeDetails analyzes an AST type and calls appropriate callbacks with detailed information
+}
+
+// analyzeTypeDetails analyzes an AST type and calls appropriate callbacks with detailed information
 func (r *defaultTypeResolver) analyzeTypeDetails(
 	typeExpr ast.Expr,
 	pkg *packages.Package,

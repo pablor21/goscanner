@@ -32,7 +32,7 @@ func main() {
 	}
 
 	// save the output to a file
-	os.WriteFile("output.json", b, 0644)
+	_ = os.WriteFile("output.json", b, 0644)
 
 	// fmt.Println(string(b))
 }

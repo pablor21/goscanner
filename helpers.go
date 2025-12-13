@@ -1,6 +1,7 @@
 package goscanner
 
 import (
+	"fmt"
 	"runtime"
 	"strings"
 	"syscall"
@@ -10,7 +11,7 @@ import (
 
 // isExported reports whether name is an exported Go symbol
 // (that is, whether it begins with an upper-case letter).
-func isExported(name string) bool {
+func IsExported(name string) bool {
 	// return true
 	return name != "" && name[0] >= 'A' && name[0] <= 'Z'
 }
@@ -23,7 +24,11 @@ func MemUsage() uint64 {
 
 func RSS() uint64 {
 	var stat syscall.Rusage
-	syscall.Getrusage(syscall.RUSAGE_SELF, &stat)
+	err := syscall.Getrusage(syscall.RUSAGE_SELF, &stat)
+	if err != nil {
+		fmt.Println(fmt.Errorf("cannot get memory usage: %s", err))
+		return 0
+	}
 	return uint64(stat.Maxrss) * 1024 // RSS in bytes
 }
 
