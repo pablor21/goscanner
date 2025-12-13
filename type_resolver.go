@@ -2513,8 +2513,8 @@ func (r *defaultTypeResolver) createMethodInfoFromTypes(method *types.Func, owne
 	)
 
 	// Fix the descriptor to include receiver type name (using clean base name)
-	methodInfo.NamedTypeInfo.Name = method.Name()
-	methodInfo.NamedTypeInfo.Descriptor = receiverType + "." + method.Name()
+	methodInfo.Name = method.Name()
+	methodInfo.Descriptor = receiverType + "." + method.Name()
 
 	methodInfo.ReceiverName = receiverName
 	methodInfo.IsInterfaceMethod = isInterfaceMethod

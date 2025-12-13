@@ -103,7 +103,11 @@ func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (ret *ScanningRes
 
 	// trigger the lazy loading of each type
 	for _, t := range ret.Types {
-		t.Load()
+		_, err := t.Load()
+		if err != nil {
+			// just log the error but continue processing other types
+			ctx.Logger.Error(fmt.Sprintf("Failed to load type %s: %v", t.GetTypeDescriptor(), err))
+		}
 	}
 
 	// Return the scanning result and any errors encountered

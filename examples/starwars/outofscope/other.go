@@ -1,3 +1,4 @@
+// nolint
 package outofscope
 
 type OtherStruct struct {
