@@ -1,0 +1,525 @@
+package goscanner
+
+import (
+	"go/doc"
+	"go/types"
+	"sync"
+
+	"github.com/pablor21/gonnotation"
+	"golang.org/x/tools/go/packages"
+)
+
+type TypeKind string
+
+const (
+	TypeKindStruct    TypeKind = "struct"
+	TypeKindEnum      TypeKind = "enum"
+	TypeKindField     TypeKind = "field"
+	TypeKindInterface TypeKind = "interface"
+	TypeKindFunction  TypeKind = "function"
+	TypeKindMethod    TypeKind = "method"
+	TypeKindVariable  TypeKind = "variable"
+	TypeKindMap       TypeKind = "map"
+	TypeKindSlice     TypeKind = "slice"
+	TypeKindArray     TypeKind = "array"
+	TypeKindChannel   TypeKind = "channel"
+	TypeKindBasic     TypeKind = "basic" // For built-in types like string, int, bool
+)
+
+type ChannelDirection string
+
+const (
+	ChanDirBoth ChannelDirection = "both" // chan T (bidirectional)
+	ChanDirSend ChannelDirection = "send" // chan<- T (send-only)
+	ChanDirRecv ChannelDirection = "recv" // <-chan T (receive-only)
+)
+
+// DetailedTypeInfo contains heavy structural information that's lazy-loaded
+type DetailedTypeInfo struct {
+	// Structure details for structs
+	Fields  []FieldInfo  `json:"Fields,omitempty"`
+	Methods []MethodInfo `json:"Methods,omitempty"`
+
+	// Type characteristics
+	MapFlag          bool     `json:"IsMap,omitempty"`
+	KeyType          TypeInfo `json:"MapKeyType,omitempty"`
+	KeyTypePtrFlag   bool     `json:"IsMapKeyPointer,omitempty"`
+	ValueType        TypeInfo `json:"ValueType,omitempty"`
+	ValueTypePtrFlag bool     `json:"IsValuePointer,omitempty"`
+	SliceFlag        bool     `json:"IsSlice,omitempty"`
+	ElementType      TypeInfo `json:"ElementType,omitempty"`
+	ChanFlag         bool     `json:"IsChan,omitempty"`
+	ChanDir          int      `json:"ChanDir,omitempty"`
+
+	// Enum values
+	EnumValues []string `json:"Values,omitempty"`
+}
+
+type TypeInfo interface {
+	// Always available (eagerly loaded)
+	GetKind() TypeKind
+	GetName() string
+	GetPackage() string
+	GetCannonicalName() string
+	GetAnnotations() []gonnotation.Annotation
+	GetComments() []string
+
+	// New methods for anonymous type support
+	IsAnonymous() bool
+	GetTypeDescriptor() string
+
+	// Lazy-loaded details
+	GetDetails() (*DetailedTypeInfo, error)
+
+	// Convenience methods that may trigger lazy loading
+	IsMap() bool
+	GetMapKeyType() TypeInfo
+	IsMapKeyPointer() bool
+	IsSlice() bool
+	GetElementType() TypeInfo
+	IsElementPointer() bool
+	IsBasic() bool
+	IsChannel() bool
+}
+
+type NamedTypeInfo struct {
+	// Eagerly loaded basic info
+	Kind        TypeKind                 `json:"Kind,omitempty"`
+	Name        string                   `json:"Name,omitempty"`
+	Package     string                   `json:"Package,omitempty"`
+	Descriptor  string                   `json:"Descriptor,omitempty"` // Type descriptor
+	Annotations []gonnotation.Annotation `json:"Annotations,omitempty"`
+	Comments    []string                 `json:"Comments,omitempty"`
+
+	// Lazy loading mechanism
+	Details     *DetailedTypeInfo `json:"Details,omitempty"`
+	detailsOnce sync.Once
+	detailsErr  error
+	loader      func() (*DetailedTypeInfo, error)
+	obj         types.Object
+	pkg         *packages.Package
+	doc         *doc.Type
+}
+
+// NewNamedTypeInfo creates a new type info with eager basic data and lazy details
+func NewNamedTypeInfo(kind TypeKind, name string, pkg string, comments []string, annotations []gonnotation.Annotation, loader func() (*DetailedTypeInfo, error)) *NamedTypeInfo {
+	descriptor := name
+	if pkg != "" {
+		descriptor = pkg + "." + name
+	}
+	return &NamedTypeInfo{
+		Kind:        kind,
+		Name:        name,
+		Package:     pkg,
+		Descriptor:  descriptor,
+		Comments:    comments,
+		Annotations: annotations,
+		loader:      loader,
+	}
+}
+
+// Eagerly loaded methods (always available)
+func (nt *NamedTypeInfo) GetKind() TypeKind {
+	return nt.Kind
+}
+
+func (nt *NamedTypeInfo) GetName() string {
+	return nt.Name
+}
+
+func (nt *NamedTypeInfo) GetPackage() string {
+	return nt.Package
+}
+
+func (nt *NamedTypeInfo) GetCannonicalName() string {
+	if nt.GetPackage() == "" {
+		return nt.GetName()
+	}
+
+	return nt.GetPackage() + "." + nt.GetName()
+}
+
+func (nt *NamedTypeInfo) GetAnnotations() []gonnotation.Annotation {
+	return nt.Annotations
+}
+
+func (nt *NamedTypeInfo) GetComments() []string {
+	return nt.Comments
+}
+
+// Anonymous type support
+func (nt *NamedTypeInfo) IsAnonymous() bool {
+	return false // Named types are never anonymous
+}
+
+func (nt *NamedTypeInfo) GetTypeDescriptor() string {
+	return nt.Descriptor // Use the stored descriptor
+}
+
+// Lazy loading method
+func (nt *NamedTypeInfo) GetDetails() (*DetailedTypeInfo, error) {
+	nt.detailsOnce.Do(func() {
+		if nt.loader != nil {
+			nt.Details, nt.detailsErr = nt.loader()
+		}
+	})
+	return nt.Details, nt.detailsErr
+}
+
+// Convenience methods that trigger lazy loading when needed
+func (nt *NamedTypeInfo) IsMap() bool {
+	details, err := nt.GetDetails()
+	if err != nil || details == nil {
+		return false
+	}
+	return details.MapFlag
+}
+
+func (nt *NamedTypeInfo) GetMapKeyType() TypeInfo {
+	details, err := nt.GetDetails()
+	if err != nil || details == nil {
+		return nil
+	}
+	return details.KeyType
+}
+
+func (nt *NamedTypeInfo) IsMapKeyPointer() bool {
+	details, err := nt.GetDetails()
+	if err != nil || details == nil {
+		return false
+	}
+	return details.KeyTypePtrFlag
+}
+
+func (nt *NamedTypeInfo) IsSlice() bool {
+	details, err := nt.GetDetails()
+	if err != nil || details == nil {
+		return false
+	}
+	return details.SliceFlag
+}
+
+func (nt *NamedTypeInfo) GetElementType() TypeInfo {
+	details, err := nt.GetDetails()
+	if err != nil || details == nil {
+		return nil
+	}
+	return details.ElementType
+}
+
+func (nt *NamedTypeInfo) IsElementPointer() bool {
+	details, err := nt.GetDetails()
+	if err != nil || details == nil {
+		return false
+	}
+	return details.ValueTypePtrFlag
+}
+
+func (nt *NamedTypeInfo) IsBasic() bool {
+	// Basic types check - this is lightweight, no need for lazy loading
+	switch nt.Name {
+	case "int", "int8", "int16", "int32", "int64",
+		"uint", "uint8", "uint16", "uint32", "uint64",
+		"float32", "float64", "complex64", "complex128",
+		"byte", "rune", "string", "bool":
+		return true
+	default:
+		return false
+	}
+}
+
+func (nt *NamedTypeInfo) IsChannel() bool {
+	details, err := nt.GetDetails()
+	if err != nil || details == nil {
+		return false
+	}
+	return details.ChanFlag
+}
+
+// AnonymousTypeInfo represents composite/anonymous types like maps, slices, etc.
+type AnonymousTypeInfo struct {
+	Kind       TypeKind
+	Descriptor string // For display/debug: "map[string][]User", "chan *[]User", etc.
+
+	// For composite structure - use references for named types, inline for anonymous
+	ElementTypeRef   string             `json:"ElementTypeRef,omitempty"`   // Reference to named element type
+	ElementTypeInfo  *AnonymousTypeInfo `json:"ElementTypeInfo,omitempty"`  // Inline anonymous element type
+	ElementIsPointer bool               `json:"ElementIsPointer,omitempty"` // Always include, even if false
+	ElementKind      TypeKind           `json:"ElementKind,omitempty"`
+
+	KeyTypeRef   string             `json:"KeyTypeRef,omitempty"`   // Reference to named key type
+	KeyTypeInfo  *AnonymousTypeInfo `json:"KeyTypeInfo,omitempty"`  // Inline anonymous key type
+	KeyIsPointer bool               `json:"KeyIsPointer,omitempty"` // Always include, even if false
+	KeyKind      TypeKind           `json:"KeyKind,omitempty"`
+
+	// Channel direction
+	ChanDir ChannelDirection `json:"ChanDir,omitempty"`
+
+	// For anonymous structs
+	Fields []FieldInfo `json:"Fields,omitempty"` // Fields for anonymous struct types
+} // NewAnonymousTypeInfo creates a new anonymous type info
+func NewAnonymousTypeInfo(kind TypeKind, descriptor string) *AnonymousTypeInfo {
+	return &AnonymousTypeInfo{
+		Kind:       kind,
+		Descriptor: descriptor,
+	}
+}
+
+// TypeInfo interface implementation for AnonymousTypeInfo
+func (at *AnonymousTypeInfo) GetKind() TypeKind {
+	return at.Kind
+}
+
+func (at *AnonymousTypeInfo) GetName() string {
+	return "" // Anonymous types don't have names
+}
+
+func (at *AnonymousTypeInfo) GetPackage() string {
+	return "" // Anonymous types don't have packages
+}
+
+func (at *AnonymousTypeInfo) GetCannonicalName() string {
+	return "" // Anonymous types don't have canonical names
+}
+
+func (at *AnonymousTypeInfo) GetAnnotations() []gonnotation.Annotation {
+	return nil // Anonymous types don't have annotations
+}
+
+func (at *AnonymousTypeInfo) GetComments() []string {
+	return nil // Anonymous types don't have comments
+}
+
+func (at *AnonymousTypeInfo) IsAnonymous() bool {
+	return true
+}
+
+func (at *AnonymousTypeInfo) GetTypeDescriptor() string {
+	return at.Descriptor
+}
+
+func (at *AnonymousTypeInfo) GetDetails() (*DetailedTypeInfo, error) {
+	return nil, nil // Anonymous types don't use DetailedTypeInfo
+}
+
+// Convenience methods
+func (at *AnonymousTypeInfo) IsMap() bool {
+	return at.Kind == TypeKindMap
+}
+
+func (at *AnonymousTypeInfo) GetMapKeyType() TypeInfo {
+	return nil // Not applicable for anonymous types
+}
+
+func (at *AnonymousTypeInfo) IsMapKeyPointer() bool {
+	return at.KeyIsPointer
+}
+
+func (at *AnonymousTypeInfo) IsSlice() bool {
+	return at.Kind == TypeKindSlice
+}
+
+func (at *AnonymousTypeInfo) GetElementType() TypeInfo {
+	return nil // Not applicable for anonymous types
+}
+
+func (at *AnonymousTypeInfo) IsElementPointer() bool {
+	return at.ElementIsPointer
+}
+
+func (at *AnonymousTypeInfo) IsBasic() bool {
+	return at.Kind == TypeKindBasic
+}
+
+func (at *AnonymousTypeInfo) IsChannel() bool {
+	return at.Kind == TypeKindChannel
+}
+
+// Specialized type structs that embed NamedTypeInfo
+type StructInfo struct {
+	*NamedTypeInfo
+}
+
+func NewTypeInfoLegacy(name string, pkg string, comments []string, annotations []gonnotation.Annotation, loader func() (*DetailedTypeInfo, error)) *StructInfo {
+	return &StructInfo{
+		NamedTypeInfo: NewNamedTypeInfo(TypeKindStruct, name, pkg, comments, annotations, loader),
+	}
+}
+
+// func NewTypeInfo(ctx *ScanningContext, t *doc.Type, pkg *packages.Package) (TypeInfo, error) {
+// 	if t == nil {
+// 		return nil, nil
+// 	}
+
+// 	// check the kind of the type and process accordingly
+// 	// get the name of the type
+// 	obj := pkg.Types.Scope().Lookup(t.Name)
+// 	if obj == nil || obj.Type() == nil {
+// 		return nil, nil
+// 	}
+
+// 	parts := []string{pkg.PkgPath, t.Name}
+// 	cannonicalName := strings.Join(parts, ".")
+
+// 	// if the type is in the cache, skip processing
+// 	if _, exists := ctx.typesCache[cannonicalName]; exists {
+// 		return ctx.typesCache[cannonicalName], nil
+// 	}
+
+// 	annotations := gonnotation.ParseAnnotationsFromText(t.Doc)
+// 	// Parse comments from the type's documentation
+// 	comments := parseComments(t.Doc)
+
+// 	switch obj.Type().Underlying().(type) {
+// 	case *types.Struct:
+
+// 		// Create loader function for lazy loading struct details
+// 		loader := func() (*DetailedTypeInfo, error) {
+// 			// check if the context scanningmode contains fields
+// 			if (ctx.ScanMode & ScanModeFields) == 0 {
+// 				return nil, nil
+// 			}
+// 			structInfo := &StructInfo{
+// 				NamedTypeInfo: &NamedTypeInfo{
+// 					Kind: TypeKindStruct,
+// 					Name: obj.Name(),
+// 					// loader:      loader,
+// 					Package:     pkg.PkgPath,
+// 					Comments:    comments,
+// 					Annotations: annotations,
+// 					pkg:         pkg,
+// 					obj:         obj,
+// 					doc:         t,
+// 				},
+// 			}
+// 		}
+
+// 		structInfo := &StructInfo{
+// 			NamedTypeInfo: &NamedTypeInfo{
+// 				Kind:        TypeKindStruct,
+// 				Name:        obj.Name(),
+// 				loader:      loader,
+// 				Package:     pkg.PkgPath,
+// 				Comments:    comments,
+// 				Annotations: annotations,
+// 				pkg:         pkg,
+// 				obj:         obj,
+// 				doc:         t,
+// 			},
+// 		}
+// 		return structInfo, nil
+// 	}
+
+// 	return nil, nil
+
+// }
+
+// Helper method to get struct-specific details
+func (si *StructInfo) GetFields() ([]FieldInfo, error) {
+	details, err := si.GetDetails()
+	if err != nil || details == nil {
+		return nil, err
+	}
+	return details.Fields, nil
+}
+
+func (si *StructInfo) GetMethods() ([]MethodInfo, error) {
+	details, err := si.GetDetails()
+	if err != nil || details == nil {
+		return nil, err
+	}
+	return details.Methods, nil
+}
+
+type FieldInfo struct {
+	Name        string   `json:"Name,omitempty"`
+	TypeRef     string   `json:"TypeRef,omitempty"`     // JSON-safe reference to TypeInfo
+	TypeKind    TypeKind `json:"TypeKind,omitempty"`    // Kind of the field type
+	IsPointer   bool     `json:"IsPointer,omitempty"`   // Whether the field type is a pointer
+	IsAnonymous bool     `json:"IsAnonymous,omitempty"` // Whether the field type is anonymous/inline
+
+	// For slices and arrays
+	ElementTypeRef     string   `json:"ElementTypeRef,omitempty"`     // JSON-safe reference to ElementType - FINAL element type only (never composite)
+	ElementIsPointer   bool     `json:"ElementIsPointer,omitempty"`   // Whether element type is a pointer
+	ElementIsAnonymous bool     `json:"ElementIsAnonymous,omitempty"` // Whether element type is anonymous/inline
+	ElementKind        TypeKind `json:"ElementKind,omitempty"`        // Kind of the element type
+	ElementStructure   string   `json:"ElementStructure,omitempty"`   // Describes nesting structure: "[]", "[][][]", "[5][10]", etc.
+	elementTypeInfo    TypeInfo
+	// NEW: Inline type info for anonymous/composite element types
+	ElementTypeInfo *AnonymousTypeInfo `json:"ElementTypeInfo,omitempty"`
+
+	// For maps
+	KeyTypeRef     string   `json:"KeyTypeRef,omitempty"`     // JSON-safe reference to KeyType
+	KeyIsPointer   bool     `json:"KeyIsPointer,omitempty"`   // Whether key type is a pointer
+	KeyIsAnonymous bool     `json:"KeyIsAnonymous,omitempty"` // Whether key type is anonymous/inline
+	KeyKind        TypeKind `json:"KeyKind,omitempty"`        // Kind of the key type
+	KeyStructure   string   `json:"KeyStructure,omitempty"`   // Describes key nesting if composite: "[]", "map[string]", etc.
+	keyTypeInfo    TypeInfo
+	// NEW: Inline type info for anonymous/composite key types
+	KeyTypeInfo *AnonymousTypeInfo `json:"KeyTypeInfo,omitempty"`
+
+	// For channels
+	ChanDir ChannelDirection `json:"ChanDir,omitempty"` // Channel direction: "both", "send", "recv"
+
+	// NEW: Inline type info for anonymous/composite main field types
+	InlineTypeInfo *AnonymousTypeInfo `json:"TypeInfo,omitempty"`
+
+	Annotations []gonnotation.Annotation `json:"Annotations,omitempty"`
+	Comments    []string                 `json:"Comments,omitempty"`
+
+	typeInfo TypeInfo
+}
+
+type MethodInfo struct {
+	*NamedTypeInfo
+}
+
+type EnumInfo struct {
+	*NamedTypeInfo
+}
+
+func NewEnumInfo(name string, pkg string, comments []string, annotations []gonnotation.Annotation, loader func() (*DetailedTypeInfo, error)) *EnumInfo {
+	return &EnumInfo{
+		NamedTypeInfo: NewNamedTypeInfo(TypeKindEnum, name, pkg, comments, annotations, loader),
+	}
+}
+
+func (ei *EnumInfo) GetValues() ([]string, error) {
+	details, err := ei.GetDetails()
+	if err != nil || details == nil {
+		return nil, err
+	}
+	return details.EnumValues, nil
+}
+
+type InterfaceInfo struct {
+	*NamedTypeInfo
+}
+
+func NewInterfaceInfo(name string, pkg string, comments []string, annotations []gonnotation.Annotation, loader func() (*DetailedTypeInfo, error)) *InterfaceInfo {
+	return &InterfaceInfo{
+		NamedTypeInfo: NewNamedTypeInfo(TypeKindInterface, name, pkg, comments, annotations, loader),
+	}
+}
+
+func (ii *InterfaceInfo) GetMethods() ([]MethodInfo, error) {
+	details, err := ii.GetDetails()
+	if err != nil || details == nil {
+		return nil, err
+	}
+	return details.Methods, nil
+}
+
+type FunctionInfo struct {
+	*NamedTypeInfo
+}
+
+func NewFunctionInfo(name string, pkg string, comments []string, annotations []gonnotation.Annotation, loader func() (*DetailedTypeInfo, error)) *FunctionInfo {
+	return &FunctionInfo{
+		NamedTypeInfo: NewNamedTypeInfo(TypeKindFunction, name, pkg, comments, annotations, loader),
+	}
+}
+
+type VariableInfo struct {
+	*NamedTypeInfo
+}

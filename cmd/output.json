@@ -1,0 +1,175 @@
+{
+  "Types": {
+    "github.com/pablor21/goscanner/examples/starwars/models.Human": {
+      "Kind": "struct",
+      "Name": "Human",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/models",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/models.Human",
+      "Details": {
+        "Fields": [
+          {
+            "Name": "Name",
+            "TypeRef": "string",
+            "TypeKind": "basic",
+            "IsPointer": true
+          },
+          {
+            "Name": "Family",
+            "TypeKind": "slice",
+            "ElementTypeRef": "github.com/pablor21/goscanner/examples/starwars/models.Human",
+            "ElementKind": "struct"
+          },
+          {
+            "Name": "Cannel",
+            "TypeKind": "channel",
+            "ElementIsPointer": true,
+            "ElementIsAnonymous": true,
+            "ElementKind": "slice",
+            "ElementTypeInfo": {
+              "Kind": "slice",
+              "Descriptor": "[]github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
+              "ElementTypeRef": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
+              "ElementKind": "struct"
+            },
+            "ChanDir": "both"
+          },
+          {
+            "Name": "DeppArray",
+            "TypeKind": "map",
+            "ElementIsAnonymous": true,
+            "ElementKind": "slice",
+            "ElementTypeInfo": {
+              "Kind": "slice",
+              "Descriptor": "[][][][]github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
+              "ElementTypeInfo": {
+                "Kind": "slice",
+                "Descriptor": "[][][]github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
+                "ElementTypeInfo": {
+                  "Kind": "slice",
+                  "Descriptor": "[][]github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
+                  "ElementTypeInfo": {
+                    "Kind": "slice",
+                    "Descriptor": "[]github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
+                    "ElementTypeRef": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
+                    "ElementKind": "struct"
+                  },
+                  "ElementKind": "slice"
+                },
+                "ElementKind": "slice"
+              },
+              "ElementKind": "slice"
+            },
+            "KeyTypeRef": "string",
+            "KeyKind": "basic"
+          },
+          {
+            "Name": "ComplexType",
+            "TypeKind": "channel",
+            "ElementIsPointer": true,
+            "ElementIsAnonymous": true,
+            "ElementKind": "map",
+            "ElementTypeInfo": {
+              "Kind": "map",
+              "Descriptor": "map[string]*[][]*github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
+              "ElementTypeInfo": {
+                "Kind": "slice",
+                "Descriptor": "[][]*github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
+                "ElementTypeInfo": {
+                  "Kind": "slice",
+                  "Descriptor": "[]*github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
+                  "ElementTypeRef": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
+                  "ElementIsPointer": true,
+                  "ElementKind": "struct"
+                },
+                "ElementKind": "slice"
+              },
+              "ElementIsPointer": true,
+              "ElementKind": "slice",
+              "KeyTypeRef": "string",
+              "KeyKind": "basic"
+            },
+            "ChanDir": "both"
+          },
+          {
+            "Name": "AnonymousField",
+            "TypeKind": "struct",
+            "IsAnonymous": true,
+            "TypeInfo": {
+              "Kind": "struct",
+              "Descriptor": "anonymous",
+              "Fields": [
+                {
+                  "Name": "Field1",
+                  "TypeRef": "string",
+                  "TypeKind": "basic"
+                },
+                {
+                  "Name": "Field2",
+                  "TypeRef": "int",
+                  "TypeKind": "basic"
+                }
+              ]
+            }
+          },
+          {
+            "Name": "PointerToAnonymousField",
+            "TypeKind": "struct",
+            "IsPointer": true,
+            "IsAnonymous": true,
+            "TypeInfo": {
+              "Kind": "struct",
+              "Descriptor": "anonymous",
+              "Fields": [
+                {
+                  "Name": "FieldA",
+                  "TypeRef": "float64",
+                  "TypeKind": "basic"
+                },
+                {
+                  "Name": "FieldB",
+                  "TypeRef": "bool",
+                  "TypeKind": "basic"
+                },
+                {
+                  "Name": "FieldC",
+                  "TypeKind": "slice",
+                  "ElementTypeRef": "string",
+                  "ElementKind": "basic"
+                },
+                {
+                  "Name": "FieldD",
+                  "TypeKind": "map",
+                  "ElementTypeRef": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
+                  "ElementKind": "struct",
+                  "KeyTypeRef": "int",
+                  "KeyKind": "basic"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct": {
+      "Kind": "struct",
+      "Name": "OtherStruct",
+      "Package": "github.com/pablor21/goscanner/examples/starwars/outofscope",
+      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
+      "Details": {
+        "Fields": [
+          {
+            "Name": "Field",
+            "TypeRef": "string",
+            "TypeKind": "basic"
+          },
+          {
+            "Name": "Recursion",
+            "TypeRef": "github.com/pablor21/goscanner/examples/starwars/outofscope.OtherStruct",
+            "TypeKind": "struct",
+            "IsPointer": true
+          }
+        ]
+      }
+    }
+  }
+}
