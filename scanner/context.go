@@ -1,6 +1,9 @@
-package goscanner
+package scanner
 
-import "github.com/pablor21/goscanner/logger"
+import (
+	"github.com/pablor21/goscanner/logger"
+	"github.com/pablor21/goscanner/types"
+)
 
 // ScanningContext holds the configuration and state information for the scanning process.
 // @myAnnotation("ScanningContext")
@@ -8,7 +11,7 @@ type ScanningContext struct {
 	Config       *Config
 	Logger       logger.Logger
 	ScanMode     ScanMode
-	typesCache   map[string]TypeInfo
+	typesCache   map[string]types.TypeEntry
 	ignoredTypes map[string]struct{}
 }
 
@@ -18,7 +21,7 @@ func NewScanningContext(config *Config) *ScanningContext {
 		Config:       config,
 		ScanMode:     config.ScanMode,
 		Logger:       logger.NewDefaultLogger(),
-		typesCache:   make(map[string]TypeInfo),
+		typesCache:   make(map[string]types.TypeEntry),
 		ignoredTypes: make(map[string]struct{}),
 	}
 }

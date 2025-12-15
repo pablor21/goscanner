@@ -1,4 +1,4 @@
-package goscanner
+package scanner
 
 import (
 	"go/build"
@@ -299,9 +299,9 @@ func (gs *GlobScanner) ScanPackages(mode ScanMode, patterns ...string) ([]*packa
 
 	// Separate include and exclude patterns
 	for _, pattern := range patterns {
-		if strings.HasPrefix(pattern, "!") {
+		if after, ok := strings.CutPrefix(pattern, "!"); ok {
 			// Exclusion pattern - remove the ! prefix
-			excludePattern := strings.TrimPrefix(pattern, "!")
+			excludePattern := after
 			excludePatterns = append(excludePatterns, excludePattern)
 		} else {
 			// Include pattern

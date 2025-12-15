@@ -32,6 +32,8 @@ type Logger interface {
 	Info(msg string)
 	Warn(msg string)
 	Error(msg string)
+	SetLevel(level LogLevel)
+	SetTag(tag string)
 }
 
 // simpleHandler is a simple log handler that outputs standard log format
@@ -137,25 +139,69 @@ func GetLogTag() string {
 	return currentLogTag
 }
 
-// DefaultLogger implements Logger using slog
-type DefaultLogger struct{}
+// defaultLogger implements Logger using slog
+type defaultLogger struct {
+	logger *slog.Logger
+	// currentLogTag string
+}
 
 func NewDefaultLogger() Logger {
-	return &DefaultLogger{}
+	return &defaultLogger{
+		logger: slog.Default(),
+	}
 }
 
-func (l *DefaultLogger) Debug(msg string) {
-	slog.Debug(msg)
+func (l *defaultLogger) SetTag(tag string) {
+	logTagMutex.Lock()
+	currentLogTag = tag
+	logTagMutex.Unlock()
 }
 
-func (l *DefaultLogger) Info(msg string) {
-	slog.Info(msg)
+func (l *defaultLogger) SetLevel(level LogLevel) {
+	var slogLevel slog.Level
+
+	switch level {
+	case LogLevelDebug:
+		slogLevel = slog.LevelDebug
+	case LogLevelInfo:
+		slogLevel = slog.LevelInfo
+	case LogLevelWarn:
+		slogLevel = slog.LevelWarn
+	case LogLevelError:
+		slogLevel = slog.LevelError
+	case LogLevelNone:
+		// Set to a very high level to suppress all logs
+		slogLevel = slog.Level(1000)
+	default:
+		slogLevel = slog.LevelInfo
+	}
+
+	// Use simple handler for cleaner output
+	handler := &simpleHandler{
+		level: slogLevel,
+		w:     os.Stderr,
+	}
+
+	logger := slog.New(handler)
+	l.logger = logger
+
+	// Also set the standard log package to use the same output
+	log.SetOutput(os.Stderr)
+	log.SetFlags(0)
 }
 
-func (l *DefaultLogger) Warn(msg string) {
-	slog.Warn(msg)
+func (l *defaultLogger) Debug(msg string) {
+	l.logger.Debug(msg)
 }
 
-func (l *DefaultLogger) Error(msg string) {
-	slog.Error(msg)
+func (l *defaultLogger) Info(msg string) {
+	l.logger.Info(msg)
+}
+
+func (l *defaultLogger) Warn(msg string) {
+	l.logger.Warn(msg)
+}
+
+func (l *defaultLogger) Error(msg string) {
+	l.logger.Error(msg)
 }

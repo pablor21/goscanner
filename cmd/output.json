@@ -1,468 +1,103 @@
 {
-  "Types": {
-    "github.com/pablor21/goscanner/examples/starwars/functions.AnotherFunction": {
-      "Kind": "function",
-      "Name": "AnotherFunction",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.AnotherFunction",
-      "Parameters": [
-        {
-          "Name": "x",
-          "TypeRef": "float64",
-          "TypeKind": "basic",
-          "IsPointer": false,
-          "IsVariadic": false
+  "types": {
+    "github.com/pablor21/goscanner/examples/starwars/basic.NamedDeepSlice": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.NamedDeepSlice",
+      "name": "NamedDeepSlice",
+      "package": "github.com/pablor21/goscanner/examples/starwars/basic",
+      "kind": "slice",
+      "elementType": {
+        "type": {
+          "id": "github.com/pablor21/goscanner/examples/starwars/basic.NamedSlice",
+          "name": "NamedSlice",
+          "kind": "slice",
+          "valueType": {
+            "id": "github.com/pablor21/goscanner/examples/starwars/basic.StructA",
+            "name": "StructA",
+            "kind": "struct"
+          }
         }
-      ],
-      "Returns": [
-        {
-          "TypeRef": "error",
-          "TypeKind": "basic",
-          "IsPointer": false
-        }
-      ],
-      "IsVariadic": false
+      }
     },
-    "github.com/pablor21/goscanner/examples/starwars/functions.FunctionWithMultipleReturns": {
-      "Kind": "function",
-      "Name": "FunctionWithMultipleReturns",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.FunctionWithMultipleReturns",
-      "Parameters": [
+    "github.com/pablor21/goscanner/examples/starwars/basic.NamedSlice": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.NamedSlice",
+      "name": "NamedSlice",
+      "package": "github.com/pablor21/goscanner/examples/starwars/basic",
+      "kind": "slice",
+      "elementType": {
+        "type": {
+          "id": "github.com/pablor21/goscanner/examples/starwars/basic.StructA",
+          "name": "StructA",
+          "kind": "struct"
+        }
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/basic.StructA": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.StructA",
+      "name": "StructA",
+      "package": "github.com/pablor21/goscanner/examples/starwars/basic",
+      "kind": "struct",
+      "fields": [
         {
-          "Name": "a",
-          "TypeRef": "int",
-          "TypeKind": "basic",
-          "IsPointer": false,
-          "IsVariadic": false
+          "name": "Client",
+          "type": {
+            "id": "net/http.Client",
+            "name": "Client",
+            "kind": "struct"
+          }
         },
         {
-          "Name": "b",
-          "TypeRef": "int",
-          "TypeKind": "basic",
-          "IsPointer": false,
-          "IsVariadic": false
-        }
-      ],
-      "Returns": [
-        {
-          "TypeRef": "int",
-          "TypeKind": "basic",
-          "IsPointer": false
-        },
-        {
-          "TypeRef": "int",
-          "TypeKind": "basic",
-          "IsPointer": false
-        },
-        {
-          "TypeRef": "error",
-          "TypeKind": "basic",
-          "IsPointer": false
-        }
-      ],
-      "IsVariadic": false
-    },
-    "github.com/pablor21/goscanner/examples/starwars/functions.FunctionWithNoParams": {
-      "Kind": "function",
-      "Name": "FunctionWithNoParams",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.FunctionWithNoParams",
-      "Returns": [
-        {
-          "TypeRef": "string",
-          "TypeKind": "basic",
-          "IsPointer": false
-        }
-      ],
-      "IsVariadic": false
-    },
-    "github.com/pablor21/goscanner/examples/starwars/functions.FunctionWithNoReturns": {
-      "Kind": "function",
-      "Name": "FunctionWithNoReturns",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.FunctionWithNoReturns",
-      "Parameters": [
-        {
-          "Name": "a",
-          "TypeRef": "string",
-          "TypeKind": "basic",
-          "IsPointer": false,
-          "IsVariadic": false
-        }
-      ],
-      "IsVariadic": false
-    },
-    "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunction": {
-      "Kind": "function",
-      "Name": "GenericFunction",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunction",
-      "TypeParameters": [
-        {
-          "Name": "T",
-          "Constraints": [
-            {
-              "Kind": "interface",
-              "Name": "any",
-              "Descriptor": "any"
+          "name": "SliceRefPtr",
+          "isPointer": true,
+          "pointerIndirections": 1,
+          "type": {
+            "id": "slice",
+            "name": "slice",
+            "kind": "slice",
+            "valueType": {
+              "id": "string",
+              "name": "string",
+              "kind": "basic"
             }
-          ]
-        }
-      ],
-      "Parameters": [
-        {
-          "Name": "input",
-          "TypeRef": "T",
-          "TypeKind": "generic",
-          "IsPointer": false,
-          "IsVariadic": false
-        }
-      ],
-      "Returns": [
-        {
-          "TypeRef": "T",
-          "TypeKind": "generic",
-          "IsPointer": false
-        }
-      ],
-      "IsVariadic": false
-    },
-    "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionReturningGeneric": {
-      "Kind": "function",
-      "Name": "GenericFunctionReturningGeneric",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionReturningGeneric",
-      "TypeParameters": [
-        {
-          "Name": "T",
-          "Constraints": [
-            {
-              "Kind": "interface",
-              "Name": "any",
-              "Descriptor": "any"
-            }
-          ]
-        }
-      ],
-      "Parameters": [
-        {
-          "Name": "input",
-          "TypeRef": "T",
-          "TypeKind": "generic",
-          "IsPointer": false,
-          "IsVariadic": false
-        }
-      ],
-      "Returns": [
-        {
-          "TypeRef": "",
-          "TypeKind": "slice",
-          "IsPointer": true,
-          "ElementTypeRef": "T",
-          "ElementIsPointer": true,
-          "ElementKind": "generic",
-          "ElementStructure": "[]"
-        }
-      ],
-      "IsVariadic": false
-    },
-    "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionWithConstraints": {
-      "Kind": "function",
-      "Name": "GenericFunctionWithConstraints",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionWithConstraints",
-      "TypeParameters": [
-        {
-          "Name": "T",
-          "Constraints": [
-            {
-              "Kind": "interface",
-              "Name": "any",
-              "Descriptor": "any"
-            }
-          ]
-        }
-      ],
-      "Parameters": [
-        {
-          "Name": "input",
-          "TypeRef": "T",
-          "TypeKind": "generic",
-          "IsPointer": false,
-          "IsVariadic": false
-        }
-      ],
-      "Returns": [
-        {
-          "TypeRef": "T",
-          "TypeKind": "generic",
-          "IsPointer": false
-        }
-      ],
-      "IsVariadic": false
-    },
-    "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionWithConstraintsAndMultipleReturns": {
-      "Kind": "function",
-      "Name": "GenericFunctionWithConstraintsAndMultipleReturns",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionWithConstraintsAndMultipleReturns",
-      "TypeParameters": [
-        {
-          "Name": "T",
-          "Constraints": [
-            {
-              "Kind": "interface",
-              "Name": "any",
-              "Descriptor": "any"
-            }
-          ]
-        }
-      ],
-      "Parameters": [
-        {
-          "Name": "input",
-          "TypeRef": "T",
-          "TypeKind": "generic",
-          "IsPointer": false,
-          "IsVariadic": false
-        }
-      ],
-      "Returns": [
-        {
-          "TypeRef": "T",
-          "TypeKind": "generic",
-          "IsPointer": false
+          }
         },
         {
-          "TypeRef": "T",
-          "TypeKind": "generic",
-          "IsPointer": false
-        },
-        {
-          "TypeRef": "error",
-          "TypeKind": "basic",
-          "IsPointer": false
-        }
-      ],
-      "IsVariadic": false
-    },
-    "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionWithMultipleTypeParams": {
-      "Kind": "function",
-      "Name": "GenericFunctionWithMultipleTypeParams",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionWithMultipleTypeParams",
-      "TypeParameters": [
-        {
-          "Name": "T",
-          "Constraints": [
-            {
-              "Kind": "interface",
-              "Name": "any",
-              "Descriptor": "any"
+          "name": "SliceRefElemPtr",
+          "type": {
+            "id": "slice",
+            "name": "slice",
+            "kind": "slice",
+            "valueType": {
+              "id": "github.com/pablor21/goscanner/examples/starwars/basic.NamedSlice",
+              "name": "NamedSlice",
+              "kind": "slice",
+              "isPointer": true,
+              "pointerIndirections": 1,
+              "valueType": {
+                "id": "github.com/pablor21/goscanner/examples/starwars/basic.StructA",
+                "name": "StructA",
+                "kind": "struct"
+              }
             }
-          ]
-        },
-        {
-          "Name": "U",
-          "Constraints": [
-            {
-              "Kind": "interface",
-              "Name": "any",
-              "Descriptor": "any"
-            }
-          ]
+          }
         }
-      ],
-      "Parameters": [
-        {
-          "Name": "input1",
-          "TypeRef": "T",
-          "TypeKind": "generic",
-          "IsPointer": false,
-          "IsVariadic": false
-        },
-        {
-          "Name": "input2",
-          "TypeRef": "U",
-          "TypeKind": "generic",
-          "IsPointer": false,
-          "IsVariadic": false
-        }
-      ],
-      "Returns": [
-        {
-          "TypeRef": "T",
-          "TypeKind": "generic",
-          "IsPointer": false
-        },
-        {
-          "TypeRef": "U",
-          "TypeKind": "generic",
-          "IsPointer": false
-        }
-      ],
-      "IsVariadic": false
+      ]
     },
-    "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionWithNoParams": {
-      "Kind": "function",
-      "Name": "GenericFunctionWithNoParams",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionWithNoParams",
-      "TypeParameters": [
+    "net/http.Client": {
+      "id": "net/http.Client",
+      "name": "Client",
+      "package": "net/http",
+      "kind": "struct",
+      "fields": [
         {
-          "Name": "T",
-          "Constraints": [
-            {
-              "Kind": "interface",
-              "Name": "any",
-              "Descriptor": "any"
-            }
-          ]
+          "name": "Timeout",
+          "type": {
+            "id": "time.Duration",
+            "name": "Duration",
+            "package": "time",
+            "kind": "basic"
+          }
         }
-      ],
-      "Returns": [
-        {
-          "TypeRef": "T",
-          "TypeKind": "generic",
-          "IsPointer": false
-        }
-      ],
-      "IsVariadic": false
-    },
-    "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionWithNoReturns": {
-      "Kind": "function",
-      "Name": "GenericFunctionWithNoReturns",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.GenericFunctionWithNoReturns",
-      "TypeParameters": [
-        {
-          "Name": "T",
-          "Constraints": [
-            {
-              "Kind": "interface",
-              "Name": "any",
-              "Descriptor": "any"
-            }
-          ]
-        }
-      ],
-      "Parameters": [
-        {
-          "Name": "input",
-          "TypeRef": "T",
-          "TypeKind": "generic",
-          "IsPointer": false,
-          "IsVariadic": false
-        }
-      ],
-      "IsVariadic": false
-    },
-    "github.com/pablor21/goscanner/examples/starwars/functions.GenericVariadicFunction": {
-      "Kind": "function",
-      "Name": "GenericVariadicFunction",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.GenericVariadicFunction",
-      "TypeParameters": [
-        {
-          "Name": "T",
-          "Constraints": [
-            {
-              "Kind": "interface",
-              "Name": "any",
-              "Descriptor": "any"
-            }
-          ]
-        }
-      ],
-      "Parameters": [
-        {
-          "Name": "prefix",
-          "TypeRef": "string",
-          "TypeKind": "basic",
-          "IsPointer": false,
-          "IsVariadic": false
-        },
-        {
-          "Name": "values",
-          "TypeRef": "T",
-          "TypeKind": "generic",
-          "IsPointer": false,
-          "IsVariadic": true
-        }
-      ],
-      "Returns": [
-        {
-          "TypeRef": "string",
-          "TypeKind": "basic",
-          "IsPointer": false
-        }
-      ],
-      "IsVariadic": true
-    },
-    "github.com/pablor21/goscanner/examples/starwars/functions.RegularFunction": {
-      "Kind": "function",
-      "Name": "RegularFunction",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.RegularFunction",
-      "Comments": [
-        "RegularFunction is a simple function that takes two parameters and returns a boolean",
-        "@info(\"This is a regular function\", returns=\"boolean indicating if b equals the rune of a\")"
-      ],
-      "Parameters": [
-        {
-          "Name": "a",
-          "TypeRef": "int",
-          "TypeKind": "basic",
-          "IsPointer": false,
-          "IsVariadic": false
-        },
-        {
-          "Name": "b",
-          "TypeRef": "string",
-          "TypeKind": "basic",
-          "IsPointer": false,
-          "IsVariadic": false
-        }
-      ],
-      "Returns": [
-        {
-          "TypeRef": "bool",
-          "TypeKind": "basic",
-          "IsPointer": false
-        }
-      ],
-      "IsVariadic": false
-    },
-    "github.com/pablor21/goscanner/examples/starwars/functions.VariadicFunction": {
-      "Kind": "function",
-      "Name": "VariadicFunction",
-      "Package": "github.com/pablor21/goscanner/examples/starwars/functions",
-      "Descriptor": "github.com/pablor21/goscanner/examples/starwars/functions.VariadicFunction",
-      "Parameters": [
-        {
-          "Name": "prefix",
-          "TypeRef": "string",
-          "TypeKind": "basic",
-          "IsPointer": false,
-          "IsVariadic": false
-        },
-        {
-          "Name": "values",
-          "TypeRef": "int",
-          "TypeKind": "basic",
-          "IsPointer": false,
-          "IsVariadic": true
-        }
-      ],
-      "Returns": [
-        {
-          "TypeRef": "string",
-          "TypeKind": "basic",
-          "IsPointer": false
-        }
-      ],
-      "IsVariadic": true
+      ]
     }
   }
 }
