@@ -424,214 +424,51 @@ func (r *defaultTypeResolver) resolveGoType(t types.Type, forceKind gct.TypeKind
 
 	r.logger.Debug(fmt.Sprintf("Resolving Go type: %v, %v", t, typeName))
 
+	// First, unwrap named types to get the underlying type
+	var namedType *types.Named
+	var obj types.Object
+	var docType *doc.Type
+
+	if named, ok := t.(*types.Named); ok {
+		namedType = named
+		obj = named.Obj()
+		docType = r.docTypes[typeName]
+		t = named.Underlying()
+	}
+
+	// Now handle the underlying type (works for both named and unnamed)
 	switch gt := t.(type) {
-	// No cached types for basic types or slices
-
 	case *types.Basic:
-		return gct.NewBasicTypeInfo(typeName, t.String(), gct.TypeKindBasic)
+		ti = r.makeBasic(typeName, gt, namedType, obj, docType, forceKind)
+
+	case *types.Pointer:
+		ti = r.makePointer(typeName, gt, namedType, obj, docType, forceKind)
+
 	case *types.Slice, *types.Array:
-		res := r.makeBasicCollection(typeName, gt)
-		if res != nil {
-			if forceKind != gct.TypeKindUnknown {
-				res.TypeKind = forceKind
-			}
-			ti = res
-		}
+		ti = r.makeCollection(typeName, gt, namedType, obj, docType, forceKind)
+
 	case *types.Signature:
-		res := r.makeFunctionInfo(r.GetCannonicalName(gt), nil)
-		if res != nil {
-			if forceKind != gct.TypeKindUnknown {
-				res.TypeKind = forceKind
-			}
-			r.cache(res)
-			ti = res
-		}
-	case *types.Alias:
-		res := r.makeBasicAlias(typeName, gt, gt.Obj())
-		if res != nil {
-			if forceKind != gct.TypeKindUnknown {
-				res.TypeKind = forceKind
-			}
-			// Aliases are always named types, cache them
-			r.cache(res)
-			ti = res
-		}
+		ti = r.makeFunction(typeName, gt, namedType, obj, docType, forceKind)
+
 	case *types.Chan:
-		res := r.makeBasicChannel(typeName, gt)
-		if res != nil {
-			if forceKind != gct.TypeKindUnknown {
-				res.TypeKind = forceKind
-			}
-			// Don't cache basic unnamed channels
-			ti = res
-		}
-	case *types.Map:
-	// create map type
+		ti = r.makeChannel(typeName, gt, namedType, obj, docType, forceKind)
+
 	case *types.Interface:
-		// Handle special predeclared interfaces as basic types
-		if typeName == "error" || typeName == "comparable" {
-			// Already handled above, but shouldn't reach here
-			// Return basic type if available
-			if basicType, exists := r.basicTypes[typeName]; exists {
-				return basicType
-			}
-		}
-		// create interface type
-		ti = r.makeNamedInterface(typeName, gt, nil)
-		ti.SetPackage(r.currentPkg)
-		r.cache(ti)
+		ti = r.makeInterface(typeName, gt, namedType, obj, docType, forceKind)
+
 	case *types.Struct:
-		// create struct type
+		ti = r.makeStruct(typeName, gt, namedType, obj, docType, forceKind)
 
-	// all these types can be named types so it will cache the results
-	case *types.Named:
-		// Handle based on underlying type
-		underlying := gt.Underlying()
-		switch ut := underlying.(type) {
-		case *types.Pointer:
-			// Create a placeholder named type first to break circular dependencies
-			id := r.GetCannonicalName(gt)
-			res := r.makeNamedTypeInfo(id, gct.TypeKindPointer, gt.Obj(), r.docTypes[id], nil)
+	case *types.Alias:
+		ti = r.makeAlias(typeName, gt, forceKind)
 
-			// Register in cache early to prevent infinite recursion on self-referencing types
-			if res != nil {
-				if forceKind != gct.TypeKindUnknown {
-					res.TypeKind = forceKind
-				}
-				r.cache(res)
-			}
-
-			// resolve the pointer target (this may refer back to the named type)
-			realType, pointers := r.deferPtr(ut)
-			un := r.ResolveType(realType)
-			if un != nil {
-				tRef := gct.NewTypeRef(un.Id(), pointers, un)
-				res.TypeRef = tRef
-				ti = res
-			} else {
-				// delete the placeholder if we couldn't resolve the target
-				delete(r.types, id)
-			}
-		case *types.Basic:
-
-			if forceKind == gct.TypeKindEnum {
-				res := r.makeEnumTypeInfo(typeName, ut, gt.Obj())
-				if res != nil {
-					r.cache(res)
-					ti = res
-				}
-			} else {
-				res := r.makeNamedBasicInfo(typeName, ut, gt.Obj())
-				if res != nil {
-					r.cache(res)
-					ti = res
-				}
-			}
-
-		case *types.Slice, *types.Array:
-			res := r.makeNamedCollection(typeName, gt, gt.Obj())
-			if res != nil {
-				if forceKind != gct.TypeKindUnknown {
-					res.TypeKind = forceKind
-				}
-				r.cache(res)
-				ti = res
-			}
-		case *types.Chan:
-			res := r.makeNamedChannel(typeName, gt, gt.Obj())
-			if res != nil {
-				if forceKind != gct.TypeKindUnknown {
-					res.TypeKind = forceKind
-				}
-				r.cache(res)
-				ti = res
-			}
-		case *types.Signature:
-			res := r.makeNamedFunction(typeName, gt, gt.Obj())
-			if res != nil {
-				if forceKind != gct.TypeKindUnknown {
-					res.TypeKind = forceKind
-				}
-				r.cache(res)
-				ti = res
-			}
-		case *types.Struct:
-			res := r.makeNamedStruct(typeName, gt, gt.Obj())
-			if res != nil {
-				if forceKind != gct.TypeKindUnknown {
-					res.TypeKind = forceKind
-				}
-				r.cache(res)
-				ti = res
-			}
-		case *types.Interface:
-			// check for special interface types that should be treated as basic (error, comparable)
-			// For named types like "type MyError error", check if underlying matches the predeclared type
-			var isPredeclaredBasic bool
-			var underlyingName string
-
-			// Check for error interface: single method named "Error" returning string
-			if ut.NumMethods() == 1 && ut.NumEmbeddeds() == 0 {
-				method := ut.Method(0)
-				if method.Name() == "Error" {
-					if sig, ok := method.Type().(*types.Signature); ok {
-						if sig.Params().Len() == 0 && sig.Results().Len() == 1 {
-							if basic, ok := sig.Results().At(0).Type().(*types.Basic); ok && basic.Kind() == types.String {
-								isPredeclaredBasic = true
-								underlyingName = "error"
-							}
-						}
-					}
-				}
-			}
-
-			// Check for comparable interface (has no methods, just a constraint marker)
-			if !isPredeclaredBasic && ut.NumMethods() == 0 && ut.String() == "comparable" {
-				isPredeclaredBasic = true
-				underlyingName = "comparable"
-			}
-
-			if isPredeclaredBasic {
-				// Create as a named basic type, not an interface
-				underlyingBasic, exists := r.basicTypes[underlyingName]
-				if exists {
-					loader := func(ti gct.Type) error {
-						if namedType, ok := ti.(*gct.NamedTypeInfo); ok {
-							namedType.Methods = r.extractMethodInfos(ti)
-						}
-						return nil
-					}
-
-					tRef := gct.NewTypeRef(underlyingBasic.Id(), 0, underlyingBasic)
-					res := r.makeNamedTypeInfo(typeName, gct.TypeKindBasic, gt.Obj(), r.docTypes[typeName], loader)
-					res.TypeRef = tRef
-					res.SetPackageInfo(r.currentPkg)
-					r.cache(res)
-					ti = res
-				}
-			} else {
-				// Regular interface type
-				res := r.makeNamedInterface(typeName, gt, gt.Obj())
-				if res != nil {
-					if forceKind != gct.TypeKindUnknown {
-						res.TypeKind = forceKind
-					}
-					r.cache(res)
-					ti = res
-				}
-			}
-		case *types.Alias:
-			r.logger.Warn(fmt.Sprintf("Unsupported alias type %s with underlying %T", gt.String(), ut))
-		default:
-			// Handle unsupported named types
-			r.logger.Warn(fmt.Sprintf("Unsupported named type %s with underlying %T", gt.String(), ut))
-		}
+	case *types.Map:
+		ti = r.makeMap(typeName, gt, namedType, obj, docType, forceKind)
 
 	default:
 		r.logger.Warn(fmt.Sprintf("Unsupported type encountered: %s (%T)", t.String(), t))
 	}
 
-	// Set depth on the type (but don't load it yet!!!!)
 	// Note: We don't call Load() here to avoid circular dependency deadlocks.
 	// Types will load lazily when their details are actually accessed.
 	if ti != nil {
