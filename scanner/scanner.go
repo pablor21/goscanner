@@ -97,7 +97,9 @@ func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (ret *ScanningRes
 	memoryUsage = (RSS() - memoryUsage)
 
 	ret = &ScanningResult{
-		Types: s.TypeResolver.GetTypeInfos(),
+		Types:    s.TypeResolver.GetTypeInfos(),
+		Values:   s.TypeResolver.GetValueInfos(),
+		Packages: s.TypeResolver.GetPackageInfos(),
 		//BasicTypes:        s.TypeResolver.GetBasicTypes(),
 		// GenericParamTypes: s.TypeResolver.GetGenericParamTypes(),
 	}

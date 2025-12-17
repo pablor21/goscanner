@@ -145,7 +145,7 @@ func (g *PackageGlob) LoadPackages(mode ScanMode) ([]*packages.Package, error) {
 
 	if mode.Has(ScanModeMethods) || mode.Has(ScanModeFields) || mode.Has(ScanModeDocs) {
 		// Need syntax tree for detailed analysis
-		loadMode |= packages.NeedSyntax | packages.NeedFiles
+		loadMode |= packages.NeedSyntax
 	}
 
 	// Only add heavy TypesInfo if we need method/field details

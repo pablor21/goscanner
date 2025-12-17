@@ -1,0 +1,190 @@
+{
+  "types": {
+    "github.com/pablor21/goscanner/examples/starwars/basic.IntArray": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntArray",
+      "name": "github.com/pablor21/goscanner/examples/starwars/basic.IntArray",
+      "kind": "array",
+      "isNamed": true,
+      "methods": [
+        {
+          "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntArray#Sum",
+          "name": "Sum",
+          "kind": "method",
+          "returns": [
+            {}
+          ],
+          "receiver": {
+            "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntArray",
+            "name": "github.com/pablor21/goscanner/examples/starwars/basic.IntArray",
+            "kind": "array"
+          }
+        }
+      ],
+      "size": 5,
+      "elementType": {
+        "type": {
+          "id": "int",
+          "name": "int",
+          "kind": "basic"
+        }
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice",
+      "name": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice",
+      "kind": "slice",
+      "comments": [
+        "type StringType string",
+        "type StringPointer **string"
+      ],
+      "isNamed": true,
+      "methods": [
+        {
+          "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice#Append",
+          "name": "Append",
+          "kind": "method",
+          "parameters": [
+            {
+              "name": "values",
+              "type": {
+                "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice",
+                "name": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice",
+                "kind": "slice"
+              }
+            }
+          ],
+          "returns": [
+            {}
+          ],
+          "receiver": {
+            "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice",
+            "name": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice",
+            "kind": "slice"
+          },
+          "comments": [
+            "This method appends values to the IntSlice",
+            "and returns a new IntSlice",
+            "@param values: pointer to IntSlice to append",
+            "@return: pointer to new IntSlice with appended values"
+          ]
+        },
+        {
+          "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice#Multiply",
+          "name": "Multiply",
+          "kind": "method",
+          "parameters": [
+            {
+              "name": "factor",
+              "type": {
+                "id": "int",
+                "name": "int",
+                "kind": "basic"
+              }
+            }
+          ],
+          "returns": [
+            {
+              "name": "res"
+            },
+            {
+              "name": "err"
+            }
+          ],
+          "receiver": {
+            "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice",
+            "name": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice",
+            "kind": "slice"
+          },
+          "comments": [
+            "Multiply multiplies each element in the IntSlice by the given factor"
+          ]
+        },
+        {
+          "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice#Sum",
+          "name": "Sum",
+          "kind": "method",
+          "isPointerReceiver": true,
+          "returns": [
+            {}
+          ],
+          "receiver": {
+            "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice",
+            "name": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice",
+            "kind": "slice"
+          }
+        },
+        {
+          "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice#UseExternalType",
+          "name": "UseExternalType",
+          "kind": "method",
+          "isPointerReceiver": true,
+          "returns": [
+            {}
+          ],
+          "receiver": {
+            "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice",
+            "name": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice",
+            "kind": "slice"
+          }
+        },
+        {
+          "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice#VariadicExample",
+          "name": "VariadicExample",
+          "kind": "method",
+          "variadic": true,
+          "parameters": [
+            {
+              "name": "prefix",
+              "type": {
+                "id": "string",
+                "name": "string",
+                "kind": "basic"
+              }
+            },
+            {
+              "name": "factors",
+              "type": {
+                "id": "[]int",
+                "kind": "slice"
+              }
+            }
+          ],
+          "returns": [
+            {}
+          ],
+          "receiver": {
+            "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice",
+            "name": "github.com/pablor21/goscanner/examples/starwars/basic.IntSlice",
+            "kind": "slice"
+          }
+        }
+      ],
+      "elementType": {
+        "type": {
+          "id": "int",
+          "name": "int",
+          "kind": "basic"
+        }
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/basic.SelfRef": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.SelfRef",
+      "name": "github.com/pablor21/goscanner/examples/starwars/basic.SelfRef",
+      "kind": "pointer",
+      "isPointer": true,
+      "pointerIndirections": 1,
+      "type": {
+        "id": "[]*****github.com/pablor21/goscanner/examples/starwars/basic.SelfRef",
+        "kind": "slice",
+        "valueType": {
+          "id": "github.com/pablor21/goscanner/examples/starwars/basic.SelfRef",
+          "name": "github.com/pablor21/goscanner/examples/starwars/basic.SelfRef",
+          "kind": "pointer",
+          "isPointer": true,
+          "pointerIndirections": 5
+        }
+      },
+      "isNamed": true
+    }
+  }
+}

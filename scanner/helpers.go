@@ -7,7 +7,7 @@ import (
 	"strings"
 	"syscall"
 
-	. "github.com/pablor21/goscanner/types"
+	gct "github.com/pablor21/goscanner/types"
 )
 
 // isExported reports whether name is an exported Go symbol
@@ -68,39 +68,49 @@ func ParseComments(doc string) []string {
 // Helper functions for embedded type expansion
 
 // getTypeKind determines the TypeKind for a go/types.Type
-func GetTypeKind(t types.Type) TypeKind {
+func GetTypeKind(t types.Type) gct.TypeKind {
 	switch actual := t.(type) {
 	case *types.Pointer:
 		return GetTypeKind(actual.Elem())
 	case *types.TypeParam:
-		return TypeKindGenericParam
+		return gct.TypeKindGenericParam
 	case *types.Named:
 		underlying := actual.Underlying()
 		switch underlying.(type) {
 		case *types.Struct:
-			return TypeKindStruct
+			return gct.TypeKindStruct
 		case *types.Interface:
-			return TypeKindInterface
+			return gct.TypeKindInterface
 		default:
-			return TypeKindBasic
+			return gct.TypeKindBasic
 		}
 	case *types.Struct:
-		return TypeKindStruct
+		return gct.TypeKindStruct
 	case *types.Interface:
-		return TypeKindInterface
+		return gct.TypeKindInterface
 	case *types.Slice:
-		return TypeKindSlice
+		return gct.TypeKindSlice
 	case *types.Array:
-		return TypeKindArray
+		return gct.TypeKindArray
 	case *types.Map:
-		return TypeKindMap
+		return gct.TypeKindMap
 	case *types.Chan:
-		return TypeKindChannel
+		return gct.TypeKindChannel
 	case *types.Basic:
-		return TypeKindBasic
+		return gct.TypeKindBasic
 	default:
-		return TypeKindBasic
+		return gct.TypeKindBasic
 	}
+}
+
+func IsConstant(obj types.Object) bool {
+	_, ok := obj.(*types.Const)
+	return ok
+}
+
+func IsVariable(obj types.Object) bool {
+	_, ok := obj.(*types.Var)
+	return ok
 }
 
 // isPointerReceiver checks if the receiver type is a pointer

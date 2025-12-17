@@ -1,103 +1,262 @@
 {
   "types": {
-    "github.com/pablor21/goscanner/examples/starwars/basic.NamedDeepSlice": {
-      "id": "github.com/pablor21/goscanner/examples/starwars/basic.NamedDeepSlice",
-      "name": "NamedDeepSlice",
-      "package": "github.com/pablor21/goscanner/examples/starwars/basic",
-      "kind": "slice",
-      "elementType": {
-        "type": {
-          "id": "github.com/pablor21/goscanner/examples/starwars/basic.NamedSlice",
-          "name": "NamedSlice",
-          "kind": "slice",
-          "valueType": {
-            "id": "github.com/pablor21/goscanner/examples/starwars/basic.StructA",
-            "name": "StructA",
-            "kind": "struct"
-          }
-        }
-      }
+    "github.com/pablor21/goscanner/examples/starwars/basic.Init": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.Init",
+      "name": "Init",
+      "kind": "function"
     },
-    "github.com/pablor21/goscanner/examples/starwars/basic.NamedSlice": {
-      "id": "github.com/pablor21/goscanner/examples/starwars/basic.NamedSlice",
-      "name": "NamedSlice",
-      "package": "github.com/pablor21/goscanner/examples/starwars/basic",
-      "kind": "slice",
-      "elementType": {
-        "type": {
-          "id": "github.com/pablor21/goscanner/examples/starwars/basic.StructA",
-          "name": "StructA",
-          "kind": "struct"
-        }
-      }
-    },
-    "github.com/pablor21/goscanner/examples/starwars/basic.StructA": {
-      "id": "github.com/pablor21/goscanner/examples/starwars/basic.StructA",
-      "name": "StructA",
-      "package": "github.com/pablor21/goscanner/examples/starwars/basic",
-      "kind": "struct",
-      "fields": [
+    "github.com/pablor21/goscanner/examples/starwars/basic.IntSliceAppend": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntSliceAppend",
+      "name": "IntSliceAppend",
+      "kind": "function",
+      "variadic": true,
+      "parameters": [
         {
-          "name": "Client",
-          "type": {
-            "id": "net/http.Client",
-            "name": "Client",
-            "kind": "struct"
-          }
-        },
-        {
-          "name": "SliceRefPtr",
           "isPointer": true,
           "pointerIndirections": 1,
           "type": {
-            "id": "slice",
-            "name": "slice",
-            "kind": "slice",
-            "valueType": {
-              "id": "string",
-              "name": "string",
-              "kind": "basic"
-            }
-          }
+            "id": "string",
+            "name": "string",
+            "kind": "basic"
+          },
+          "name": "values"
         },
         {
-          "name": "SliceRefElemPtr",
           "type": {
-            "id": "slice",
-            "name": "slice",
+            "id": "[]int",
+            "name": "[]int",
             "kind": "slice",
             "valueType": {
-              "id": "github.com/pablor21/goscanner/examples/starwars/basic.NamedSlice",
-              "name": "NamedSlice",
-              "kind": "slice",
-              "isPointer": true,
-              "pointerIndirections": 1,
-              "valueType": {
-                "id": "github.com/pablor21/goscanner/examples/starwars/basic.StructA",
-                "name": "StructA",
-                "kind": "struct"
-              }
+              "id": "int",
+              "name": "int",
+              "kind": "basic"
             }
-          }
+          },
+          "name": "variadic",
+          "variadic": true
+        }
+      ],
+      "returns": [
+        {
+          "isPointer": true,
+          "pointerIndirections": 1,
+          "type": {
+            "id": "github.com/pablor21/goscanner/examples/starwars/basic.X",
+            "name": "github.com/pablor21/goscanner/examples/starwars/basic.X",
+            "kind": "basic",
+            "visibility": "exported"
+          },
+          "name": "ret"
+        },
+        {
+          "type": {
+            "id": "error",
+            "name": "error",
+            "kind": "basic"
+          },
+          "name": "err"
+        },
+        {
+          "type": {
+            "id": "string",
+            "name": "string",
+            "kind": "basic"
+          },
+          "name": "str"
         }
       ]
     },
-    "net/http.Client": {
-      "id": "net/http.Client",
-      "name": "Client",
-      "package": "net/http",
-      "kind": "struct",
-      "fields": [
+    "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst",
+      "name": "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst",
+      "kind": "basic",
+      "visibility": "exported",
+      "type": {
+        "id": "int",
+        "name": "int",
+        "kind": "basic"
+      },
+      "isNamed": true
+    },
+    "github.com/pablor21/goscanner/examples/starwars/basic.X": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.X",
+      "name": "github.com/pablor21/goscanner/examples/starwars/basic.X",
+      "kind": "basic",
+      "visibility": "exported",
+      "type": {
+        "id": "string",
+        "name": "string",
+        "kind": "basic"
+      },
+      "comments": [
+        "// This is a basic named type"
+      ],
+      "isNamed": true,
+      "methods": [
         {
-          "name": "Timeout",
-          "type": {
-            "id": "time.Duration",
-            "name": "Duration",
-            "package": "time",
-            "kind": "basic"
+          "id": "github.com/pablor21/goscanner/examples/starwars/basic.X#PointerReceiverMethod",
+          "name": "PointerReceiverMethod",
+          "kind": "method",
+          "returns": [
+            {
+              "type": {
+                "id": "string",
+                "name": "string",
+                "kind": "basic"
+              }
+            }
+          ],
+          "comments": [
+            "PointerReceiverMethod is a method with a pointer receiver"
+          ],
+          "receiver": {
+            "id": "github.com/pablor21/goscanner/examples/starwars/basic.X",
+            "name": "github.com/pablor21/goscanner/examples/starwars/basic.X",
+            "kind": "basic",
+            "visibility": "exported"
+          },
+          "isPointerReceiver": true
+        },
+        {
+          "id": "github.com/pablor21/goscanner/examples/starwars/basic.X#String",
+          "name": "String",
+          "kind": "method",
+          "returns": [
+            {
+              "type": {
+                "id": "string",
+                "name": "string",
+                "kind": "basic"
+              }
+            }
+          ],
+          "comments": [
+            "String returns the string representation of X"
+          ],
+          "receiver": {
+            "id": "github.com/pablor21/goscanner/examples/starwars/basic.X",
+            "name": "github.com/pablor21/goscanner/examples/starwars/basic.X",
+            "kind": "basic",
+            "visibility": "exported"
           }
         }
       ]
+    }
+  },
+  "values": {
+    "github.com/pablor21/goscanner/examples/starwars/basic.Answer": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.Answer",
+      "name": "Answer",
+      "kind": "constant",
+      "value": 42,
+      "type": {
+        "id": "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst",
+        "name": "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst",
+        "kind": "basic",
+        "visibility": "exported",
+        "type": {
+          "id": "int",
+          "name": "int",
+          "kind": "basic"
+        },
+        "isNamed": true
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/basic.MeaningOfLi": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.MeaningOfLi",
+      "name": "MeaningOfLi",
+      "kind": "constant",
+      "value": 7,
+      "type": {
+        "id": "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst",
+        "name": "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst",
+        "kind": "basic",
+        "visibility": "exported",
+        "type": {
+          "id": "int",
+          "name": "int",
+          "kind": "basic"
+        },
+        "isNamed": true
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/basic.TestTyped": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.TestTyped",
+      "name": "TestTyped",
+      "kind": "constant",
+      "value": 100,
+      "type": {
+        "id": "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst",
+        "name": "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst",
+        "kind": "basic",
+        "visibility": "exported",
+        "type": {
+          "id": "int",
+          "name": "int",
+          "kind": "basic"
+        },
+        "isNamed": true
+      }
+    }
+  },
+  "packages": {
+    "github.com/pablor21/goscanner/examples/starwars/basic": {
+      "name": "basic",
+      "path": "github.com/pablor21/goscanner/examples/starwars/basic",
+      "comments": {
+        "Answer": [
+          {
+            "text": "MeaningOfLi represents the meaning of life constant\nThis is a second line of the comment",
+            "placement": "above"
+          },
+          {
+            "text": "Answer to the Ultimate Question of Life, the Universe, and Everything",
+            "placement": "inline"
+          }
+        ],
+        "IntSliceAppend": [
+          {
+            "text": "IntSliceAppend appends an integer to a slice of integers and returns the new slice.",
+            "placement": "above"
+          }
+        ],
+        "MeaningOfLi": [
+          {
+            "text": "UltimateQuestion represents the ultimate question constant",
+            "placement": "above"
+          }
+        ],
+        "TestTyped": [
+          {
+            "text": "this comment works",
+            "placement": "above"
+          }
+        ],
+        "TypedConst": [
+          {
+            "text": "This is a comment for TypedConst",
+            "placement": "above"
+          }
+        ],
+        "X": [
+          {
+            "text": "// This is a basic named type",
+            "placement": "above"
+          }
+        ],
+        "X.PointerReceiverMethod": [
+          {
+            "text": "PointerReceiverMethod is a method with a pointer receiver",
+            "placement": "above"
+          }
+        ],
+        "X.String": [
+          {
+            "text": "String returns the string representation of X",
+            "placement": "above"
+          }
+        ]
+      }
     }
   }
 }

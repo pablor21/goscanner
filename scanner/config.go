@@ -4,12 +4,13 @@ import (
 	"embed"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/pablor21/goscanner/logger"
 )
 
-type ScanMode uint8
+type ScanMode uint16
 
 const (
 	ScanModeNone      ScanMode = 0
@@ -19,15 +20,18 @@ const (
 	ScanModeFunctions                      // Include standalone functions
 	ScanModeDocs                           // Include documentation
 	ScanModeComments                       // Parse and extract comments
+	ScanModeConsts
+	ScanModeVariables // Include constants and variables
+	ScanModeEnums     // Include enum values
 
 	// Predefined combinations
 	ScanModeBasic   = ScanModeTypes | ScanModeDocs
-	ScanModeDefault = ScanModeTypes | ScanModeMethods | ScanModeDocs | ScanModeComments
-	ScanModeFull    = ScanModeTypes | ScanModeMethods | ScanModeFields | ScanModeFunctions | ScanModeDocs | ScanModeComments
+	ScanModeDefault = ScanModeTypes | ScanModeMethods | ScanModeDocs | ScanModeComments | ScanModeConsts | ScanModeVariables | ScanModeEnums
+	ScanModeFull    = ScanModeTypes | ScanModeMethods | ScanModeFields | ScanModeFunctions | ScanModeDocs | ScanModeComments | ScanModeConsts | ScanModeVariables | ScanModeEnums
 )
 
 func (m ScanMode) String() string {
-	return string(m)
+	return fmt.Sprintf("ScanMode(%d)", m)
 }
 
 func (m ScanMode) Has(mode ScanMode) bool {
@@ -61,6 +65,12 @@ func (m ScanMode) FromString(str string) ScanMode {
 			m = ScanModeFull
 		case "default":
 			m = ScanModeDefault
+		case "consts", "constants":
+			m |= ScanModeConsts
+		case "variables", "vars":
+			m |= ScanModeVariables
+		case "enums":
+			m |= ScanModeEnums
 		default:
 			panic("unknown scan mode " + v)
 		}
