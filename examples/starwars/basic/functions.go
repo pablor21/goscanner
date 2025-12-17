@@ -19,10 +19,12 @@ func IntSliceAppend(values *string, variadic ...int) (ret *X, err error, str str
 	return &x, nil, "done"
 }
 
-// type MyStruct struct {
-// 	FieldA int
-// 	FieldB string
-// }
+type MyStruct struct {
+	// Basic fields
+	FieldA int
+	// Another field
+	FieldB string
+}
 
 // // FnType is a function type that takes an int and a string
 // // and returns a string and an error
