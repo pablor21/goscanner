@@ -2,6 +2,7 @@ package scanner
 
 import (
 	"fmt"
+	"runtime"
 	"time"
 
 	"golang.org/x/tools/go/packages"
@@ -56,9 +57,17 @@ func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (ret *ScanningRes
 	ctx.Logger.Info("Starting scan...")
 	totalPackages := 0
 	now := time.Now()
-	memoryUsage := RSS()
+	var m1, m2 runtime.MemStats
+	var memoryUsage uint64
+
+	runtime.GC()
+	runtime.ReadMemStats(&m1)
+
 	defer func() {
-		ctx.Logger.Info(fmt.Sprintf("Scan completed in %v, found %d types, accross %d packages, memory usage: %dKB", time.Since(now), len(s.TypeResolver.GetTypeInfos()), totalPackages, memoryUsage))
+		runtime.GC()
+		runtime.ReadMemStats(&m2)
+		memoryUsage = (m2.Alloc - m1.Alloc) / 1024 // in KB
+		ctx.Logger.Info(fmt.Sprintf("Scan completed in %v, found %d types, across %d packages, memory usage: %dKB", time.Since(now), len(s.TypeResolver.GetTypeInfos()), totalPackages, memoryUsage))
 	}()
 
 	if ctx == nil || ctx.Config == nil {
@@ -93,8 +102,6 @@ func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (ret *ScanningRes
 	}
 
 	totalPackages = len(pkgs)
-	// Calculate memory usage in MB
-	memoryUsage = (RSS() - memoryUsage)
 
 	ret = &ScanningResult{
 		Types:    s.TypeResolver.GetTypeInfos(),
@@ -104,32 +111,16 @@ func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (ret *ScanningRes
 		// GenericParamTypes: s.TypeResolver.GetGenericParamTypes(),
 	}
 
-	// // trigger the lazy loading of each type
-	// for _, t := range ret.Types {
-	// 	err := t.Load()
-	// 	if err != nil {
-	// 		// just log the error but continue processing other types
-	// 		ctx.Logger.Error(fmt.Sprintf("Failed to load type %s: %v", t.GetTypeDescriptor(), err))
-	// 	}
-	// }
-
-	// // trigger the lazy loading of basic types
-	// for _, t := range ret.BasicTypes {
-	// 	_, err := t.Load()
-	// 	if err != nil {
-	// 		// just log the error but continue processing other types
-	// 		ctx.Logger.Error(fmt.Sprintf("Failed to load basic type %s: %v", t.GetTypeDescriptor(), err))
-	// 	}
-	// }
-
-	// // trigger the lazy loading of generic param types
-	// for _, t := range ret.GenericParamTypes {
-	// 	_, err := t.Load()
-	// 	if err != nil {
-	// 		// just log the error but continue processing other types
-	// 		ctx.Logger.Error(fmt.Sprintf("Failed to load generic param type %s: %v", t.GetTypeDescriptor(), err))
-	// 	}
-	// }
+	// trigger the lazy loading of each type
+	for _, t := range ret.Types {
+		if loadable, ok := t.(interface{ Load() error }); ok {
+			err := loadable.Load()
+			if err != nil {
+				// just log the error but continue processing other types
+				ctx.Logger.Error(fmt.Sprintf("Failed to load type %s: %v", t.Id(), err))
+			}
+		}
+	}
 
 	// Return the scanning result and any errors encountered
 	return ret, err

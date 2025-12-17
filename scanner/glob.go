@@ -136,7 +136,7 @@ func (g *PackageGlob) LoadPackages(mode ScanMode) ([]*packages.Package, error) {
 	var loadMode packages.LoadMode
 
 	// Always need basic package info
-	loadMode = packages.NeedName
+	loadMode = packages.NeedName | packages.NeedFiles | packages.NeedCompiledGoFiles
 
 	// Add modes based on ScanMode flags
 	if mode.Has(ScanModeTypes) {

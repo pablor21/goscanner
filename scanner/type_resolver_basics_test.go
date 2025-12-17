@@ -62,6 +62,8 @@ func TestTypeResolver_resolveNamedBasicTypes(t *testing.T) {
 	src := `
 	package test
 
+
+	type MyError error
 	type MyInt int
 	type MyString string
 	type MyBool bool
@@ -69,7 +71,6 @@ func TestTypeResolver_resolveNamedBasicTypes(t *testing.T) {
 	type MyComplex complex128
 	type MyByte byte
 	type MyRune rune
-	type MyError error
 	type MyUintptr uintptr
 	type MyFloat32 float32
 	type MyFloat64 float64
@@ -100,6 +101,7 @@ func TestTypeResolver_resolveNamedBasicTypes(t *testing.T) {
 	r := newDefaultTypeResolver(NewDefaultConfig(), l)
 
 	namedTypes := []string{
+		"MyError",
 		"MyInt",
 		"MyString",
 		"MyBool",
@@ -107,7 +109,6 @@ func TestTypeResolver_resolveNamedBasicTypes(t *testing.T) {
 		"MyComplex",
 		"MyByte",
 		"MyRune",
-		// "MyError", // TODO: add support for error named types
 		"MyUintptr",
 		"MyFloat32",
 		"MyFloat64",
@@ -140,8 +141,15 @@ func TestTypeResolver_resolveNamedBasicTypes(t *testing.T) {
 			t.Errorf("ResolveType(%s).GetCannonicalName() = %v, want %v", typeName, got.Id(), "test."+typeName)
 		}
 
-		if (got.(*NamedTypeInfo)).TypeRefId() != namedType.Underlying().String() {
-			t.Errorf("ResolveType(%s).Underlying().GetCannonicalName() = %v, want %v", typeName, (got.(*NamedTypeInfo)).TypeRefId(), namedType.Underlying().String())
+		// For special predeclared types like error, we treat them as basic types
+		// so the TypeRef points to "error" not "interface{Error() string}"
+		expectedUnderlying := namedType.Underlying().String()
+		if typeName == "MyError" {
+			expectedUnderlying = "error"
+		}
+
+		if (got.(*NamedTypeInfo)).TypeRefId() != expectedUnderlying {
+			t.Errorf("ResolveType(%s).Underlying().GetCannonicalName() = %v, want %v", typeName, (got.(*NamedTypeInfo)).TypeRefId(), expectedUnderlying)
 		}
 	}
 

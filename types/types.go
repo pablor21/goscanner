@@ -3,8 +3,6 @@ package types
 import (
 	"go/doc"
 	"go/types"
-
-	"golang.org/x/tools/go/packages"
 )
 
 type TypeKind string
@@ -30,7 +28,7 @@ const (
 	TypeKindPointer       TypeKind = "pointer"      // For named types with underlying types
 	TypeKindGeneric       TypeKind = "generic"      // For generic types like List[T], Map[K,V], etc.
 	TypeKindGenericParam  TypeKind = "genericParam" // For generic type parameters like T, U, etc.
-	TypeKindUnknown       TypeKind = "unknown"      // For unrecognized types
+	TypeKindUnknown       TypeKind = ""             // For unrecognized types
 )
 
 type ChannelDirection string
@@ -112,10 +110,20 @@ type Type interface {
 	Type() *doc.Type
 	// Gets the Object associated with the type entry
 	Object() types.Object
-	// Gets the packages.Package
-	Package() *packages.Package
+	// Gets the custom Package wrapper
+	Package() *Package
 	// Gets the visibility level of the type entry
 	Visibility() Visibility
+	// Gets the documentation comments of the type entry
+	Comments() []Comment
+	// Gets the depth of the type entry in the type hierarchy
+	Depth() int
+	// Sets the depth of the type entry in the type hierarchy
+	SetDepth(depth int)
+	// Gets the basic info of the type entry (useful for serialization)
+	GetBasicInfo() *BasicTypeInfo
+	// Sets the custom Package wrapper
+	SetPackage(pkg *Package)
 }
 
 type ValueType interface {
@@ -133,10 +141,6 @@ type ValueType interface {
 type NamedType interface {
 	// Embeds TypeInfo (a named type is a type with a package and name)
 	Type
-	// Gets the documentation comments of the type entry
-	Comments() []string
-	// Gets the basic info of the named type entry (useful for embedding)
-	GetBasicInfo() *BasicTypeInfo
 }
 
 // TypeReference represents a reference to a type entry
@@ -144,7 +148,7 @@ type TypeReference interface {
 	TypeRefId() string
 	TypeRef() Type
 	IsPointer() bool
-	PointerIndirections() int
+	PointerDepth() int
 }
 
 // HasElementType represents types that have an element type
@@ -171,30 +175,4 @@ type HasMethods interface {
 // e.g., structs
 type HasFields interface {
 	Fields() []*FieldInfo
-}
-
-type FieldInfo struct {
-	NamedTypeInfo
-	TypeRef    TypeReference `json:"typeRef,omitempty"`
-	IsEmbedded bool          `json:"isEmbedded,omitempty"`
-	Tag        string        `json:"tag,omitempty"`
-}
-
-func (f *FieldInfo) Type() *doc.Type {
-	return f.doc
-}
-
-func (f *FieldInfo) TypeReference() TypeReference {
-	return f.TypeRef
-}
-
-// Load loads the details of the field entry
-func (f *FieldInfo) Load() error {
-	var loadErr error
-	f.loadOnce.Do(func() {
-		if f.detailsLoader != nil {
-			loadErr = f.detailsLoader(f)
-		}
-	})
-	return loadErr
 }

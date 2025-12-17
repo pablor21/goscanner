@@ -2,6 +2,8 @@ package scanner
 
 import (
 	"fmt"
+	"go/ast"
+	"go/token"
 	"go/types"
 	"runtime"
 	"strings"
@@ -123,4 +125,96 @@ func IsPointerReceiver(t types.Type) bool {
 func IsPointerType(t types.Type) bool {
 	_, isPointer := t.(*types.Pointer)
 	return isPointer
+}
+
+func extractCommentsBetweenPackageAndImports(file *ast.File, fset *token.FileSet) []string {
+	var results []string
+	pkgEnd := file.Package
+	var firstImportPos token.Pos
+	var firstDeclPos token.Pos
+	if len(file.Decls) > 0 {
+		firstDeclPos = file.Decls[0].Pos()
+	} else {
+		firstDeclPos = token.NoPos
+	}
+
+	for _, decl := range file.Decls {
+		if gen, ok := decl.(*ast.GenDecl); ok && gen.Tok == token.IMPORT {
+			firstImportPos = gen.Pos()
+			break
+		}
+	}
+	// Use the earlier of firstImportPos or firstDeclPos (if both exist)
+	stopPos := token.NoPos
+	if firstImportPos != token.NoPos && firstDeclPos != token.NoPos {
+		if firstImportPos < firstDeclPos {
+			stopPos = firstImportPos
+		} else {
+			stopPos = firstDeclPos
+		}
+	} else if firstImportPos != token.NoPos {
+		stopPos = firstImportPos
+	} else if firstDeclPos != token.NoPos {
+		stopPos = firstDeclPos
+	}
+
+	for _, cg := range file.Comments {
+		if cg.Pos() > pkgEnd && (stopPos == token.NoPos || cg.End() < stopPos) {
+			// If this comment is directly attached to the first declaration, skip it
+			attached := false
+			if firstDeclPos != token.NoPos && fset != nil {
+				commentEndLine := fset.Position(cg.End()).Line
+				declLine := fset.Position(firstDeclPos).Line
+				if declLine == commentEndLine+1 {
+					attached = true
+				}
+			}
+			if !attached {
+				results = append(results, strings.TrimSpace(cg.Text()))
+			}
+		}
+	}
+	return results
+}
+
+// extractComment combines doc comments and inline comments
+func extractComment(doc, comment, parentDoc *ast.CommentGroup) []gct.Comment {
+	var parts []gct.Comment
+
+	// Add doc comment (above the declaration)
+	if doc != nil {
+		if text := strings.TrimSpace(doc.Text()); text != "" {
+			parts = append(parts, gct.NewComment(text, gct.CommentPlacementAbove))
+		}
+	}
+
+	// Add inline comment (after the declaration)
+	if comment != nil {
+		if text := strings.TrimSpace(comment.Text()); text != "" {
+			parts = append(parts, gct.NewComment(text, gct.CommentPlacementInline))
+		}
+	}
+
+	// Fallback to parent doc if no specific comments
+	if len(parts) == 0 && parentDoc != nil {
+		if text := strings.TrimSpace(parentDoc.Text()); text != "" {
+			parts = append(parts, gct.NewComment(text, gct.CommentPlacementAbove))
+		}
+	}
+
+	return parts
+}
+
+// getTypeName extracts the type name from an expression
+func getTypeName(expr ast.Expr) string {
+	switch t := expr.(type) {
+	case *ast.Ident:
+		return t.Name
+	case *ast.StarExpr:
+		return getTypeName(t.X)
+	case *ast.SelectorExpr:
+		return getTypeName(t.X) + "." + t.Sel.Name
+	default:
+		return ""
+	}
 }

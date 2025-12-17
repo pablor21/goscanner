@@ -128,3 +128,7 @@ package basic
 // // func (usc unexportedStructC) HiddenMethod() string {
 // // 	return usc.hiddenField
 // // }
+
+type MyMap map[string]string
+type MyDeepMap map[string]MyMap
+type MyMapSlice []MyMap

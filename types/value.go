@@ -3,19 +3,17 @@ package types
 import (
 	"go/constant"
 	"go/types"
-
-	"golang.org/x/tools/go/packages"
 )
 
 type Value struct {
 	BasicTypeInfo
-	ConstValue    any  `json:"value,omitempty"`
-	parent        Type `json:"-"`
-	valueType     Type // underlying type of the value entry
-	ValueTypeInfo Type `json:"type,omitempty"`
+	ConstValue    any            `json:"value,omitempty"`
+	parent        Type           `json:"-"`
+	valueType     Type           // underlying type of the value entry
+	ValueTypeInfo *BasicTypeInfo `json:"type,omitempty"`
 }
 
-func NewValue(id string, obj types.Object, pkg *packages.Package, valueType Type) *Value {
+func NewValue(id string, obj types.Object, pkg *Package, valueType Type) *Value {
 	switch v := obj.(type) {
 	case *types.Const:
 		return NewConstValue(id, v, pkg, valueType)
@@ -26,7 +24,7 @@ func NewValue(id string, obj types.Object, pkg *packages.Package, valueType Type
 	}
 }
 
-func NewConstValue(id string, obj *types.Const, pkg *packages.Package, valueType Type) *Value {
+func NewConstValue(id string, obj *types.Const, pkg *Package, valueType Type) *Value {
 	var constVal any
 	constVal = obj.Val()
 	if obj.Val().Kind() == constant.String {
@@ -38,25 +36,29 @@ func NewConstValue(id string, obj *types.Const, pkg *packages.Package, valueType
 			ID:          id,
 			DisplayName: obj.Name(),
 			TypeKind:    TypeKindConstant,
+			commentId:   obj.Name(),
+			Description: obj.String(),
 			obj:         obj,
-			pkg:         nil,
+			pkg:         pkg,
 		},
 		ConstValue:    constVal,
-		ValueTypeInfo: valueType,
+		ValueTypeInfo: NewBasicTypeInfo(valueType.Id(), valueType.Name(), valueType.Kind()),
 	}
 }
 
-func NewVarValue(id string, obj *types.Var, pkg *packages.Package, valueType Type) *Value {
+func NewVarValue(id string, obj *types.Var, pkg *Package, valueType Type) *Value {
 	return &Value{
 		BasicTypeInfo: BasicTypeInfo{
 			ID:          id,
 			DisplayName: obj.Name(),
+			Description: obj.String(),
 			TypeKind:    TypeKindVariable,
+			commentId:   id,
 			obj:         obj,
 			pkg:         pkg,
 		},
 		ConstValue:    nil, // Variables do not have a constant value
-		ValueTypeInfo: valueType,
+		ValueTypeInfo: NewBasicTypeInfo(valueType.Id(), valueType.Name(), valueType.Kind()),
 	}
 }
 

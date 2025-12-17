@@ -2,8 +2,6 @@ package types
 
 import (
 	"go/types"
-
-	"golang.org/x/tools/go/packages"
 )
 
 type ConstantKind string
@@ -18,12 +16,12 @@ const (
 
 // ConstantInfo represents a constant entry
 type ConstantInfo struct {
-	BasicTypeInfo
+	*BasicTypeInfo
 	Kind  ConstantKind `json:"kind,omitempty"`
 	Value any          `json:"value,omitempty"`
 }
 
-func NewConstantInfo(id string, obj types.Object, value any, pkg *packages.Package) *ConstantInfo {
+func NewConstantInfo(id string, obj types.Object, value any, pkg *Package) *ConstantInfo {
 	displayName := id
 	if obj != nil {
 		displayName = obj.Name()
@@ -53,7 +51,7 @@ func NewConstantInfo(id string, obj types.Object, value any, pkg *packages.Packa
 	}
 
 	return &ConstantInfo{
-		BasicTypeInfo: BasicTypeInfo{
+		BasicTypeInfo: &BasicTypeInfo{
 			ID:          id,
 			DisplayName: displayName,
 			TypeKind:    TypeKindConstant,

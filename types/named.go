@@ -4,17 +4,15 @@ import (
 	"go/doc"
 	"go/types"
 	"sync"
-
-	"golang.org/x/tools/go/packages"
 )
 
 // NamedTypeInfo represents a named type entry
 // e.g., struct, interface, or type alias
 type NamedTypeInfo struct {
-	BasicTypeInfo
+	*BasicTypeInfo
 	*TypeRef
-	PkgPath    string   `json:"packagePath,omitempty"`
-	CommentCol []string `json:"comments,omitempty"`
+	PkgPath string `json:"packagePath,omitempty"`
+	// CommentCol []Comment `json:"comments,omitempty"`
 	// Underlying TypeReference `json:",inline,omitempty"`
 	IsNamed bool          `json:"isNamed"`
 	Methods []*MethodInfo `json:"methods,omitempty"`
@@ -25,10 +23,10 @@ type NamedTypeInfo struct {
 
 // NewNamedTypeInfo creates a new NamedTypeInfo
 // Usually you would use specific constructors like NewStructTypeInfo or NewInterfaceTypeInfo
-func NewNamedTypeInfo(id string, kind TypeKind, obj types.Object, docType *doc.Type, pkg *packages.Package, detailsLoader DetailsLoaderFn) *NamedTypeInfo {
+func NewNamedTypeInfo(id string, kind TypeKind, obj types.Object, docType *doc.Type, pkg *Package, detailsLoader DetailsLoaderFn) *NamedTypeInfo {
 	pkgPath := ""
 	if pkg != nil {
-		pkgPath = pkg.PkgPath
+		pkgPath = pkg.Path
 	}
 
 	// get the visibility level
@@ -37,7 +35,8 @@ func NewNamedTypeInfo(id string, kind TypeKind, obj types.Object, docType *doc.T
 		visibility = VisibilityUnexported
 	}
 
-	bti := NewBasicTypeInfo(id, kind)
+	bti := NewBasicTypeInfo(id, obj.Name(), kind)
+	bti.Description = obj.String()
 	bti.pkg = pkg
 	bti.obj = obj
 	bti.doc = docType
@@ -66,7 +65,7 @@ func NewNamedTypeInfo(id string, kind TypeKind, obj types.Object, docType *doc.T
 
 // Gets the documentation comments of the type entry
 // Implements NamedType#Comments
-func (n *NamedTypeInfo) Comments() []string {
+func (n *NamedTypeInfo) Comments() []Comment {
 	// trigger lazy load
 	_ = n.Load()
 	return n.CommentCol
@@ -90,10 +89,10 @@ func (n *NamedTypeInfo) Comments() []string {
 func (n *NamedTypeInfo) Load() error {
 	var loadErr error
 	n.loadOnce.Do(func() {
-		// load comments
-		if n.doc != nil {
-			n.CommentCol = ExtractComments(n.doc.Doc)
-		}
+
+		// load comments and other details
+		n.loadComments()
+
 		if n.detailsLoader != nil {
 			loadErr = n.detailsLoader(n)
 		}
@@ -114,10 +113,6 @@ func (n *NamedTypeInfo) SetDetailsLoader(loader DetailsLoaderFn) {
 	n.detailsLoader = loader
 }
 
-func (n *NamedTypeInfo) GetBasicInfo() *BasicTypeInfo {
-	return &n.BasicTypeInfo
-}
-
 // InterfaceTypeInfo represents an interface type entry
 type InterfaceTypeInfo struct {
 	*NamedTypeInfo
@@ -125,10 +120,54 @@ type InterfaceTypeInfo struct {
 }
 
 // NewInterfaceTypeInfo creates a new InterfaceTypeInfo
-func NewInterfaceTypeInfo(id string, obj types.Object, docType *doc.Type, pkg *packages.Package, detailsLoader DetailsLoaderFn) *InterfaceTypeInfo {
+func NewInterfaceTypeInfo(id string, obj types.Object, docType *doc.Type, pkg *Package, detailsLoader DetailsLoaderFn) *InterfaceTypeInfo {
 	return &InterfaceTypeInfo{
 		NamedTypeInfo: NewNamedTypeInfo(id, TypeKindInterface, obj, docType, pkg, detailsLoader),
 		Methods:       []*MethodInfo{},
+	}
+}
+
+type FieldInfo struct {
+	NamedTypeInfo
+	*TypeRef `json:",inline,omitempty"`
+	// Where the field was promoted from (if applicable)
+	PromotedFromId string `json:"promotedFrom,omitempty"`
+	Tag            string `json:"tag,omitempty"`
+	promotedFrom   Type   `json:"-"`
+}
+
+func NewFieldInfo(id string, parent Type, obj types.Object, docType *doc.Type, pkg *Package, typeRef *TypeRef, tag string, promotedFrom Type, detailsLoader DetailsLoaderFn) *FieldInfo {
+	promotedFromId := ""
+	if promotedFrom != nil {
+		promotedFromId = promotedFrom.Id()
+	}
+	fi := &FieldInfo{
+		NamedTypeInfo:  *NewNamedTypeInfo(id, TypeKindField, obj, docType, pkg, detailsLoader),
+		TypeRef:        typeRef,
+		PromotedFromId: promotedFromId,
+		Tag:            tag,
+		promotedFrom:   promotedFrom,
+	}
+	fi.commentId = parent.Name() + "." + fi.DisplayName
+	return fi
+}
+
+func (f *FieldInfo) PromotedFrom() Type {
+	return f.promotedFrom
+}
+
+func (f *FieldInfo) IsPromoted() bool {
+	return f.promotedFrom != nil
+}
+
+func (f *FieldInfo) GetTag() string {
+	return f.Tag
+}
+
+func (f *FieldInfo) SetPromotedFrom(t Type) {
+	f.promotedFrom = t
+	if t != nil {
+		f.PromotedFromId = t.Id()
 	}
 }
 
@@ -140,12 +179,16 @@ type StructTypeInfo struct {
 }
 
 // NewStructTypeInfo creates a new StructTypeInfo
-func NewStructTypeInfo(id string, obj types.Object, docType *doc.Type, pkg *packages.Package, detailsLoader DetailsLoaderFn) *StructTypeInfo {
+func NewStructTypeInfo(id string, obj types.Object, docType *doc.Type, pkg *Package, detailsLoader DetailsLoaderFn) *StructTypeInfo {
 	return &StructTypeInfo{
 		NamedTypeInfo: NewNamedTypeInfo(id, TypeKindStruct, obj, docType, pkg, detailsLoader),
 		Methods:       []*MethodInfo{},
 		Fields:        []*FieldInfo{},
 	}
+}
+
+func (s *StructTypeInfo) GetFields() []*FieldInfo {
+	return s.Fields
 }
 
 // NamedCollectionTypeInfo represents a named collection type entry
@@ -161,7 +204,7 @@ type NamedCollectionTypeInfo struct {
 }
 
 // NewNamedCollectionTypeInfo creates a new NamedCollectionTypeInfo
-func NewNamedCollectionTypeInfo(id string, kind TypeKind, obj types.Object, pkg *packages.Package, doc *doc.Type, elementType TypeReference, size int64, detailsLoader DetailsLoaderFn) *NamedCollectionTypeInfo {
+func NewNamedCollectionTypeInfo(id string, kind TypeKind, obj types.Object, pkg *Package, doc *doc.Type, elementType TypeReference, size int64, detailsLoader DetailsLoaderFn) *NamedCollectionTypeInfo {
 
 	n := &NamedCollectionTypeInfo{
 		NamedTypeInfo:    NewNamedTypeInfo(id, kind, obj, doc, pkg, detailsLoader),
@@ -184,10 +227,10 @@ type NamedChannelTypeInfo struct {
 }
 
 // NewNamedChannelTypeInfo creates a new NamedChannelTypeInfo
-func NewNamedChannelTypeInfo(id string, kind TypeKind, obj types.Object, doc *doc.Type, pkg *packages.Package, elementType TypeReference, chanDir ChannelDirection, detailsLoader DetailsLoaderFn) *NamedChannelTypeInfo {
+func NewNamedChannelTypeInfo(id string, obj types.Object, doc *doc.Type, pkg *Package, elementType TypeReference, chanDir ChannelDirection, detailsLoader DetailsLoaderFn) *NamedChannelTypeInfo {
 
 	return &NamedChannelTypeInfo{
-		NamedTypeInfo:    *NewNamedTypeInfo(id, kind, obj, doc, pkg, detailsLoader),
+		NamedTypeInfo:    *NewNamedTypeInfo(id, TypeKindChannel, obj, doc, pkg, detailsLoader),
 		ElementReference: elementType,
 		ChannelDir:       chanDir,
 	}

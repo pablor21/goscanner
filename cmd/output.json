@@ -1,262 +1,82 @@
 {
-  "types": {
-    "github.com/pablor21/goscanner/examples/starwars/basic.Init": {
-      "id": "github.com/pablor21/goscanner/examples/starwars/basic.Init",
-      "name": "Init",
-      "kind": "function"
-    },
-    "github.com/pablor21/goscanner/examples/starwars/basic.IntSliceAppend": {
-      "id": "github.com/pablor21/goscanner/examples/starwars/basic.IntSliceAppend",
-      "name": "IntSliceAppend",
-      "kind": "function",
-      "variadic": true,
-      "parameters": [
-        {
-          "isPointer": true,
-          "pointerIndirections": 1,
-          "type": {
-            "id": "string",
-            "name": "string",
-            "kind": "basic"
-          },
-          "name": "values"
-        },
-        {
-          "type": {
-            "id": "[]int",
-            "name": "[]int",
-            "kind": "slice",
-            "valueType": {
-              "id": "int",
-              "name": "int",
-              "kind": "basic"
-            }
-          },
-          "name": "variadic",
-          "variadic": true
-        }
-      ],
-      "returns": [
-        {
-          "isPointer": true,
-          "pointerIndirections": 1,
-          "type": {
-            "id": "github.com/pablor21/goscanner/examples/starwars/basic.X",
-            "name": "github.com/pablor21/goscanner/examples/starwars/basic.X",
-            "kind": "basic",
-            "visibility": "exported"
-          },
-          "name": "ret"
-        },
-        {
-          "type": {
-            "id": "error",
-            "name": "error",
-            "kind": "basic"
-          },
-          "name": "err"
-        },
-        {
-          "type": {
-            "id": "string",
-            "name": "string",
-            "kind": "basic"
-          },
-          "name": "str"
-        }
-      ]
-    },
-    "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst": {
-      "id": "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst",
-      "name": "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst",
-      "kind": "basic",
-      "visibility": "exported",
-      "type": {
-        "id": "int",
-        "name": "int",
-        "kind": "basic"
-      },
-      "isNamed": true
-    },
-    "github.com/pablor21/goscanner/examples/starwars/basic.X": {
-      "id": "github.com/pablor21/goscanner/examples/starwars/basic.X",
-      "name": "github.com/pablor21/goscanner/examples/starwars/basic.X",
-      "kind": "basic",
-      "visibility": "exported",
-      "type": {
-        "id": "string",
-        "name": "string",
-        "kind": "basic"
-      },
-      "comments": [
-        "// This is a basic named type"
-      ],
-      "isNamed": true,
-      "methods": [
-        {
-          "id": "github.com/pablor21/goscanner/examples/starwars/basic.X#PointerReceiverMethod",
-          "name": "PointerReceiverMethod",
-          "kind": "method",
-          "returns": [
-            {
-              "type": {
-                "id": "string",
-                "name": "string",
-                "kind": "basic"
-              }
-            }
-          ],
-          "comments": [
-            "PointerReceiverMethod is a method with a pointer receiver"
-          ],
-          "receiver": {
-            "id": "github.com/pablor21/goscanner/examples/starwars/basic.X",
-            "name": "github.com/pablor21/goscanner/examples/starwars/basic.X",
-            "kind": "basic",
-            "visibility": "exported"
-          },
-          "isPointerReceiver": true
-        },
-        {
-          "id": "github.com/pablor21/goscanner/examples/starwars/basic.X#String",
-          "name": "String",
-          "kind": "method",
-          "returns": [
-            {
-              "type": {
-                "id": "string",
-                "name": "string",
-                "kind": "basic"
-              }
-            }
-          ],
-          "comments": [
-            "String returns the string representation of X"
-          ],
-          "receiver": {
-            "id": "github.com/pablor21/goscanner/examples/starwars/basic.X",
-            "name": "github.com/pablor21/goscanner/examples/starwars/basic.X",
-            "kind": "basic",
-            "visibility": "exported"
-          }
-        }
-      ]
-    }
-  },
-  "values": {
-    "github.com/pablor21/goscanner/examples/starwars/basic.Answer": {
-      "id": "github.com/pablor21/goscanner/examples/starwars/basic.Answer",
-      "name": "Answer",
-      "kind": "constant",
-      "value": 42,
-      "type": {
-        "id": "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst",
-        "name": "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst",
-        "kind": "basic",
-        "visibility": "exported",
-        "type": {
-          "id": "int",
-          "name": "int",
-          "kind": "basic"
-        },
-        "isNamed": true
-      }
-    },
-    "github.com/pablor21/goscanner/examples/starwars/basic.MeaningOfLi": {
-      "id": "github.com/pablor21/goscanner/examples/starwars/basic.MeaningOfLi",
-      "name": "MeaningOfLi",
-      "kind": "constant",
-      "value": 7,
-      "type": {
-        "id": "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst",
-        "name": "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst",
-        "kind": "basic",
-        "visibility": "exported",
-        "type": {
-          "id": "int",
-          "name": "int",
-          "kind": "basic"
-        },
-        "isNamed": true
-      }
-    },
-    "github.com/pablor21/goscanner/examples/starwars/basic.TestTyped": {
-      "id": "github.com/pablor21/goscanner/examples/starwars/basic.TestTyped",
-      "name": "TestTyped",
-      "kind": "constant",
-      "value": 100,
-      "type": {
-        "id": "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst",
-        "name": "github.com/pablor21/goscanner/examples/starwars/basic.TypedConst",
-        "kind": "basic",
-        "visibility": "exported",
-        "type": {
-          "id": "int",
-          "name": "int",
-          "kind": "basic"
-        },
-        "isNamed": true
-      }
-    }
-  },
   "packages": {
     "github.com/pablor21/goscanner/examples/starwars/basic": {
       "name": "basic",
       "path": "github.com/pablor21/goscanner/examples/starwars/basic",
-      "comments": {
-        "Answer": [
-          {
-            "text": "MeaningOfLi represents the meaning of life constant\nThis is a second line of the comment",
-            "placement": "above"
-          },
-          {
-            "text": "Answer to the Ultimate Question of Life, the Universe, and Everything",
-            "placement": "inline"
-          }
-        ],
-        "IntSliceAppend": [
-          {
-            "text": "IntSliceAppend appends an integer to a slice of integers and returns the new slice.",
-            "placement": "above"
-          }
-        ],
-        "MeaningOfLi": [
-          {
-            "text": "UltimateQuestion represents the ultimate question constant",
-            "placement": "above"
-          }
-        ],
-        "TestTyped": [
-          {
-            "text": "this comment works",
-            "placement": "above"
-          }
-        ],
-        "TypedConst": [
-          {
-            "text": "This is a comment for TypedConst",
-            "placement": "above"
-          }
-        ],
-        "X": [
-          {
-            "text": "// This is a basic named type",
-            "placement": "above"
-          }
-        ],
-        "X.PointerReceiverMethod": [
-          {
-            "text": "PointerReceiverMethod is a method with a pointer receiver",
-            "placement": "above"
-          }
-        ],
-        "X.String": [
-          {
-            "text": "String returns the string representation of X",
-            "placement": "above"
-          }
-        ]
-      }
+      "files": {
+        "/workspace/goscanner/examples/starwars/basic/aliases.go": {
+          "filename": "/workspace/goscanner/examples/starwars/basic/aliases.go",
+          "comments": [
+            {
+              "text": "// Example type aliases\ntype StringAlias = string\n// Example alias for pointer to int\ntype IntAlias = *int\ntype NamedAlias string",
+              "placement": "file"
+            }
+          ]
+        },
+        "/workspace/goscanner/examples/starwars/basic/channels.go": {
+          "filename": "/workspace/goscanner/examples/starwars/basic/channels.go",
+          "comments": [
+            {
+              "text": "// basic channel type info\ntype IntChan chan int\nfunc (i IntChan) SendInt(val int) chan\u003c- int {\n\t// send an integer to the channel\n\ti \u003c- val\n\treturn i\n}\n// string channel type info\ntype StringChan chan string\ntype ReceiverChan \u003c-chan float64\ntype SenderChan chan\u003c- bool\ntype BiDirectionalChan chan any\ntype NestedChan chan\u003c- chan int\ntype ChanPointer chan *string\nthese are really cool comments!!!!!\ntype PointerToChan *chan **int\ntype Arr []chan string\n// type MultiDimArr [][]chan\u003c- float64\nfunc Request(x http.Request) error {\n\treturn nil\n}",
+              "placement": "file"
+            }
+          ]
+        },
+        "/workspace/goscanner/examples/starwars/basic/enums.go": {
+          "filename": "/workspace/goscanner/examples/starwars/basic/enums.go",
+          "comments": [
+            {
+              "text": "Other files in this directory have been edited. Do not suggest code that has been deleted.",
+              "placement": "package"
+            },
+            {
+              "text": "Basic constants for demonstration purposes\ntype IntConst int\nconst (\n\tLightSaber IntConst = iota\n\tBlaster\n\tForcePush\n)\ntype StringConst string\nconst (\n\tJedi     StringConst = \"Jedi\"\n\tSith     StringConst = \"Sith\"\n\tBountyH  StringConst = \"Bounty Hunter\"\n\tSmuggler StringConst = \"Smuggler\"\n)\nconst IntConst = 42\nfunc Init() http.Handler {\n\treturn nil\n}\nThis is a comment for TypedConst\ntype TypedConst int\nconst (\n\t// MeaningOfLi represents the meaning of life constant\n\t// This is a second line of the comment\n\tAnswer TypedConst = 42 // Answer to the Ultimate Question of Life, the Universe, and Everything\n\t// UltimateQuestion represents the ultimate question constant\n\tMeaningOfLi TypedConst = 7\n)\n// // this comment works\n// const TestTyped = TypedConst(100)\n// IsUltimateAnswer checks if the constant is the ultimate answer\nfunc (t TypedConst) IsUltimateAnswer() (isUltimateAnswer *bool) {\n\treturn nil\n}\nconst StrConst = \"Star Wars Universe\"\ntype MixedConst int\nconst (\n\tAlpha MixedConst = iota + 1\n\tBeta\n\tGamma = 10\n\tDelta\n)\ntype UntypedConst = int\nconst (\n\tOne   = 1\n\tTwo   = 2\n\tThree = 3\n)\ntype BoolConst bool\nconst (\n\tTrueConst  BoolConst = true\n\tFalseConst BoolConst = false\n)\ntype FloatConst float64\nconst (\n\tPi    FloatConst = 3.14\n\tEuler FloatConst = 2.71\n)\ntype ComplexConst complex128\nconst (\n\tComplexOne ComplexConst = 1 + 2i\n\tComplexTwo ComplexConst = 3 + 4i\n)\ntype RuneConst rune\nconst (\n\tA RuneConst = 'A'\n\tB RuneConst = 'B'\n\tC RuneConst = 'C'\n)\ntype ByteConst byte\nconst (\n\tByteA ByteConst = 'a'\n\tByteB ByteConst = 'b'\n\tByteC ByteConst = 'c'\n)\ntype UntypedRuneConst = rune\nconst (\n\tRuneX = 'X'\n\tRuneY = 'Y'\n\tRuneZ = 'Z'\n)\ntype UntypedByteConst = byte\nconst (\n\tByteX = 'x'\n\tByteY = 'y'\n\tByteZ = 'z'\n)",
+              "placement": "file"
+            }
+          ]
+        },
+        "/workspace/goscanner/examples/starwars/basic/functions.go": {
+          "filename": "/workspace/goscanner/examples/starwars/basic/functions.go",
+          "comments": [
+            {
+              "text": "Package basic provides basic examples for testing",
+              "placement": "package"
+            },
+            {
+              "text": "This is a very long\ncomment for the basic package\nspanning multiple lines\nto test comment extraction.\nIt should be associated with the package itself.\nX is a basic named type\n// This is the comment for X\ntype X string\n// String returns the string representation of X\nfunc (x X) String() string {\n\treturn string(x)\n}\n// PointerReceiverMethod is a method with a pointer receiver\nfunc (x *X) PointerReceiverMethod() string {\n\treturn string(*x)\n}\n// func Server() http.Server {\n// \treturn http.Server{\n// \t\tAddr: net.JoinHostPort(\"localhost\", \"8080\"),\n// \t}\n// }\nfunc SimpleFunction(a int, b string) (string, error) {\n\treturn b, nil\n}\n// IntSliceAppend appends an integer to a slice of integers and returns the new slice.\nfunc IntSliceAppend(values *string, variadic ...int) (ret *X, err error, str string) {\n\tx := X(*values + \" appended\")\n\treturn \u0026x, nil, \"done\"\n}\n// Other struct type\ntype MyStruct struct {\n\t// Basic fields\n\tFieldA int\n\t// Another field\n\tFieldB string // comment for FieldB\n} // end of MyStruct\n// FnType is a function type that takes an int and a string\n// and returns a string and an error\ntype FnType func(a int, b string) (string, error)\nfunc (f *FnType) Invoke(a int, b string) (string, error) {\n\treturn (*f)(a, b)\n}\n// // FnPointer is a pointer to a function type\n// // e.g., type FnPointer = *FnType\n// // these are really cool comments!!!!!\n// type FnPointer *FnType\n// func ExampleFunction(a int, b string) (string, error) {\n// \treturn b, nil\n// }\n// func ExampleFunctionPointer(a *int, b *string) (*string, error) {\n// \treturn b, nil\n// }",
+              "placement": "file"
+            }
+          ]
+        },
+        "/workspace/goscanner/examples/starwars/basic/slices.go": {
+          "filename": "/workspace/goscanner/examples/starwars/basic/slices.go",
+          "comments": [
+            {
+              "text": "import \"net/http\"\n// type InterfaceA interface {\n// \tMethodA() string\n// \t//MethodB(param int) error\n// \t//MethodC() (int, error)\n// \t//MethodD(param1 string, param2 *float64) *bool\n// \tMethodE(str ...string) *[]string\n// }\n// type unexportedInterfaceB interface {\n// \tUnexportedMethod() int\n// }\ntype SelfRef *[]*****SelfRef\n// func (sr SelfRef) Count() int {\n// \treturn len(sr)\n// }\n// type StringType string\n// type StringPointer **string\ntype IntSlice []int\nfunc (is *IntSlice) Sum() int {\n\ttotal := 0\n\tfor _, v := range *is {\n\t\ttotal += v\n\t}\n\treturn total\n}\n// Multiply multiplies each element in the IntSlice by the given factor\nfunc (is IntSlice) Multiply(factor int) (res IntSlice, err error) {\n\tresult := make(IntSlice, len(is))\n\tfor i, v := range is {\n\t\tresult[i] = v * factor\n\t}\n\treturn result, nil\n}\nfunc (is IntSlice) VariadicExample(prefix string, factors ...int) IntSlice {\n\tresult := make(IntSlice, len(is))\n\tfor i, v := range is {\n\t\tmultiplier := 1\n\t\tfor _, f := range factors {\n\t\t\tmultiplier *= f\n\t\t}\n\t\tresult[i] = v * multiplier\n\t}\n\treturn result\n}\n// This method appends values to the IntSlice\n// and returns a new IntSlice\n// @param values: pointer to IntSlice to append\n// @return: pointer to new IntSlice with appended values\nfunc (is IntSlice) Append(values *IntSlice) *IntSlice {\n\tif values != nil {\n\t\tx := append(is, *values...)\n\t\treturn \u0026x\n\t}\n\treturn \u0026is\n}\nfunc (is *IntSlice) UseExternalType(client http.Client) int {\n\treturn len(*is)\n}\n// arrays\ntype IntArray [5]int\nfunc (ia IntArray) Sum() int {\n\ttotal := 0\n\tfor _, v := range ia {\n\t\ttotal += v\n\t}\n\treturn total\n}\n// type PointerSlice [][][]**float64\n// type Str string\n// type StrPtr **Str\n// type IntDeepSlice []IntSlice\n// type StringPointer **string\n// type StringSlice *[]*[][]string\n// type StringSlicePointer *****[]string\n// type NamedSlice []StructA\n// type NamedDeepSlice []NamedSlice\n// type StructA struct {\n// \t// Field1   string\n// \t// Field2   int\n// \t// Field3   string\n// \t// Pointer  *float64\n// \t// SelfRef  *****StructA\n// \tClient http.Client\n// \t// SliceRef *[]************StructA\n// \tSliceRefPtr     *[]string\n// \tSliceRefElemPtr []*NamedSlice\n// }\n// func (sa StructA) MethodA() string {\n// \treturn sa.Field1\n// }\n// func (sa *StructA) MethodB(param int) error {\n// \treturn nil\n// }\n// func (sa StructA) VariadicMethod(x string, y ...string) (int, error) {\n// \treturn 0, nil\n// }\n// type unexportedStructC struct {\n// \thiddenField string\n// }\n// func (usc unexportedStructC) HiddenMethod() string {\n// \treturn usc.hiddenField\n// }",
+              "placement": "file"
+            }
+          ]
+        },
+        "/workspace/goscanner/examples/starwars/basic/structs.go": {
+          "filename": "/workspace/goscanner/examples/starwars/basic/structs.go",
+          "comments": [
+            {
+              "text": "// struct type info\ntype Struct01 struct {\n\t// these are field comments\n\tFieldA *string\n\tFieldB *int // this is an inline comment\n\t// Server         http.Server\n\tMyComplesField net.Conn\n}\n// Describe provides a description of Struct01\nfunc (s Struct01) Describe() string {\n\treturn \"Struct01 with FieldA: \"\n}\ntype Struct02 struct {\n\tStructField Struct01\n\tFieldC      float64\n// }\ntype MyInterface interface {\n\t// This method does something important\n\tDoSomething(input string) *\u003c-chan *[]*[]int\n\t// Connect() http.ConnState\n} // interface with a method\n// these comments are for MyInterfaceAlis\ntype MyInterfaceAlis = **MyInterface\ntype MyInterfacePointer interface {\n\tMyInterface\n\tDoSomethingElse(param int) error\n}\ntype SourceStruct struct {\n\tEmbeddedFieldA int\n\tEmbeddedFieldB string\n}\nfunc (s *SourceStruct) IsEmbedded() *bool {\n\treturn nil\n}\ntype TargetStruct struct {\n\t*SourceStruct\n\tOwnFieldX bool\n}",
+              "placement": "file"
+            }
+          ]
+        }
+      },
+      "comments": [
+        {
+          "text": "Other files in this directory have been edited. Do not suggest code that has been deleted.",
+          "placement": "package"
+        },
+        {
+          "text": "Package basic provides basic examples for testing",
+          "placement": "package"
+        }
+      ]
     }
   }
 }

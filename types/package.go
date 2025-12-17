@@ -1,16 +1,24 @@
 package types
 
-import "golang.org/x/tools/go/packages"
+import (
+	"go/ast"
+
+	"golang.org/x/tools/go/packages"
+)
 
 type CommentPlacement int
 
 const (
-	CommentPlacementAbove CommentPlacement = iota + 1
+	CommentPlacementUnknown CommentPlacement = iota
+	CommentPlacementAbove
 	CommentPlacementInline
+	CommentPlacementPackage
+	CommentPlacementImports
+	CommentPlacementFile
 )
 
 func (cp CommentPlacement) String() string {
-	return [...]string{"above", "inline"}[cp-1]
+	return [...]string{"unknown", "above", "inline", "package", "imports", "file"}[cp]
 }
 
 func (cp CommentPlacement) MarshalJSON() ([]byte, error) {
@@ -24,6 +32,12 @@ func (cp *CommentPlacement) UnmarshalJSON(data []byte) error {
 		*cp = CommentPlacementAbove
 	case `"inline"`:
 		*cp = CommentPlacementInline
+	case `"package"`:
+		*cp = CommentPlacementPackage
+	case `"imports"`:
+		*cp = CommentPlacementImports
+	case `"file"`:
+		*cp = CommentPlacementFile
 	default:
 		*cp = CommentPlacementAbove
 	}
@@ -32,12 +46,16 @@ func (cp *CommentPlacement) UnmarshalJSON(data []byte) error {
 
 // represents a comment associated with a Go code element
 type Comment struct {
+	ID    string           `json:"id,omitempty"`
 	Text  string           `json:"text,omitempty"`
 	Place CommentPlacement `json:"placement,omitempty"`
 }
 
 func NewComment(text string, place CommentPlacement) Comment {
+	// generate a unique ID for the comment
+
 	return Comment{
+		ID:    "",
 		Text:  text,
 		Place: place,
 	}
@@ -45,36 +63,64 @@ func NewComment(text string, place CommentPlacement) Comment {
 
 // represents a Go source file
 type File struct {
-	Filename string   `json:"filename,omitempty"`
-	pkg      *Package `json:"-"`
+	Filename    string    `json:"filename,omitempty"`
+	CommentsCol []Comment `json:"comments,omitempty"`
+	pkg         *Package  `json:"-"`
+}
+
+func NewFileFromAst(file *ast.File, path string) *File {
+	filePath := path
+	if filePath == "" && file != nil && file.Name != nil {
+		filePath = file.Name.Name + ".go"
+	}
+	return &File{
+		Filename:    filePath,
+		CommentsCol: []Comment{},
+		pkg:         nil,
+	}
 }
 
 func NewFile(filename, comments string) *File {
 	return &File{
-		Filename: filename,
-		pkg:      nil,
+		Filename:    filename,
+		CommentsCol: []Comment{},
+		pkg:         nil,
 	}
+}
+
+func (f *File) SetPackage(p *Package) {
+	f.pkg = p
+}
+
+func (f *File) Package() *Package {
+	return f.pkg
+}
+
+func (f *File) AddComments(comments ...Comment) {
+	f.CommentsCol = append(f.CommentsCol, comments...)
 }
 
 // represents a Go package
 type Package struct {
-	Name     string               `json:"name,omitempty"`
-	Path     string               `json:"path,omitempty"`
-	Imports  []string             `json:"imports,omitempty"`
-	module   *Module              `json:"-"`
-	Files    []*File              `json:"files,omitempty"`
-	pkg      *packages.Package    `json:"-"`
-	Comments map[string][]Comment `json:"comments,omitempty"`
+	Name          string               `json:"name,omitempty"`
+	Path          string               `json:"path,omitempty"`
+	Imports       []string             `json:"imports,omitempty"`
+	module        *Module              `json:"-"`
+	Files         map[string]*File     `json:"files,omitempty"`
+	pkg           *packages.Package    `json:"-"`
+	namedComments map[string][]Comment // maps object IDs to comments
+	CommentsCol   []Comment            `json:"comments,omitempty"`
 }
 
 func NewPackage(pkg *packages.Package) *Package {
 	p := &Package{
-		Name:     pkg.Name,
-		Path:     pkg.PkgPath,
-		Imports:  []string{},
-		Files:    []*File{},
-		Comments: make(map[string][]Comment),
-		module:   nil,
+		Name:          pkg.Name,
+		Path:          pkg.PkgPath,
+		Imports:       []string{},
+		Files:         make(map[string]*File),
+		namedComments: make(map[string][]Comment),
+		CommentsCol:   []Comment{},
+		module:        nil,
 	}
 	p.SetPkg(pkg)
 	return p
@@ -95,19 +141,22 @@ func (p *Package) Package() *packages.Package {
 func (p *Package) AddFiles(f ...*File) {
 	for _, file := range f {
 		file.pkg = p
-		p.Files = append(p.Files, file)
+		p.Files[file.Filename] = file
 	}
 }
 
 func (p *Package) AddComments(objID string, comments []Comment) {
-	p.Comments[objID] = append(p.Comments[objID], comments...)
+	p.namedComments[objID] = append(p.namedComments[objID], comments...)
+	if objID == "#PACKAGE_DOC" {
+		p.CommentsCol = append(p.CommentsCol, comments...)
+	}
 }
 
 func (p *Package) SetPkg(pkg *packages.Package) {
 	p.pkg = pkg
 	p.Name = pkg.Name
 	p.Path = pkg.PkgPath
-	p.Files = []*File{}
+	// p.Files = make(map[string]*File)
 	// set the imports
 	for importPath := range pkg.Imports {
 		p.Imports = append(p.Imports, importPath)

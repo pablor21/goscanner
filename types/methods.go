@@ -4,34 +4,32 @@ import (
 	"go/doc"
 	"go/types"
 	"sync"
-
-	"golang.org/x/tools/go/packages"
 )
 
 // FunctionTypeInfo represents a function entry (commonly used for package-level functions)
 type FunctionTypeInfo struct {
-	BasicTypeInfo
+	*BasicTypeInfo
 	IsVariadic bool             `json:"variadic,omitempty"`
 	Parameters []*ParameterInfo `json:"parameters,omitempty"`
 	Returns    []*ReturnInfo    `json:"returns,omitempty"`
-	CommentCol []string         `json:"comments,omitempty"`
 	doc        *doc.Func
 	// lock to protect lazy loading
 	loadOnce      sync.Once
 	detailsLoader DetailsLoaderFn
 }
 
-func NewFunctionInfo(id string, obj types.Object, funcDoc *doc.Func, pkg *packages.Package) *FunctionTypeInfo {
+func NewFunctionInfo(id string, obj types.Object, funcDoc *doc.Func, pkg *Package, promotedFrom Type) *FunctionTypeInfo {
 	displayName := id
 	if obj != nil {
 		displayName = obj.Name()
 	}
 
 	return &FunctionTypeInfo{
-		BasicTypeInfo: BasicTypeInfo{
+		BasicTypeInfo: &BasicTypeInfo{
 			ID:          id,
 			DisplayName: displayName,
 			TypeKind:    TypeKindFunction,
+			Description: obj.String(),
 			obj:         obj,
 			pkg:         pkg,
 		},
@@ -40,42 +38,13 @@ func NewFunctionInfo(id string, obj types.Object, funcDoc *doc.Func, pkg *packag
 	}
 }
 
-// // NewFunctionInfo creates a FunctionTypeInfo for named function types using doc.Type
-// func NewFunctionInfo(id string, obj types.Object, docType *doc.Type, pkg *packages.Package) *FunctionTypeInfo {
-// 	displayName := id
-// 	if obj != nil {
-// 		displayName = obj.Name()
-// 	}
-
-// 	functionInfo := &FunctionTypeInfo{
-// 		BasicTypeInfo: BasicTypeInfo{
-// 			ID:          id,
-// 			DisplayName: displayName,
-// 			TypeKind:    TypeKindFunction,
-// 			obj:         obj,
-// 			pkg:         pkg,
-// 		},
-// 		doc:           nil, // No doc.Func for named types
-// 		detailsLoader: nil,
-// 	}
-
-// 	// Extract comments from doc.Type
-// 	if docType != nil {
-// 		functionInfo.CommentCol = ExtractComments(docType.Doc)
-// 	}
-
-// 	return functionInfo
-// }
-
 // Load loads the function details (comments, parameters, returns)
 // Implements Loadable#Load
 func (fi *FunctionTypeInfo) Load() error {
 	var loadErr error
 	fi.loadOnce.Do(func() {
 		// load comments and other details
-		if fi.doc != nil {
-			fi.CommentCol = ExtractComments(fi.doc.Doc)
-		}
+		fi.loadComments()
 
 		if fi.detailsLoader != nil {
 			loadErr = fi.detailsLoader(fi)
@@ -91,13 +60,15 @@ func (fi *FunctionTypeInfo) SetDetailsLoader(loader DetailsLoaderFn) {
 // NamedFunctionInfo represents a named type with function underlying type
 type NamedFunctionInfo struct {
 	*NamedTypeInfo
-	fn         *FunctionTypeInfo
-	IsVariadic bool             `json:"variadic,omitempty"`
-	Parameters []*ParameterInfo `json:"parameters,omitempty"`
-	Returns    []*ReturnInfo    `json:"returns,omitempty"`
+	fn             *FunctionTypeInfo
+	IsVariadic     bool             `json:"variadic,omitempty"`
+	Parameters     []*ParameterInfo `json:"parameters,omitempty"`
+	Returns        []*ReturnInfo    `json:"returns,omitempty"`
+	PromotedFromId string           `json:"promotedFrom,omitempty"`
+	promotedFrom   Type             `json:"-"`
 }
 
-func NewNamedFunctionInfo(id string, obj types.Object, fn *FunctionTypeInfo, docType *doc.Type, pkg *packages.Package, loader DetailsLoaderFn) *NamedFunctionInfo {
+func NewNamedFunctionInfo(id string, obj types.Object, fn *FunctionTypeInfo, docType *doc.Type, pkg *Package, promotedFrom Type, loader DetailsLoaderFn) *NamedFunctionInfo {
 	fi := &NamedFunctionInfo{
 		NamedTypeInfo: NewNamedTypeInfo(id, TypeKindFunction, obj, docType, pkg, loader),
 		fn:            fn,
@@ -105,6 +76,12 @@ func NewNamedFunctionInfo(id string, obj types.Object, fn *FunctionTypeInfo, doc
 	fi.Parameters = fi.fn.Parameters
 	fi.Returns = fi.fn.Returns
 	fi.IsVariadic = fi.fn.IsVariadic
+
+	promotedFromId := ""
+	if promotedFrom != nil {
+		promotedFromId = promotedFrom.Id()
+	}
+	fi.PromotedFromId = promotedFromId
 	return fi
 }
 
@@ -112,13 +89,23 @@ func (fi *NamedFunctionInfo) UnderlyingFn() *FunctionTypeInfo {
 	return fi.fn
 }
 
+func (fi *NamedFunctionInfo) PromotedFrom() Type {
+	return fi.promotedFrom
+}
+
+func (fi *NamedFunctionInfo) IsPromoted() bool {
+	return fi.promotedFrom != nil
+}
+
+func (fi *NamedFunctionInfo) SetPromotedFrom(t Type) {
+	fi.promotedFrom = t
+}
+
 func (fi *NamedFunctionInfo) Load() error {
 	var loadErr error
 	fi.loadOnce.Do(func() {
-		// load the comments
-		if fi.doc != nil {
-			fi.CommentCol = ExtractComments(fi.doc.Doc)
-		}
+		// load comments
+		fi.loadComments()
 
 		// load named type details
 		if fi.detailsLoader != nil {
@@ -140,9 +127,11 @@ func (fi *NamedFunctionInfo) Load() error {
 // MethodInfo represents a method entry associated with a named type
 type MethodInfo struct {
 	*FunctionTypeInfo
-	receiver          NamedType        `json:"-"`
-	ReceiverInfo      *BasicTypeInfo   `json:"receiver,omitempty"`
+	receiver NamedType `json:"-"`
+	// ReceiverInfo      *BasicTypeInfo   `json:"receiver,omitempty"`
 	IsPointerReceiver bool             `json:"isPointerReceiver,omitempty"`
+	PromotedFromId    string           `json:"promotedFrom,omitempty"`
+	promotedFrom      Type             `json:"-"`
 	Parameters        []*ParameterInfo `json:"parameters,omitempty"`
 }
 
@@ -159,17 +148,33 @@ func NewMethodInfo(obj types.Object, parent NamedType) *MethodInfo {
 	}
 
 	m := &MethodInfo{
-		FunctionTypeInfo:  NewFunctionInfo(parent.Id()+"#"+obj.Name(), obj, doc, parent.Package()),
-		receiver:          parent,
-		ReceiverInfo:      parent.GetBasicInfo(),
+		FunctionTypeInfo: NewFunctionInfo(parent.Id()+"#"+obj.Name(), obj, doc, parent.Package(), nil),
+		receiver:         parent,
+		// ReceiverInfo:      parent.GetBasicInfo(),
 		IsPointerReceiver: false,
 	}
 	m.TypeKind = TypeKindMethod
+	m.commentId = parent.GetBasicInfo().DisplayName + "." + obj.Name()
 
 	return m
 }
 
 func (m *MethodInfo) Receiver() NamedType { return m.receiver }
+
+func (fi *MethodInfo) PromotedFrom() Type {
+	return fi.promotedFrom
+}
+
+func (fi *MethodInfo) IsPromoted() bool {
+	return fi.promotedFrom != nil
+}
+
+func (fi *MethodInfo) SetPromotedFrom(t Type) {
+	fi.promotedFrom = t
+	if t != nil {
+		fi.PromotedFromId = t.Id()
+	}
+}
 
 type ParameterInfo struct {
 	parent     *FunctionTypeInfo

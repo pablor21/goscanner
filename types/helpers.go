@@ -4,10 +4,11 @@ import (
 	"strings"
 )
 
-func ExtractComments(doc string) (lines []string) {
+func ExtractComments(doc string) string {
 	if doc == "" {
-		return nil
+		return ""
 	}
+	var lines []string
 
 	for _, c := range strings.Split(doc, "\n") {
 		trimmed := strings.TrimSpace(c)
@@ -16,5 +17,5 @@ func ExtractComments(doc string) (lines []string) {
 		}
 	}
 
-	return
+	return strings.Join(lines, "\n")
 }

@@ -13,7 +13,7 @@ type TypeRef struct {
 // typeReferencePublicInfo represents public information about a type reference for serialization
 // purposes ONLY
 type typeReferencePublicInfo struct {
-	BasicTypeInfo
+	*BasicTypeInfo
 	IsPointer           bool `json:"isPointer,omitempty"`
 	PointerIndirections int  `json:"pointerIndirections,omitempty"`
 
@@ -28,15 +28,12 @@ func makePublicTypeRefInfo(ref TypeReference) *typeReferencePublicInfo {
 	// Handle nil reference gracefully
 	if ref == nil || ref.TypeRef() == nil {
 		return &typeReferencePublicInfo{
-			BasicTypeInfo: BasicTypeInfo{
-				ID:          "",
-				DisplayName: "nil",
-			},
+			BasicTypeInfo: NewBasicTypeInfo("unresolved", "", TypeKindUnknown),
 		}
 	}
 
 	rt := ref.TypeRef()
-	basicInfo := NewBasicTypeInfo(rt.Id(), rt.Kind())
+	basicInfo := NewBasicTypeInfo(rt.Id(), rt.Name(), rt.Kind())
 	basicInfo.DisplayName = rt.Name()
 	basicInfo.VisibilityLevel = rt.Visibility()
 
@@ -44,19 +41,19 @@ func makePublicTypeRefInfo(ref TypeReference) *typeReferencePublicInfo {
 	case *NamedChannelTypeInfo:
 		elemInfo := makePublicTypeRefInfo(t.ElementType())
 		elemInfo.IsPointer = t.ElementType().IsPointer()
-		elemInfo.PointerIndirections = t.ElementType().PointerIndirections()
+		elemInfo.PointerIndirections = t.ElementType().PointerDepth()
 		return &typeReferencePublicInfo{
 			BasicTypeInfo:       basicInfo,
 			ElementTypeInfo:     elemInfo,
 			ChanDir:             t.ChannelDirection(),
 			IsPointer:           ref.IsPointer(),
-			PointerIndirections: ref.PointerIndirections(),
+			PointerIndirections: ref.PointerDepth(),
 		}
 	case HasElementType:
 		elemType := t.ElementType()
 		if elemType == nil {
 			return &typeReferencePublicInfo{
-				BasicTypeInfo: BasicTypeInfo{
+				BasicTypeInfo: &BasicTypeInfo{
 					ID:          t.Id(),
 					DisplayName: t.Name(),
 				},
@@ -64,7 +61,7 @@ func makePublicTypeRefInfo(ref TypeReference) *typeReferencePublicInfo {
 		}
 		elemInfo := makePublicTypeRefInfo(elemType)
 		elemInfo.IsPointer = elemType.IsPointer()
-		elemInfo.PointerIndirections = elemType.PointerIndirections()
+		elemInfo.PointerIndirections = elemType.PointerDepth()
 
 		return &typeReferencePublicInfo{
 			BasicTypeInfo:   basicInfo,
@@ -75,12 +72,12 @@ func makePublicTypeRefInfo(ref TypeReference) *typeReferencePublicInfo {
 	case HasKeyType:
 		keyInfo := makePublicTypeRefInfo(t.KeyType())
 		keyInfo.IsPointer = t.KeyType().IsPointer()
-		keyInfo.PointerIndirections = t.KeyType().PointerIndirections()
+		keyInfo.PointerIndirections = t.KeyType().PointerDepth()
 		return &typeReferencePublicInfo{
 			BasicTypeInfo:       basicInfo,
 			KeyTypeInfo:         keyInfo,
 			IsPointer:           ref.IsPointer(),
-			PointerIndirections: ref.PointerIndirections(),
+			PointerIndirections: ref.PointerDepth(),
 		}
 
 	default:
@@ -128,11 +125,7 @@ func NewTypeRef(refId string, pointerIndirections int, reference Type) *TypeRef 
 	} else {
 		// Create a placeholder for nil references
 		ref.BasicEntryInfo = &typeReferencePublicInfo{
-			BasicTypeInfo: BasicTypeInfo{
-				ID:          refId,
-				DisplayName: "unresolved",
-				// VisibilityLevel: VisibilityLevelExported,
-			},
+			BasicTypeInfo: NewBasicTypeInfo("unresolved", "", TypeKindUnknown),
 		}
 	}
 
@@ -157,9 +150,9 @@ func (tr *TypeRef) IsPointer() bool {
 	return tr.PointerFlag
 }
 
-// PointerIndirections returns the number of pointer indirections
-// Implements TypeReference#PointerIndirections
-func (tr *TypeRef) PointerIndirections() int {
+// PointerDepth returns the number of pointer indirections
+// Implements TypeReference#PointerDepth
+func (tr *TypeRef) PointerDepth() int {
 	return tr.PointerCount
 }
 
