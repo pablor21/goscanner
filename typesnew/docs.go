@@ -106,8 +106,8 @@ func (m *Module) AddPackage(pkg *Package) {
 type Package struct {
 	path        string
 	name        string
-	files       []*File
-	types       []Type
+	files       *TypesCol[*File]
+	types       *TypesCol[Type]
 	pkgComments []Comment
 	comments    map[string][]Comment // key is type/function/field name, value is comments
 	pkg         *packages.Package    // the original go/packages.Package
@@ -119,8 +119,8 @@ func NewPackage(path string, name string, pkg *packages.Package) *Package {
 	return &Package{
 		path:     path,
 		name:     name,
-		files:    []*File{},
-		types:    []Type{},
+		files:    NewTypesCol[*File](),
+		types:    NewTypesCol[Type](),
 		comments: make(map[string][]Comment),
 		pkg:      pkg,
 	}
@@ -135,19 +135,19 @@ func (p *Package) Name() string {
 }
 
 func (p *Package) Files() []*File {
-	return p.files
+	return p.files.Values()
 }
 
 func (p *Package) Types() []Type {
-	return p.types
+	return p.types.Values()
 }
 
 func (p *Package) AddFile(file *File) {
-	p.files = append(p.files, file)
+	p.files.Set(file.Path(), file)
 }
 
 func (p *Package) AddType(t Type) {
-	p.types = append(p.types, t)
+	p.types.Set(t.Id(), t)
 }
 
 func (p *Package) GetComments(name string) []Comment {
@@ -169,6 +169,38 @@ func (p *Package) GoPackage() *packages.Package {
 	return p.pkg
 }
 
+func (p *Package) SetLogger(logger logger.Logger) {
+	p.logger = logger
+}
+
+func (p *Package) Logger() logger.Logger {
+	return p.logger
+}
+
+func (p *Package) PackageComments() []Comment {
+	return p.pkgComments
+}
+
+func (p *Package) SetPackageComments(comments []Comment) {
+	p.pkgComments = comments
+}
+
+func (p *Package) Serialize() any {
+	return struct {
+		Path        string    `json:"path,omitempty"`
+		Name        string    `json:"name,omitempty"`
+		Files       any       `json:"files,omitempty"`
+		Types       any       `json:"types,omitempty"`
+		PkgComments []Comment `json:"package_comments,omitempty"`
+	}{
+		Path:        p.path,
+		Name:        p.name,
+		Files:       p.files.Serialize(),
+		Types:       p.types.Serialize(),
+		PkgComments: p.pkgComments,
+	}
+}
+
 // File represents a Go source file
 type File struct {
 	path     string
@@ -182,6 +214,18 @@ func NewFile(path string, name string) *File {
 		path:     path,
 		name:     name,
 		comments: []Comment{},
+	}
+}
+
+func (f *File) Serialize() any {
+	return struct {
+		Path     string    `json:"path,omitempty"`
+		Name     string    `json:"name,omitempty"`
+		Comments []Comment `json:"comments,omitempty"`
+	}{
+		Path:     f.path,
+		Name:     f.name,
+		Comments: f.comments,
 	}
 }
 

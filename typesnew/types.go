@@ -6,6 +6,35 @@ import (
 	"sync"
 )
 
+// BasicTypes is a list of Go basic types (as per go/types.BasicKind)
+var BasicTypes = []string{
+	"bool",
+	"byte",
+	"complex64",
+	"complex128",
+	"error",
+	"float32",
+	"float64",
+	"int",
+	"int8",
+	"int16",
+	"int32",
+	"int64",
+	"rune",
+	"string",
+	"uint",
+	"uint8",
+	"uint16",
+	"uint32",
+	"uint64",
+	"uintptr",
+	"interface{}",
+	"slice",
+	"any",
+	"comparable",
+	"error",
+}
+
 // TypeKind represents the kind of a type
 type TypeKind string
 
@@ -89,60 +118,62 @@ type Type interface {
 	Loadable
 }
 
-type TypesCol map[string]Type
-
-func (c TypesCol) Get(id string) Type {
-	return c[id]
+type TypesCol[T Serializable] struct {
+	values map[string]T
 }
 
-func (c TypesCol) Set(id string, t Type) {
-	c[id] = t
+func (c TypesCol[T]) Get(id string) T {
+	return c.values[id]
 }
 
-func (c TypesCol) Has(id string) bool {
-	_, exists := c[id]
+func (c TypesCol[T]) Set(id string, t T) {
+	c.values[id] = t
+}
+
+func (c TypesCol[T]) Has(id string) bool {
+	_, exists := c.values[id]
 	return exists
 }
 
-func (c TypesCol) Delete(id string) {
-	delete(c, id)
+func (c TypesCol[T]) Delete(id string) {
+	delete(c.values, id)
 }
 
-func (c TypesCol) Keys() []string {
-	keys := make([]string, 0, len(c))
-	for k := range c {
+func (c TypesCol[T]) Keys() []string {
+	keys := make([]string, 0, len(c.values))
+	for k := range c.values {
 		keys = append(keys, k)
 	}
 	return keys
 }
 
-func (c TypesCol) Values() []Type {
-	values := make([]Type, 0, len(c))
-	for _, v := range c {
+func (c TypesCol[T]) Values() []T {
+	values := make([]T, 0, len(c.values))
+	for _, v := range c.values {
 		values = append(values, v)
 	}
 	return values
 }
 
-func (c TypesCol) Len() int {
-	return len(c)
+func (c TypesCol[T]) Len() int {
+	return len(c.values)
 }
 
-func (c TypesCol) Clear() {
-	for k := range c {
-		delete(c, k)
-	}
+func (c *TypesCol[T]) Clear() {
+	c.values = make(map[string]T)
 }
 
-func (c TypesCol) Serialize() any {
-	for _, t := range c {
+func (c TypesCol[T]) Serialize() any {
+	for _, t := range c.values {
 		_ = t.Serialize()
 	}
 	return nil
 }
 
-func NewTypesCol() TypesCol {
-	return make(TypesCol)
+func NewTypesCol[T Serializable]() *TypesCol[T] {
+	return &TypesCol[T]{
+		values: make(map[string]T),
+	}
 }
 
 // baseType contains common fields for all types
