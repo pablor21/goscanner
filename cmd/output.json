@@ -8,130 +8,113 @@
     }
   },
   "types": {
-    "github.com/pablor21/goscanner/examples/starwars/basic.MyStruct": {
-      "id": "github.com/pablor21/goscanner/examples/starwars/basic.MyStruct",
-      "name": "MyStruct",
-      "kind": "struct",
+    "github.com/pablor21/goscanner/examples/starwars/basic.MyEnum": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.MyEnum",
+      "name": "MyEnum",
+      "kind": "basic",
       "named": true,
       "package": "github.com/pablor21/goscanner/examples/starwars/basic",
-      "fields": [
+      "comments": [
         {
-          "id": "github.com/pablor21/goscanner/examples/starwars/basic.MyStruct#Anonymous",
-          "name": "Anonymous",
-          "kind": "field",
-          "named": true,
-          "package": "github.com/pablor21/goscanner/examples/starwars/basic",
-          "type": {
-            "id": "__unnamed_struct__1__",
-            "name": "__unnamed_struct__1__",
-            "kind": "struct",
-            "package": "github.com/pablor21/goscanner/examples/starwars/basic",
-            "fields": [
-              {
-                "id": "__unnamed_struct__1__#FieldA",
-                "name": "FieldA",
-                "kind": "field",
-                "named": true,
-                "package": "github.com/pablor21/goscanner/examples/starwars/basic",
-                "type": {
-                  "id": "string",
-                  "name": "string",
-                  "kind": "basic",
-                  "package": "github.com/pablor21/goscanner/examples/starwars/basic"
-                },
-                "parent": "__unnamed_struct__1__"
-              },
-              {
-                "id": "__unnamed_struct__1__#FieldB",
-                "name": "FieldB",
-                "kind": "field",
-                "named": true,
-                "package": "github.com/pablor21/goscanner/examples/starwars/basic",
-                "type": {
-                  "id": "int",
-                  "name": "int",
-                  "kind": "basic",
-                  "package": "github.com/pablor21/goscanner/examples/starwars/basic"
-                },
-                "parent": "__unnamed_struct__1__"
-              }
-            ]
-          },
-          "parent": "github.com/pablor21/goscanner/examples/starwars/basic.MyStruct"
-        },
-        {
-          "id": "github.com/pablor21/goscanner/examples/starwars/basic.MyStruct#AnonymousInterface",
-          "name": "AnonymousInterface",
-          "kind": "field",
-          "named": true,
-          "package": "github.com/pablor21/goscanner/examples/starwars/basic",
-          "type": {
-            "id": "__unnamed_interface__1__",
-            "name": "__unnamed_interface__1__",
-            "kind": "interface",
-            "package": "github.com/pablor21/goscanner/examples/starwars/basic",
-            "methods": [
-              {
-                "id": "__unnamed_interface__1__#DoSomething",
-                "name": "DoSomething",
-                "kind": "method",
-                "named": true,
-                "package": "github.com/pablor21/goscanner/examples/starwars/basic",
-                "results": [
-                  {
-                    "type": {
-                      "id": "error",
-                      "name": "error",
-                      "kind": "basic",
-                      "package": "github.com/pablor21/goscanner/examples/starwars/basic"
-                    }
-                  }
-                ],
-                "isPointerReceiver": false,
-                "receiver": "__unnamed_interface__1__",
-                "structure": "func() error"
-              }
-            ]
-          },
-          "parent": "github.com/pablor21/goscanner/examples/starwars/basic.MyStruct"
-        },
-        {
-          "id": "github.com/pablor21/goscanner/examples/starwars/basic.MyStruct#AnonymousFunc",
-          "name": "AnonymousFunc",
-          "kind": "field",
-          "named": true,
-          "package": "github.com/pablor21/goscanner/examples/starwars/basic",
-          "type": {
-            "id": "__unnamed_function__1__",
-            "name": "__unnamed_function__1__",
-            "kind": "function",
-            "package": "github.com/pablor21/goscanner/examples/starwars/basic",
-            "parameters": [
-              {
-                "name": "x",
-                "type": {
-                  "id": "int",
-                  "name": "int",
-                  "kind": "basic",
-                  "package": "github.com/pablor21/goscanner/examples/starwars/basic"
-                }
-              }
-            ],
-            "results": [
-              {
-                "type": {
-                  "id": "string",
-                  "name": "string",
-                  "kind": "basic",
-                  "package": "github.com/pablor21/goscanner/examples/starwars/basic"
-                }
-              }
-            ]
-          },
-          "parent": "github.com/pablor21/goscanner/examples/starwars/basic.MyStruct"
+          "text": "hello world",
+          "placement": "above"
         }
-      ]
+      ],
+      "underlying": {
+        "id": "int",
+        "name": "int",
+        "kind": "basic"
+      }
     }
   },
-  "values": {}
+  "values": {
+    "github.com/pablor21/goscanner/examples/starwars/basic.EnumValueA": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.EnumValueA",
+      "name": "EnumValueA",
+      "kind": "constant",
+      "named": true,
+      "package": "github.com/pablor21/goscanner/examples/starwars/basic",
+      "comments": [
+        {
+          "text": "EnumValueA represents the first value",
+          "placement": "inline"
+        }
+      ],
+      "value": 0,
+      "valueType": {
+        "id": "github.com/pablor21/goscanner/examples/starwars/basic.MyEnum",
+        "name": "MyEnum",
+        "kind": "basic",
+        "named": true,
+        "package": "github.com/pablor21/goscanner/examples/starwars/basic"
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/basic.EnumValueB": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.EnumValueB",
+      "name": "EnumValueB",
+      "kind": "constant",
+      "named": true,
+      "package": "github.com/pablor21/goscanner/examples/starwars/basic",
+      "comments": [
+        {
+          "text": "EnumValueB represents the second value",
+          "placement": "inline"
+        }
+      ],
+      "value": 1,
+      "valueType": {
+        "id": "github.com/pablor21/goscanner/examples/starwars/basic.MyEnum",
+        "name": "MyEnum",
+        "kind": "basic",
+        "named": true,
+        "package": "github.com/pablor21/goscanner/examples/starwars/basic"
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/basic.EnumValueC": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.EnumValueC",
+      "name": "EnumValueC",
+      "kind": "constant",
+      "named": true,
+      "package": "github.com/pablor21/goscanner/examples/starwars/basic",
+      "comments": [
+        {
+          "text": "EnumValueC represents the third value",
+          "placement": "inline"
+        }
+      ],
+      "value": 2,
+      "valueType": {
+        "id": "github.com/pablor21/goscanner/examples/starwars/basic.MyEnum",
+        "name": "MyEnum",
+        "kind": "basic",
+        "named": true,
+        "package": "github.com/pablor21/goscanner/examples/starwars/basic"
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/basic.MY_CONSTANT": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.MY_CONSTANT",
+      "name": "MY_CONSTANT",
+      "kind": "constant",
+      "named": true,
+      "package": "github.com/pablor21/goscanner/examples/starwars/basic",
+      "value": {},
+      "valueType": {
+        "id": "string",
+        "name": "string",
+        "kind": "basic"
+      }
+    },
+    "github.com/pablor21/goscanner/examples/starwars/basic.MY_VARIABLE": {
+      "id": "github.com/pablor21/goscanner/examples/starwars/basic.MY_VARIABLE",
+      "name": "MY_VARIABLE",
+      "kind": "variable",
+      "named": true,
+      "package": "github.com/pablor21/goscanner/examples/starwars/basic",
+      "valueType": {
+        "id": "int",
+        "name": "int",
+        "kind": "basic"
+      }
+    }
+  }
 }

@@ -249,26 +249,6 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 		r.docFuncs[canonical] = docFunc
 	}
 
-	// Constants
-	if r.config.ScanMode.Has(ScanModeConsts) {
-		for _, value := range docPkg.Consts {
-			for _, name := range value.Names {
-				obj := scope.Lookup(name)
-				r.parseValue(obj)
-			}
-		}
-	}
-
-	// Variables
-	if r.config.ScanMode.Has(ScanModeVariables) {
-		for _, value := range docPkg.Vars {
-			for _, name := range value.Names {
-				obj := scope.Lookup(name)
-				r.parseValue(obj)
-			}
-		}
-	}
-
 	// Types + associated functions
 	if r.config.ScanMode.Has(ScanModeTypes) {
 		for _, docType := range docPkg.Types {
@@ -295,21 +275,36 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 				continue
 			}
 
-			// If the type has constants, treat it as an enum
-			if r.config.ScanMode.Has(ScanModeEnums) && len(docType.Consts) > 0 {
-				r.resolveGoType(obj.Type(), typesnew.TypeKindEnum)
-			} else {
-				r.ResolveType(obj.Type())
-			}
+			r.ResolveType(obj.Type())
 
-			// Parse enum constants
-			if r.config.ScanMode.Has(ScanModeEnums) {
+			// Parse constants associated with this type
+			if r.config.ScanMode.Has(ScanModeConsts) {
 				for _, constDecl := range docType.Consts {
 					for _, name := range constDecl.Names {
 						obj := scope.Lookup(name)
-						r.parseValue(obj)
+						r.parseValue(obj, constDecl)
 					}
 				}
+			}
+		}
+	}
+
+	// Constants
+	if r.config.ScanMode.Has(ScanModeConsts) {
+		for _, value := range docPkg.Consts {
+			for _, name := range value.Names {
+				obj := scope.Lookup(name)
+				r.parseValue(obj, value)
+			}
+		}
+	}
+
+	// Variables
+	if r.config.ScanMode.Has(ScanModeVariables) {
+		for _, value := range docPkg.Vars {
+			for _, name := range value.Names {
+				obj := scope.Lookup(name)
+				r.parseValue(obj, value)
 			}
 		}
 	}
@@ -331,9 +326,19 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 				sb.WriteString(".")
 				sb.WriteString(f.Name())
 				canonical := sb.String()
+
+				// Get doc for this function
+				docFunc := r.docFuncs[canonical]
+
 				// makeFunction already caches it, no need to cache again
 				fn := r.makeFunction(canonical, sig, nil, f, nil, typesnew.TypeKindFunction)
 				if fn != nil {
+					// Set documentation from doc.Func if available
+					if docFunc != nil {
+						// Create a doc.Type wrapper to use SetDoc
+						docType := &doc.Type{Doc: docFunc.Doc}
+						fn.SetDoc(docType)
+					}
 					// Set structure to the full signature
 					fn.SetStructure(sig.String())
 				}
@@ -360,11 +365,11 @@ func (r *defaultTypeResolver) ResolveType(t types.Type) typesnew.Type {
 		return nil
 	}
 
-	return r.resolveGoType(t, "")
+	return r.resolveGoType(t)
 }
 
-// resolveGoType handles Go type objects with optional kind forcing
-func (r *defaultTypeResolver) resolveGoType(t types.Type, forceKind typesnew.TypeKind) typesnew.Type {
+// resolveGoType handles Go type objects
+func (r *defaultTypeResolver) resolveGoType(t types.Type) typesnew.Type {
 	if t == nil {
 		return nil
 	}
@@ -380,14 +385,9 @@ func (r *defaultTypeResolver) resolveGoType(t types.Type, forceKind typesnew.Typ
 		}
 	}
 
-	// Check if it's a basic type
+	// Check if it's a basic type (only for unnamed basic types)
 	if basicType, exists := r.basicTypes[typeName]; exists {
 		return basicType
-	}
-
-	// Check cache
-	if ti, exists := r.types.Get(typeName); exists {
-		return ti
 	}
 
 	r.logger.Debugf("Resolving Go type: %v", typeName)
@@ -415,6 +415,13 @@ func (r *defaultTypeResolver) resolveGoType(t types.Type, forceKind typesnew.Typ
 		t = named.Underlying()
 	}
 
+	// Check cache for named types
+	if namedType != nil {
+		if ti, exists := r.types.Get(typeName); exists {
+			return ti
+		}
+	}
+
 	// Handle the underlying type
 	var ti typesnew.Type
 
@@ -429,7 +436,7 @@ func (r *defaultTypeResolver) resolveGoType(t types.Type, forceKind typesnew.Typ
 		ti = r.makeCollection(typeName, gt, namedType, obj, docType)
 
 	case *types.Signature:
-		ti = r.makeFunction(typeName, gt, namedType, obj, docType, forceKind)
+		ti = r.makeFunction(typeName, gt, namedType, obj, docType, typesnew.TypeKindFunction)
 
 	case *types.Chan:
 		ti = r.makeChannel(typeName, gt, namedType, obj, docType)
@@ -1015,12 +1022,15 @@ func (r *defaultTypeResolver) processSignature(sig *types.Signature, pkgContext 
 			continue
 		}
 
-		// For unnamed parameter types, set package to context package
+		// For unnamed parameter types, set package to context package (except basic types)
 		if !paramTypeResolved.IsNamed() {
-			if pkgContext != nil {
-				paramTypeResolved.SetPackage(pkgContext)
-			} else {
-				paramTypeResolved.SetPackage(r.currentPkg)
+			// Skip basic types - they are predeclared and have no package
+			if _, isBasic := paramTypeResolved.(*typesnew.Basic); !isBasic {
+				if pkgContext != nil {
+					paramTypeResolved.SetPackage(pkgContext)
+				} else {
+					paramTypeResolved.SetPackage(r.currentPkg)
+				}
 			}
 		}
 
@@ -1051,12 +1061,15 @@ func (r *defaultTypeResolver) processSignature(sig *types.Signature, pkgContext 
 			continue
 		}
 
-		// For unnamed result types, set package to context package
+		// For unnamed result types, set package to context package (except basic types)
 		if !resultTypeResolved.IsNamed() {
-			if pkgContext != nil {
-				resultTypeResolved.SetPackage(pkgContext)
-			} else {
-				resultTypeResolved.SetPackage(r.currentPkg)
+			// Skip basic types - they are predeclared and have no package
+			if _, isBasic := resultTypeResolved.(*typesnew.Basic); !isBasic {
+				if pkgContext != nil {
+					resultTypeResolved.SetPackage(pkgContext)
+				} else {
+					resultTypeResolved.SetPackage(r.currentPkg)
+				}
 			}
 		}
 
@@ -1090,7 +1103,7 @@ func (r *defaultTypeResolver) makeFunction(
 ) *typesnew.Function {
 	// Determine ID based on whether this is a named or unnamed function
 	var typeID string
-	if obj != nil || forceKind == typesnew.TypeKindFunction {
+	if obj != nil {
 		// Named function or package-level function: use provided id
 		typeID = id
 	} else {
@@ -1321,9 +1334,12 @@ func (r *defaultTypeResolver) makeStruct(
 					continue
 				}
 
-				// For unnamed field types, set package to struct's package
+				// For unnamed field types, set package to struct's package (except basic types)
 				if !fieldTypeResolved.IsNamed() {
-					fieldTypeResolved.SetPackage(strct.Package())
+					// Skip basic types - they are predeclared and have no package
+					if _, isBasic := fieldTypeResolved.(*typesnew.Basic); !isBasic {
+						fieldTypeResolved.SetPackage(strct.Package())
+					}
 				}
 
 				// Create pointer wrapper if needed
@@ -1375,46 +1391,46 @@ func (r *defaultTypeResolver) makeStruct(
 }
 
 // makeEnum creates an Enum type from a named type with associated constants
-func (r *defaultTypeResolver) makeEnum(
-	id string,
-	basicType *types.Basic,
-	namedType *types.Named,
-	obj types.Object,
-	// docType *doc.Type,
-	// forceKind typesnew.TypeKind,
-) *typesnew.Enum {
-	if namedType == nil {
-		r.logger.Warn("Cannot create enum from unnamed type")
-		return nil
-	}
+// func (r *defaultTypeResolver) makeEnum(
+// 	id string,
+// 	basicType *types.Basic,
+// 	namedType *types.Named,
+// 	obj types.Object,
+// 	// docType *doc.Type,
+// 	// forceKind typesnew.TypeKind,
+// ) *typesnew.Enum {
+// 	if namedType == nil {
+// 		r.logger.Warn("Cannot create enum from unnamed type")
+// 		return nil
+// 	}
 
-	// Get the underlying basic type
-	basicTypeName := basicType.String()
-	cachedBasic, exists := r.basicTypes[basicTypeName]
-	if !exists {
-		// Create cached basic if missing
-		cachedBasic = typesnew.NewBasic(basicTypeName, basicTypeName)
-		r.basicTypes[basicTypeName] = cachedBasic
-	}
+// 	// Get the underlying basic type
+// 	basicTypeName := basicType.String()
+// 	cachedBasic, exists := r.basicTypes[basicTypeName]
+// 	if !exists {
+// 		// Create cached basic if missing
+// 		cachedBasic = typesnew.NewBasic(basicTypeName, basicTypeName)
+// 		r.basicTypes[basicTypeName] = cachedBasic
+// 	}
 
-	// Create enum type
-	enum := typesnew.NewEnum(id, obj.Name(), cachedBasic)
-	enum.SetPackage(r.getPackageInfo(obj))
+// 	// Create enum type
+// 	enum := typesnew.NewEnum(id, obj.Name(), cachedBasic)
+// 	enum.SetPackage(r.getPackageInfo(obj))
 
-	// Set loader to extract enum values lazily
-	enum.SetLoader(func(t typesnew.Type) error {
-		// Enum values will be added by ProcessPackage when it encounters constants
-		// associated with this type via docType.Consts
-		return nil
-	})
+// 	// Set loader to extract enum values lazily
+// 	enum.SetLoader(func(t typesnew.Type) error {
+// 		// Enum values will be added by ProcessPackage when it encounters constants
+// 		// associated with this type via docType.Consts
+// 		return nil
+// 	})
 
-	// Cache and return
-	r.cache(enum)
-	return enum
-}
+// 	// Cache and return
+// 	r.cache(enum)
+// 	return enum
+// }
 
 // parseValue creates a Value (constant or variable)
-func (r *defaultTypeResolver) parseValue(obj types.Object) typesnew.Type {
+func (r *defaultTypeResolver) parseValue(obj types.Object, docValue *doc.Value) typesnew.Type {
 	if obj == nil {
 		return nil
 	}
@@ -1453,20 +1469,11 @@ func (r *defaultTypeResolver) parseValue(obj types.Object) typesnew.Type {
 		finalValueType.SetPackage(r.currentPkg)
 	}
 
-	var value typesnew.Type
+	var value *typesnew.Value
 
 	switch v := obj.(type) {
 	case *types.Const:
-		// Get the constant value
-		constVal := v.Val()
-		var goValue any
-		if constVal != nil {
-			goValue = constVal.String()
-			// Try to parse as specific type based on the underlying type
-			// This is a simplified version; in practice, you might want more sophisticated parsing
-		}
-
-		value = typesnew.NewConstant(id, obj.Name(), finalValueType, goValue)
+		value = typesnew.NewConstant(id, obj.Name(), finalValueType, v.Val())
 
 	case *types.Var:
 		value = typesnew.NewVariable(id, obj.Name(), finalValueType)
@@ -1478,7 +1485,21 @@ func (r *defaultTypeResolver) parseValue(obj types.Object) typesnew.Type {
 
 	if value != nil {
 		value.SetPackage(r.getPackageInfo(obj))
-		r.cache(value)
+		value.SetObject(obj)
+
+		// Set documentation if available
+		if docValue != nil && docValue.Doc != "" {
+			// Create a doc.Type wrapper to use SetDoc
+			docType := &doc.Type{Doc: docValue.Doc}
+			value.SetDoc(docType)
+		}
+
+		r.values.Set(id, value)
+		
+		// Load the value to trigger comment loading
+		if err := value.Load(); err != nil {
+			r.logger.Warnf("Failed to load value %s: %v", id, err)
+		}
 	}
 
 	return value
@@ -1533,12 +1554,7 @@ func (r *defaultTypeResolver) extractComments(pkgInfo *typesnew.Package, pkg *pa
 					case *ast.TypeSpec:
 						// Type declarations
 						comment := r.extractComment(s.Doc, s.Comment, d.Doc)
-						r.logger.Debugf("Type %s: doc=%v, comment=%v, parent=%v, extracted=%d comments",
-							s.Name.Name,
-							s.Doc != nil,
-							s.Comment != nil,
-							d.Doc != nil,
-							len(comment))
+
 						pkgInfo.AddComments(s.Name.Name, comment)
 
 						// Extract struct field comments

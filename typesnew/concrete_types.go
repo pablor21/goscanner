@@ -754,7 +754,7 @@ func (v *Value) Serialize() any {
 
 	var valueTypeSerialized any
 	if v.valueType != nil {
-		valueTypeSerialized = v.valueType.Serialize()
+		valueTypeSerialized = serializeTypeRef(v.valueType)
 	}
 
 	return &SerializedValue{
@@ -780,76 +780,76 @@ func (v *Value) Load() error {
 	return err
 }
 
-// Enum represents an enum type (named type with associated constants)
-type Enum struct {
-	baseType
-	underlying Type     // the underlying type (usually int, string, etc.)
-	values     []*Value // the constant values that belong to this enum
-}
+// // Enum represents an enum type (named type with associated constants)
+// type Enum struct {
+// 	baseType
+// 	underlying Type     // the underlying type (usually int, string, etc.)
+// 	values     []*Value // the constant values that belong to this enum
+// }
 
-// NewEnum creates a new enum type
-func NewEnum(id string, name string, underlying Type) *Enum {
-	return &Enum{
-		baseType:   newBaseType(id, name, TypeKindEnum),
-		underlying: underlying,
-		values:     []*Value{},
-	}
-}
+// // NewEnum creates a new enum type
+// func NewEnum(id string, name string, underlying Type) *Enum {
+// 	return &Enum{
+// 		baseType:   newBaseType(id, name, TypeKindEnum),
+// 		underlying: underlying,
+// 		values:     []*Value{},
+// 	}
+// }
 
-func (e *Enum) Underlying() Type {
-	return e.underlying
-}
+// func (e *Enum) Underlying() Type {
+// 	return e.underlying
+// }
 
-func (e *Enum) Values() []*Value {
-	return e.values
-}
+// func (e *Enum) Values() []*Value {
+// 	return e.values
+// }
 
-func (e *Enum) AddValue(value *Value) {
-	value.SetParent(e)
-	e.values = append(e.values, value)
-}
+// func (e *Enum) AddValue(value *Value) {
+// 	value.SetParent(e)
+// 	e.values = append(e.values, value)
+// }
 
-func (e *Enum) Serialize() any {
-	if err := e.Load(); err != nil && e.pkg != nil && e.pkg.logger != nil {
-		e.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", e.id, err))
-	}
-	var underlyingSerialized any
-	if e.underlying != nil {
-		underlyingSerialized = e.underlying.Serialize()
-	}
+// func (e *Enum) Serialize() any {
+// 	if err := e.Load(); err != nil && e.pkg != nil && e.pkg.logger != nil {
+// 		e.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", e.id, err))
+// 	}
+// 	var underlyingSerialized any
+// 	if e.underlying != nil {
+// 		underlyingSerialized = e.underlying.Serialize()
+// 	}
 
-	values := make([]*SerializedValue, len(e.values))
-	for i, v := range e.values {
-		values[i] = v.Serialize().(*SerializedValue)
-	}
+// 	values := make([]*SerializedValue, len(e.values))
+// 	for i, v := range e.values {
+// 		values[i] = v.Serialize().(*SerializedValue)
+// 	}
 
-	return &SerializedEnum{
-		SerializedType: e.serializeBase(),
-		Underlying:     underlyingSerialized,
-		Values:         values,
-	}
-}
+// 	return &SerializedEnum{
+// 		SerializedType: e.serializeBase(),
+// 		Underlying:     underlyingSerialized,
+// 		Values:         values,
+// 	}
+// }
 
-func (e *Enum) Load() error {
-	var err error
-	e.loadOnce.Do(func() {
-		e.loadComments(false)
-		if e.loader != nil {
-			err = e.loader(e)
-		}
-		// Load underlying type
-		if err == nil && e.underlying != nil {
-			err = e.underlying.Load()
-		}
-		// Load all values
-		if err == nil {
-			for _, v := range e.values {
-				err = v.Load()
-				if err != nil {
-					return
-				}
-			}
-		}
-	})
-	return err
-}
+// func (e *Enum) Load() error {
+// 	var err error
+// 	e.loadOnce.Do(func() {
+// 		e.loadComments(false)
+// 		if e.loader != nil {
+// 			err = e.loader(e)
+// 		}
+// 		// Load underlying type
+// 		if err == nil && e.underlying != nil {
+// 			err = e.underlying.Load()
+// 		}
+// 		// Load all values
+// 		if err == nil {
+// 			for _, v := range e.values {
+// 				err = v.Load()
+// 				if err != nil {
+// 					return
+// 				}
+// 			}
+// 		}
+// 	})
+// 	return err
+// }

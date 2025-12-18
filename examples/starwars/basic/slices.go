@@ -177,28 +177,33 @@ package basic
 // 	Describe() http.ServeMux
 // }
 
-type MyStruct struct {
-	Anonymous struct {
-		FieldA string
-		FieldB int
-	}
-	OtherAnonymous *struct {
-		FieldC bool
-		FieldD MyStruct
-	}
-	AnonymousInterface interface {
-		DoSomething() error
-	}
-	AnonymousFunc func(x int) string
-}
+// type MyStruct struct {
+// 	Anonymous struct {
+// 		FieldA string
+// 		FieldB int
+// 	}
+// 	OtherAnonymous *struct {
+// 		FieldC bool
+// 		FieldD MyStruct
+// 	}
+// 	AnonymousInterface interface {
+// 		DoSomething() (err error)
+// 	}
+// 	AnonymousFunc func(x int) string
+// }
 
-// type MyEnum int
+// hello world
+type MyEnum int
 
-// const (
-// 	EnumValueA MyEnum = iota // EnumValueA represents the first value
-// 	EnumValueB               // EnumValueB represents the second value
-// 	EnumValueC               // EnumValueC represents the third value
-// )
+const (
+	EnumValueA MyEnum = iota // EnumValueA represents the first value
+	EnumValueB               // EnumValueB represents the second value
+	EnumValueC               // EnumValueC represents the third value
+)
+
+const MY_CONSTANT string = "This is a constant value"
+
+var MY_VARIABLE int = 42
 
 // // this method gets a value from the map
 // func (ms *MyStruct) GetData(key string) (MyMap, bool) {
