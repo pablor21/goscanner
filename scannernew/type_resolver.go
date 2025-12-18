@@ -420,31 +420,31 @@ func (r *defaultTypeResolver) resolveGoType(t types.Type, forceKind typesnew.Typ
 
 	switch gt := t.(type) {
 	case *types.Basic:
-		ti = r.makeBasic(typeName, gt, namedType, obj, docType, forceKind)
+		ti = r.makeBasic(typeName, gt, namedType, obj)
 
 	case *types.Pointer:
-		ti = r.makePointer(typeName, gt, namedType, obj, docType, forceKind)
+		ti = r.makePointer(typeName, gt, namedType, obj, docType)
 
 	case *types.Slice, *types.Array:
-		ti = r.makeCollection(typeName, gt, namedType, obj, docType, forceKind)
+		ti = r.makeCollection(typeName, gt, namedType, obj, docType)
 
 	case *types.Signature:
 		ti = r.makeFunction(typeName, gt, namedType, obj, docType, forceKind)
 
 	case *types.Chan:
-		ti = r.makeChannel(typeName, gt, namedType, obj, docType, forceKind)
+		ti = r.makeChannel(typeName, gt, namedType, obj, docType)
 
 	case *types.Interface:
-		ti = r.makeInterface(typeName, gt, namedType, obj, docType, forceKind)
+		ti = r.makeInterface(typeName, gt, namedType, obj, docType)
 
 	case *types.Struct:
 		ti = r.makeStruct(typeName, gt, namedType, obj, docType)
 
 	case *types.Alias:
-		ti = r.makeAlias(typeName, gt, forceKind)
+		ti = r.makeAlias(typeName, gt)
 
 	case *types.Map:
-		ti = r.makeMap(typeName, gt, namedType, obj, docType, forceKind)
+		ti = r.makeMap(typeName, gt, namedType, obj, docType)
 
 	default:
 		r.logger.Warnf("Unsupported type: %s (%T)", t.String(), t)
@@ -463,7 +463,7 @@ func (r *defaultTypeResolver) resolveGoType(t types.Type, forceKind typesnew.Typ
 
 // cache stores a type in the resolver's cache
 func (r *defaultTypeResolver) cache(t typesnew.Type) {
-	if t == nil {
+	if t == nil || t.Id() == "" || !t.IsNamed() {
 		return
 	}
 	r.types.Set(t.Id(), t)
@@ -512,8 +512,6 @@ func (r *defaultTypeResolver) makeBasic(
 	basicType *types.Basic,
 	namedType *types.Named,
 	obj types.Object,
-	docType *doc.Type,
-	forceKind typesnew.TypeKind,
 ) *typesnew.Basic {
 	// If it's not named, return the cached basic type
 	if namedType == nil {
@@ -550,7 +548,7 @@ func (r *defaultTypeResolver) makeBasic(
 		namedBasic.SetLoader(func(t typesnew.Type) error {
 			// Load methods if needed
 			if r.config.ScanMode.Has(ScanModeMethods) {
-				m, err := r.extractMethods(namedType, obj, docType, t)
+				m, err := r.extractMethods(namedType, t)
 				if err != nil {
 					return err
 				}
@@ -573,7 +571,7 @@ func (r *defaultTypeResolver) makePointer(
 	namedType *types.Named,
 	obj types.Object,
 	docType *doc.Type,
-	forceKind typesnew.TypeKind,
+	// forceKind typesnew.TypeKind,
 ) *typesnew.Pointer {
 	// Named types: id=canonical name, name=simple name
 	// Unnamed types: id=generated ID, name=generated ID
@@ -630,7 +628,7 @@ func (r *defaultTypeResolver) makeCollection(
 	namedType *types.Named,
 	obj types.Object,
 	docType *doc.Type,
-	forceKind typesnew.TypeKind,
+	// forceKind typesnew.TypeKind,
 ) *typesnew.Slice {
 	var elemType types.Type
 
@@ -711,7 +709,7 @@ func (r *defaultTypeResolver) makeCollection(
 		slice.SetLoader(func(t typesnew.Type) error {
 			// Load methods if needed
 			if r.config.ScanMode.Has(ScanModeMethods) {
-				m, err := r.extractMethods(namedType, obj, docType, t)
+				m, err := r.extractMethods(namedType, t)
 				if err != nil {
 					return err
 				}
@@ -736,7 +734,7 @@ func (r *defaultTypeResolver) makeMap(
 	namedType *types.Named,
 	obj types.Object,
 	docType *doc.Type,
-	forceKind typesnew.TypeKind,
+	// forceKind typesnew.TypeKind,
 ) *typesnew.Map {
 
 	// Get key and value types
@@ -832,7 +830,7 @@ func (r *defaultTypeResolver) makeMap(
 		mapT.SetLoader(func(t typesnew.Type) error {
 			// Load methods if needed
 			if r.config.ScanMode.Has(ScanModeMethods) {
-				m, err := r.extractMethods(namedType, obj, docType, t)
+				m, err := r.extractMethods(namedType, t)
 				if err != nil {
 					return err
 				}
@@ -857,7 +855,7 @@ func (r *defaultTypeResolver) makeChannel(
 	namedType *types.Named,
 	obj types.Object,
 	docType *doc.Type,
-	forceKind typesnew.TypeKind,
+	// forceKind typesnew.TypeKind,
 ) *typesnew.Chan {
 	// Get element type
 	elemType := chanType.Elem()
@@ -929,7 +927,7 @@ func (r *defaultTypeResolver) makeChannel(
 		ch.SetLoader(func(t typesnew.Type) error {
 			// Load methods if needed
 			if r.config.ScanMode.Has(ScanModeMethods) {
-				m, err := r.extractMethods(namedType, obj, docType, t)
+				m, err := r.extractMethods(namedType, t)
 				if err != nil {
 					return err
 				}
@@ -951,8 +949,6 @@ func (r *defaultTypeResolver) makeChannel(
 // extractMethods extracts methods from a named type and adds them to the TypeWithMethods
 func (r *defaultTypeResolver) extractMethods(
 	namedType *types.Named,
-	obj types.Object,
-	docType *doc.Type,
 	parent typesnew.Type,
 ) ([]*typesnew.Method, error) {
 	methods := make([]*typesnew.Method, 0, namedType.NumMethods())
@@ -1092,8 +1088,18 @@ func (r *defaultTypeResolver) makeFunction(
 	docType *doc.Type,
 	forceKind typesnew.TypeKind,
 ) *typesnew.Function {
+	// Determine ID based on whether this is a named or unnamed function
+	var typeID string
+	if obj != nil || forceKind == typesnew.TypeKindFunction {
+		// Named function or package-level function: use provided id
+		typeID = id
+	} else {
+		// Unnamed/anonymous function: generate ID
+		typeID = r.generateUnnamedID("function")
+	}
+
 	// Create function type
-	fn := typesnew.NewFunction(id, id)
+	fn := typesnew.NewFunction(typeID, typeID)
 	r.setupCommonTypeFields(fn, obj, docType, sig)
 
 	// Process signature using helper
@@ -1110,7 +1116,7 @@ func (r *defaultTypeResolver) makeFunction(
 		fn.SetLoader(func(t typesnew.Type) error {
 			// Load methods if needed
 			if r.config.ScanMode.Has(ScanModeMethods) {
-				m, err := r.extractMethods(namedType, obj, docType, t)
+				m, err := r.extractMethods(namedType, t)
 				if err != nil {
 					return err
 				}
@@ -1133,7 +1139,7 @@ func (r *defaultTypeResolver) makeFunction(
 func (r *defaultTypeResolver) makeAlias(
 	id string,
 	aliasType *types.Alias,
-	forceKind typesnew.TypeKind,
+	// forceKind typesnew.TypeKind,
 ) *typesnew.Alias {
 	// Get the underlying type
 	underlyingType := aliasType.Underlying()
@@ -1177,10 +1183,20 @@ func (r *defaultTypeResolver) makeInterface(
 	namedType *types.Named,
 	obj types.Object,
 	docType *doc.Type,
-	forceKind typesnew.TypeKind,
+	// forceKind typesnew.TypeKind,
 ) *typesnew.Interface {
+	// Determine ID based on whether this is a named or unnamed interface
+	var typeID string
+	if obj != nil {
+		// Named interface: use provided id
+		typeID = id
+	} else {
+		// Unnamed/anonymous interface: generate ID
+		typeID = r.generateUnnamedID("interface")
+	}
+
 	// Create interface type
-	iface := typesnew.NewInterface(id, id)
+	iface := typesnew.NewInterface(typeID, typeID)
 	r.setupCommonTypeFields(iface, obj, docType, interfaceType)
 
 	// Register in cache early to prevent infinite recursion on self-referencing types
@@ -1193,7 +1209,7 @@ func (r *defaultTypeResolver) makeInterface(
 		underlying, ok = namedType.Underlying().(*types.Interface)
 		if !ok {
 			// Remove from cache if we couldn't resolve
-			r.types.Delete(id)
+			r.types.Delete(typeID)
 			r.logger.Warnf("Failed to resolve interface underlying type: %v", namedType)
 			return nil
 		}
@@ -1211,36 +1227,35 @@ func (r *defaultTypeResolver) makeInterface(
 
 				// Check if method should be exported
 				if !r.shouldExport(method) {
-					r.logger.Debugf("Skipping unexported interface method: %s.%s", id, method.Name())
-					continue
-				}
+					r.logger.Debugf("Skipping unexported interface method: %s.%s", typeID, method.Name())
+				} else {
+					// Get method signature
+					sig, ok := method.Type().(*types.Signature)
+					if !ok {
+						continue
+					}
 
-				// Get method signature
-				sig, ok := method.Type().(*types.Signature)
-				if !ok {
-					continue
-				}
+					// Create method directly - ID is interface#methodName
+					methodID := typeID + "#" + method.Name()
+					m := typesnew.NewMethod(methodID, method.Name(), iface, false)
+					m.SetPackage(r.getPackageInfo(method))
+					m.SetStructure(sig.String())
 
-				// Create method directly - ID is interface#methodName
-				methodID := id + "#" + method.Name()
-				m := typesnew.NewMethod(methodID, method.Name(), iface, false)
-				m.SetPackage(r.getPackageInfo(method))
-				m.SetStructure(sig.String())
+					// Process signature using helper
+					parameters, results := r.processSignature(sig, iface.Package())
+					for _, p := range parameters {
+						m.AddParameter(p)
+					}
+					for _, r := range results {
+						m.AddResult(r)
+					}
+					// Set object and doc
+					m.SetObject(method)
+					methods = append(methods, m)
 
-				// Process signature using helper
-				parameters, results := r.processSignature(sig, iface.Package())
-				for _, p := range parameters {
-					m.AddParameter(p)
 				}
-				for _, r := range results {
-					m.AddResult(r)
-				}
-				// Set object and doc
-				m.SetObject(method)
-				methods = append(methods, m)
-
+				iface.AddMethods(methods...)
 			}
-			iface.AddMethods(methods...)
 		}
 
 		return nil
@@ -1257,16 +1272,20 @@ func (r *defaultTypeResolver) makeStruct(
 	obj types.Object,
 	docType *doc.Type,
 ) *typesnew.Struct {
-	// Determine name based on whether this is a named or unnamed struct
-	var name string
+	// Determine ID and name based on whether this is a named or unnamed struct
+	var typeID, name string
 	if obj != nil {
+		// Named struct: use provided id
+		typeID = id
 		name = obj.Name()
 	} else {
-		name = id
+		// Unnamed/anonymous struct: generate ID
+		typeID = r.generateUnnamedID("struct")
+		name = typeID
 	}
 
 	// Create struct type
-	strct := typesnew.NewStruct(id, name)
+	strct := typesnew.NewStruct(typeID, name)
 	r.setupCommonTypeFields(strct, obj, docType, nil)
 
 	// Register in cache early to prevent infinite recursion on self-referencing types
@@ -1279,7 +1298,7 @@ func (r *defaultTypeResolver) makeStruct(
 		underlying, ok = namedType.Underlying().(*types.Struct)
 		if !ok {
 			// Remove from cache if we couldn't resolve
-			r.types.Delete(id)
+			r.types.Delete(typeID)
 			r.logger.Warnf("Failed to resolve struct underlying type: %v", namedType)
 			return nil
 		}
@@ -1303,7 +1322,8 @@ func (r *defaultTypeResolver) makeStruct(
 				}
 
 				// For unnamed field types, set package to struct's package
-			if !fieldTypeResolved.IsNamed() {
+				if !fieldTypeResolved.IsNamed() {
+					fieldTypeResolved.SetPackage(strct.Package())
 				}
 
 				// Create pointer wrapper if needed
@@ -1328,8 +1348,11 @@ func (r *defaultTypeResolver) makeStruct(
 				}
 
 				// Regular field (not embedded)
-				fieldID := id + "#" + field.Name()
-				f := typesnew.NewField(fieldID, field.Name(), finalFieldType, underlying.Tag(i), false, strct)
+				fieldID := typeID + "#" + field.Name()
+				f := typesnew.NewField(fieldID, field.Name(), finalFieldType, underlying.Tag(i), field.Embedded(), strct)
+				f.SetPackage(strct.Package())
+				// Set object and doc
+				f.SetObject(field)
 
 				strct.AddField(f)
 			}
@@ -1337,7 +1360,7 @@ func (r *defaultTypeResolver) makeStruct(
 
 		// Extract methods if needed
 		if r.config.ScanMode.Has(ScanModeMethods) && namedType != nil {
-			methods, err := r.extractMethods(namedType, obj, docType, strct)
+			methods, err := r.extractMethods(namedType, strct)
 			if err != nil {
 				return err
 			}
@@ -1357,8 +1380,8 @@ func (r *defaultTypeResolver) makeEnum(
 	basicType *types.Basic,
 	namedType *types.Named,
 	obj types.Object,
-	docType *doc.Type,
-	forceKind typesnew.TypeKind,
+	// docType *doc.Type,
+	// forceKind typesnew.TypeKind,
 ) *typesnew.Enum {
 	if namedType == nil {
 		r.logger.Warn("Cannot create enum from unnamed type")
@@ -1477,9 +1500,10 @@ func (r *defaultTypeResolver) handleGenerics(t types.Type) typesnew.Type {
 // shouldExport checks if an object should be exported based on its name
 func (r *defaultTypeResolver) shouldExport(obj types.Object) bool {
 	if obj == nil {
-		return false
+		return true
 	}
 	return obj.Exported()
+	// return true
 }
 
 // extractComments extracts comments for all declarations from parsed AST files
