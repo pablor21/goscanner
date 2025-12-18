@@ -1056,7 +1056,7 @@ func (r *defaultTypeResolver) processSignature(sig *types.Signature, pkgContext 
 		}
 
 		// For unnamed result types, set package to context package
-		if resultTypeResolved != nil && !resultTypeResolved.IsNamed() {
+		if !resultTypeResolved.IsNamed() {
 			if pkgContext != nil {
 				resultTypeResolved.SetPackage(pkgContext)
 			} else {
@@ -1303,8 +1303,7 @@ func (r *defaultTypeResolver) makeStruct(
 				}
 
 				// For unnamed field types, set package to struct's package
-				if fieldTypeResolved != nil && !fieldTypeResolved.IsNamed() {
-					fieldTypeResolved.SetPackage(strct.Package())
+			if !fieldTypeResolved.IsNamed() {
 				}
 
 				// Create pointer wrapper if needed
