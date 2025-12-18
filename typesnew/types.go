@@ -82,6 +82,14 @@ type Loadable interface {
 	SetLoader(loader func(Type) error)
 }
 
+type HasMethods interface {
+	// Methods returns the methods of this type
+	Methods() []*Method
+
+	// AddMethod adds methods to this type
+	AddMethods(methods ...*Method)
+}
+
 // Type is the base interface that all types implement
 type Type interface {
 	// Id returns the canonical identifier for this type
@@ -101,9 +109,14 @@ type Type interface {
 
 	// Object returns the go/types.Object associated with this type
 	Object() types.Object
+	// SetObject sets the go/types.Object for this type
+	SetObject(obj types.Object)
 
 	// Doc returns the go/doc.Type documentation for this type
 	Doc() *doc.Type
+
+	// SetObject sets the go/types.Object for this type
+	SetDoc(docType *doc.Type)
 
 	// Comments returns the documentation comments for this type
 	Comments() []Comment
@@ -111,19 +124,29 @@ type Type interface {
 	// SetPackage sets the package for this type
 	SetPackage(pkg *Package)
 
+	// SetGoType sets the original go/types.Type (used for unnamed types)
+	SetGoType(t types.Type)
+
+	// GoType returns the original go/types.Type (used for unnamed types)
+	GoType() types.Type
+
 	// Serializable implements
 	Serializable
 
 	// Loadable implements
 	Loadable
+
+	// HasMethods implements
+	HasMethods
 }
 
 type TypesCol[T Serializable] struct {
 	values map[string]T
 }
 
-func (c TypesCol[T]) Get(id string) T {
-	return c.values[id]
+func (c TypesCol[T]) Get(id string) (T, bool) {
+	t, exists := c.values[id]
+	return t, exists
 }
 
 func (c TypesCol[T]) Set(id string, t T) {
@@ -164,10 +187,11 @@ func (c *TypesCol[T]) Clear() {
 }
 
 func (c TypesCol[T]) Serialize() any {
-	for _, t := range c.values {
-		_ = t.Serialize()
+	result := make(map[string]any, len(c.values))
+	for id, t := range c.values {
+		result[id] = t.Serialize()
 	}
-	return nil
+	return result
 }
 
 func NewTypesCol[T Serializable]() *TypesCol[T] {
@@ -183,8 +207,10 @@ type baseType struct {
 	kind           TypeKind
 	pkg            *Package
 	obj            types.Object
+	goType         types.Type // Original go/types.Type for structure (used for unnamed types)
 	docType        *doc.Type
 	comments       []Comment
+	methods        []*Method
 	loader         LoaderFn
 	loadOnce       sync.Once
 	commentId      string
@@ -199,6 +225,7 @@ func newBaseType(id string, name string, kind TypeKind) baseType {
 		commentId: name,
 		kind:      kind,
 		comments:  []Comment{},
+		methods:   []*Method{},
 		loadOnce:  sync.Once{},
 	}
 }
@@ -251,6 +278,37 @@ func (b *baseType) SetPackage(pkg *Package) {
 	b.comments = []Comment{}
 }
 
+// SetObject sets the go/types.Object
+func (b *baseType) SetObject(obj types.Object) {
+	b.obj = obj
+}
+
+// SetDoc sets the go/doc.Type
+func (b *baseType) SetDoc(docType *doc.Type) {
+	b.docType = docType
+}
+
+// SetGoType sets the original go/types.Type
+func (b *baseType) SetGoType(t types.Type) {
+	b.goType = t
+}
+
+// GoType returns the original go/types.Type
+func (b *baseType) GoType() types.Type {
+	return b.goType
+}
+
+func (b *baseType) Methods() []*Method {
+	return b.methods
+}
+
+func (b *baseType) AddMethods(methods ...*Method) {
+	if b.methods == nil {
+		b.methods = []*Method{}
+	}
+	b.methods = append(b.methods, methods...)
+}
+
 // Load lazily loads type details using the loader function
 func (b *baseType) Load() error {
 	var err error
@@ -274,14 +332,27 @@ func (b *baseType) loadComments(force bool) {
 	}
 	// clean previous comments
 	b.comments = []Comment{}
+
+	if b.pkg == nil {
+		b.commentsLoaded = true
+		return
+	}
+
 	if b.commentId == "" {
 		b.commentId = b.name
 	}
+
 	// load comments from AST if available, otherwise from doc
-	if b.pkg != nil && len(b.pkg.comments[b.commentId]) > 0 {
-		// Use AST comments (includes both doc and inline)
-		b.comments = append(b.comments, b.pkg.comments[b.commentId]...)
-	} else if b.docType != nil {
+	if b.pkg != nil {
+		pkgComments := b.pkg.GetComments(b.commentId)
+		if len(pkgComments) > 0 {
+			// Use AST comments (includes both doc and inline)
+			b.comments = append(b.comments, pkgComments...)
+		}
+	}
+
+	// fallback to go/doc comments
+	if len(b.comments) == 0 && b.docType != nil {
 		// Fallback to go/doc comments
 		commentText := ExtractComments(b.docType.Doc)
 		if commentText != "" {

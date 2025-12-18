@@ -18,3 +18,12 @@ obj/
 !README.md
 *.backup
 *.tmp
+profile_results/
+coverage.out
+*.coverprofile
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out

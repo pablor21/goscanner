@@ -5,7 +5,7 @@ type SerializedType struct {
 	ID       string    `json:"id"`
 	Name     string    `json:"name"`
 	Kind     TypeKind  `json:"kind"`
-	IsNamed  bool      `json:"isNamed"`
+	IsNamed  bool      `json:"named,omitempty"`
 	Package  string    `json:"package,omitempty"`
 	Comments []Comment `json:"comments,omitempty"`
 }
@@ -29,20 +29,23 @@ func (b *baseType) serializeBase() SerializedType {
 // SerializedBasic represents a serialized basic type
 type SerializedBasic struct {
 	SerializedType
+	Underlying interface{} `json:"underlying,omitempty"` // For named basic types
 }
 
 // SerializedPointer represents a serialized pointer type
 type SerializedPointer struct {
 	SerializedType
-	Element any `json:"element"`
-	Depth   int `json:"depth"`
+	Element   any    `json:"element"`
+	Depth     int    `json:"depth"`
+	Structure string `json:"structure,omitempty"` // Full pointer notation (e.g., "*****string")
 }
 
 // SerializedSlice represents a serialized slice/array type
 type SerializedSlice struct {
 	SerializedType
-	Element any   `json:"element"`
-	Length  int64 `json:"length,omitempty"` // -1 for slices, >= 0 for arrays
+	Element   any    `json:"element"`
+	Length    int64  `json:"length,omitempty"` // -1 for slices, >= 0 for arrays
+	Structure string `json:"structure,omitempty"`
 }
 
 // SerializedChan represents a serialized channel type
@@ -50,13 +53,15 @@ type SerializedChan struct {
 	SerializedType
 	Element   any              `json:"element"`
 	Direction ChannelDirection `json:"direction"`
+	Structure string           `json:"structure,omitempty"`
 }
 
 // SerializedMap represents a serialized map type
 type SerializedMap struct {
 	SerializedType
-	Key   any `json:"key"`
-	Value any `json:"value"`
+	Key       any    `json:"key"`
+	Value     any    `json:"value"`
+	Structure string `json:"structure,omitempty"`
 }
 
 // SerializedAlias represents a serialized alias type
@@ -84,6 +89,7 @@ type SerializedFunction struct {
 	Parameters []*SerializedParameter `json:"parameters,omitempty"`
 	Results    []*SerializedResult    `json:"results,omitempty"`
 	IsVariadic bool                   `json:"isVariadic,omitempty"`
+	Structure  string                 `json:"structure,omitempty"`
 }
 
 // SerializedMethod represents a serialized method
@@ -95,6 +101,7 @@ type SerializedMethod struct {
 	IsPointerReceiver bool                   `json:"isPointerReceiver"`
 	Receiver          string                 `json:"receiver"` // ID of receiver type
 	PromotedFrom      string                 `json:"promotedFrom,omitempty"`
+	Structure         string                 `json:"structure,omitempty"`
 }
 
 // SerializedField represents a serialized field

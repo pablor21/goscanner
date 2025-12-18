@@ -1,0 +1,21 @@
+{
+    // List of packages or package patterns to scan (relative to the config file or executable)
+    "packages": [
+        // "../examples/starwars/basic",
+        "./...",
+        "!../main"
+    ],
+    "scan_mode": "full",
+    // Visibility levels: "exported", "all", "none"
+    "field_visibility": "all",
+    // Visibility levels: "exported", "all", "none"
+    "method_visibility": "all",
+    // Visibility levels: "exported", "all", "none"
+    "function_visibility": "all",
+    // Visibility levels: "exported", "all", "none"
+    "type_visibility": "all",
+    // Visibility levels: "exported", "all", "none"
+    "enum_visibility": "all",
+    // Log levels: "debug", "info", "warn", "error"
+    "log_level": "info"
+}

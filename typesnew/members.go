@@ -14,13 +14,18 @@ type Field struct {
 
 // NewField creates a new field
 func NewField(id string, name string, fieldType Type, tag string, embedded bool, parent Type) *Field {
-	return &Field{
+	f := &Field{
 		baseType:  newBaseType(id, name, TypeKindField),
 		fieldType: fieldType,
 		tag:       tag,
 		embedded:  embedded,
 		parent:    parent,
 	}
+	// For fields, comment key is "ParentStruct.FieldName"
+	if parent != nil {
+		f.commentId = parent.Name() + "." + name
+	}
+	return f
 }
 
 func (f *Field) Type() Type {
@@ -63,7 +68,11 @@ func (f *Field) Serialize() any {
 
 	var fieldTypeSerialized any
 	if f.fieldType != nil {
-		fieldTypeSerialized = f.fieldType.Serialize()
+		if f.fieldType.IsNamed() {
+			fieldTypeSerialized = serializeTypeRef(f.fieldType)
+		} else {
+			fieldTypeSerialized = f.fieldType.Serialize()
+		}
 	}
 
 	return &SerializedField{
@@ -79,14 +88,16 @@ func (f *Field) Serialize() any {
 func (f *Field) Load() error {
 	var err error
 	f.loadOnce.Do(func() {
+		// For fields, comment key is "ParentStruct.FieldName"
+		if f.parent != nil {
+			f.commentId = f.parent.Name() + "." + f.name
+		}
 		f.loadComments(false)
 		if f.loader != nil {
 			err = f.loader(f)
 		}
-		// Load the field type
-		if err == nil && f.fieldType != nil {
-			err = f.fieldType.Load()
-		}
+		// Don't load field type here - causes deadlock on self-referential types
+		// Field types are loaded lazily when accessed
 	})
 	return err
 }
@@ -98,8 +109,9 @@ type Method struct {
 	results           []*Result
 	isVariadic        bool
 	isPointerReceiver bool
-	receiver          Type // the type this method belongs to
-	promotedFrom      Type // if this method is promoted from an embedded type
+	receiver          Type   // the type this method belongs to
+	promotedFrom      Type   // if this method is promoted from an embedded type
+	structure         string // full signature string
 }
 
 // NewMethod creates a new method
@@ -141,6 +153,10 @@ func (m *Method) SetPromotedFrom(t Type) {
 	m.promotedFrom = t
 }
 
+func (m *Method) SetStructure(structure string) {
+	m.structure = structure
+}
+
 func (m *Method) AddParameter(param *Parameter) {
 	m.params = append(m.params, param)
 	if param.IsVariadic() {
@@ -160,7 +176,11 @@ func (m *Method) Serialize() any {
 	for i, p := range m.params {
 		var paramTypeSerialized any
 		if p.paramType != nil {
-			paramTypeSerialized = p.paramType.Serialize()
+			if p.paramType.IsNamed() {
+				paramTypeSerialized = serializeTypeRef(p.paramType)
+			} else {
+				paramTypeSerialized = p.paramType.Serialize()
+			}
 		}
 		params[i] = &SerializedParameter{
 			Name:       p.name,
@@ -173,7 +193,11 @@ func (m *Method) Serialize() any {
 	for i, r := range m.results {
 		var resultTypeSerialized any
 		if r.resultType != nil {
-			resultTypeSerialized = r.resultType.Serialize()
+			if r.resultType.IsNamed() {
+				resultTypeSerialized = serializeTypeRef(r.resultType)
+			} else {
+				resultTypeSerialized = r.resultType.Serialize()
+			}
 		}
 		results[i] = &SerializedResult{
 			Name: r.name,
@@ -199,38 +223,22 @@ func (m *Method) Serialize() any {
 		IsPointerReceiver: m.isPointerReceiver,
 		Receiver:          receiverID,
 		PromotedFrom:      promotedFromID,
+		Structure:         m.structure,
 	}
 }
 
 func (m *Method) Load() error {
 	var err error
 	m.loadOnce.Do(func() {
+		// For methods, comment key is "ReceiverType.MethodName"
+		if m.receiver != nil {
+			m.commentId = m.receiver.Name() + "." + m.name
+		}
 		m.loadComments(false)
 		if m.loader != nil {
 			err = m.loader(m)
 		}
-		// Load parameter types
-		if err == nil {
-			for _, p := range m.params {
-				if p.paramType != nil {
-					err = p.paramType.Load()
-					if err != nil {
-						return
-					}
-				}
-			}
-		}
-		// Load result types
-		if err == nil {
-			for _, r := range m.results {
-				if r.resultType != nil {
-					err = r.resultType.Load()
-					if err != nil {
-						return
-					}
-				}
-			}
-		}
+		// Don't load parameter/result types - causes deadlock on circular types
 	})
 	return err
 }

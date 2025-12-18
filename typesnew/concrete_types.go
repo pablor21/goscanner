@@ -1,3 +1,9 @@
+// Package types defines concrete implementations of various Go types
+// such as Basic, Pointer, Slice, Map, Alias, Function, Interface, Struct, Enum, and Value.
+// Each type implements the Type interface and provides methods for serialization
+// and lazy loading of additional details.
+// Usually these types correspond to go/types types but are designed for easier
+// serialization and documentation extraction.
 package typesnew
 
 import (
@@ -5,9 +11,29 @@ import (
 	"go/doc"
 )
 
+// serializeTypeRef serializes a type as a reference (basic info only)
+func serializeTypeRef(t Type) any {
+	return &SerializedType{
+		ID:      t.Id(),
+		Name:    t.Name(),
+		Kind:    t.Kind(),
+		IsNamed: t.IsNamed(),
+		Package: getPackagePath(t),
+	}
+}
+
+func getPackagePath(t Type) string {
+	if t.Package() != nil {
+		return t.Package().Path()
+	}
+	return ""
+}
+
 // Basic represents a basic/primitive type (int, string, bool, etc.)
+// For named basic types like `type MyInt int`, the underlying field points to the cached basic type
 type Basic struct {
 	baseType
+	underlying Type // For named basic types, points to the primitive basic type
 }
 
 // NewBasic creates a new basic type
@@ -17,12 +43,29 @@ func NewBasic(id string, name string) *Basic {
 	}
 }
 
+// Underlying returns the underlying type (for named basic types)
+func (b *Basic) Underlying() Type {
+	return b.underlying
+}
+
+// SetUnderlying sets the underlying type
+func (b *Basic) SetUnderlying(t Type) {
+	b.underlying = t
+}
+
 func (b *Basic) Serialize() any {
 	if err := b.Load(); err != nil && b.pkg != nil && b.pkg.logger != nil {
 		b.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", b.id, err))
 	}
+
+	var underlyingSerialized any
+	if b.underlying != nil {
+		underlyingSerialized = b.underlying.Serialize()
+	}
+
 	return &SerializedBasic{
 		SerializedType: b.serializeBase(),
+		Underlying:     underlyingSerialized,
 	}
 }
 
@@ -32,6 +75,10 @@ func (b *Basic) Load() error {
 		b.loadComments(false)
 		if b.loader != nil {
 			err = b.loader(b)
+		}
+		// Load underlying type if it exists
+		if err == nil && b.underlying != nil {
+			err = b.underlying.Load()
 		}
 	})
 	return err
@@ -67,13 +114,25 @@ func (p *Pointer) Serialize() any {
 	}
 	var elemSerialized any
 	if p.elem != nil {
-		elemSerialized = p.elem.Serialize()
+		if p.elem.IsNamed() {
+			elemSerialized = serializeTypeRef(p.elem)
+		} else {
+			elemSerialized = p.elem.Serialize()
+		}
+	}
+
+	structure := p.name
+	if p.obj != nil && p.obj.Type() != nil {
+		structure = p.obj.Type().Underlying().String()
+	} else if p.goType != nil {
+		structure = p.goType.String()
 	}
 
 	return &SerializedPointer{
 		SerializedType: p.serializeBase(),
 		Element:        elemSerialized,
 		Depth:          p.depth,
+		Structure:      structure,
 	}
 }
 
@@ -84,10 +143,7 @@ func (p *Pointer) Load() error {
 		if p.loader != nil {
 			err = p.loader(p)
 		}
-		// Load the element type
-		if err == nil && p.elem != nil {
-			err = p.elem.Load()
-		}
+		// Don't load element - causes deadlock on circular types
 	})
 	return err
 }
@@ -133,15 +189,29 @@ func (s *Slice) Serialize() any {
 	if err := s.Load(); err != nil && s.pkg != nil && s.pkg.logger != nil {
 		s.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", s.id, err))
 	}
+
 	var elemSerialized any
 	if s.elem != nil {
-		elemSerialized = s.elem.Serialize()
+		// If element is a named type, serialize only basic info (reference)
+		if s.elem.IsNamed() {
+			elemSerialized = serializeTypeRef(s.elem)
+		} else {
+			elemSerialized = s.elem.Serialize()
+		}
+	}
+
+	structure := s.name
+	if s.obj != nil && s.obj.Type() != nil {
+		structure = s.obj.Type().Underlying().String()
+	} else if s.goType != nil {
+		structure = s.goType.String()
 	}
 
 	return &SerializedSlice{
 		SerializedType: s.serializeBase(),
 		Element:        elemSerialized,
 		Length:         s.len,
+		Structure:      structure,
 	}
 }
 
@@ -190,13 +260,25 @@ func (c *Chan) Serialize() any {
 	}
 	var elemSerialized any
 	if c.elem != nil {
-		elemSerialized = c.elem.Serialize()
+		if c.elem.IsNamed() {
+			elemSerialized = serializeTypeRef(c.elem)
+		} else {
+			elemSerialized = c.elem.Serialize()
+		}
+	}
+
+	structure := c.name
+	if c.obj != nil && c.obj.Type() != nil {
+		structure = c.obj.Type().Underlying().String()
+	} else if c.goType != nil {
+		structure = c.goType.String()
 	}
 
 	return &SerializedChan{
 		SerializedType: c.serializeBase(),
 		Element:        elemSerialized,
 		Direction:      c.dir,
+		Structure:      structure,
 	}
 }
 
@@ -243,20 +325,39 @@ func (m *Map) Serialize() any {
 	if err := m.Load(); err != nil && m.pkg != nil && m.pkg.logger != nil {
 		m.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", m.id, err))
 	}
+
 	var keySerialized any
 	if m.key != nil {
-		keySerialized = m.key.Serialize()
+		// If key is a named type, serialize only basic info (reference)
+		if m.key.IsNamed() {
+			keySerialized = serializeTypeRef(m.key)
+		} else {
+			keySerialized = m.key.Serialize()
+		}
 	}
 
 	var valueSerialized any
 	if m.value != nil {
-		valueSerialized = m.value.Serialize()
+		// If value is a named type, serialize only basic info (reference)
+		if m.value.IsNamed() {
+			valueSerialized = serializeTypeRef(m.value)
+		} else {
+			valueSerialized = m.value.Serialize()
+		}
+	}
+
+	structure := m.name
+	if m.obj != nil && m.obj.Type() != nil {
+		structure = m.obj.Type().Underlying().String()
+	} else if m.goType != nil {
+		structure = m.goType.String()
 	}
 
 	return &SerializedMap{
 		SerializedType: m.serializeBase(),
 		Key:            keySerialized,
 		Value:          valueSerialized,
+		Structure:      structure,
 	}
 }
 
@@ -383,6 +484,7 @@ type Function struct {
 	results    []*Result
 	isVariadic bool
 	docFunc    *doc.Func // for package-level functions
+	structure  string    // full signature string
 }
 
 // NewFunction creates a new function type
@@ -425,6 +527,10 @@ func (f *Function) SetDocFunc(docFunc *doc.Func) {
 	f.docFunc = docFunc
 }
 
+func (f *Function) SetStructure(structure string) {
+	f.structure = structure
+}
+
 func (f *Function) Serialize() any {
 	if err := f.Load(); err != nil && f.pkg != nil && f.pkg.logger != nil {
 		f.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", f.id, err))
@@ -433,7 +539,11 @@ func (f *Function) Serialize() any {
 	for i, p := range f.params {
 		var paramTypeSerialized any
 		if p.paramType != nil {
-			paramTypeSerialized = p.paramType.Serialize()
+			if p.paramType.IsNamed() {
+				paramTypeSerialized = serializeTypeRef(p.paramType)
+			} else {
+				paramTypeSerialized = p.paramType.Serialize()
+			}
 		}
 		params[i] = &SerializedParameter{
 			Name:       p.name,
@@ -446,7 +556,11 @@ func (f *Function) Serialize() any {
 	for i, r := range f.results {
 		var resultTypeSerialized any
 		if r.resultType != nil {
-			resultTypeSerialized = r.resultType.Serialize()
+			if r.resultType.IsNamed() {
+				resultTypeSerialized = serializeTypeRef(r.resultType)
+			} else {
+				resultTypeSerialized = r.resultType.Serialize()
+			}
 		}
 		results[i] = &SerializedResult{
 			Name: r.name,
@@ -459,6 +573,7 @@ func (f *Function) Serialize() any {
 		Parameters:     params,
 		Results:        results,
 		IsVariadic:     f.isVariadic,
+		Structure:      f.structure,
 	}
 }
 
@@ -498,23 +613,13 @@ func (f *Function) Load() error {
 // Interface represents an interface type
 type Interface struct {
 	baseType
-	methods []*Method
 }
 
 // NewInterface creates a new interface type
 func NewInterface(id string, name string) *Interface {
 	return &Interface{
 		baseType: newBaseType(id, name, TypeKindInterface),
-		methods:  []*Method{},
 	}
-}
-
-func (i *Interface) Methods() []*Method {
-	return i.methods
-}
-
-func (i *Interface) AddMethod(method *Method) {
-	i.methods = append(i.methods, method)
 }
 
 func (i *Interface) Serialize() any {
@@ -539,15 +644,6 @@ func (i *Interface) Load() error {
 		if i.loader != nil {
 			err = i.loader(i)
 		}
-		// Load all methods
-		if err == nil {
-			for _, m := range i.methods {
-				err = m.Load()
-				if err != nil {
-					return
-				}
-			}
-		}
 	})
 	return err
 }
@@ -555,8 +651,7 @@ func (i *Interface) Load() error {
 // Struct represents a struct type
 type Struct struct {
 	baseType
-	fields  []*Field
-	methods []*Method
+	fields []*Field
 }
 
 // NewStruct creates a new struct type
@@ -564,7 +659,6 @@ func NewStruct(id string, name string) *Struct {
 	return &Struct{
 		baseType: newBaseType(id, name, TypeKindStruct),
 		fields:   []*Field{},
-		methods:  []*Method{},
 	}
 }
 
@@ -572,16 +666,10 @@ func (s *Struct) Fields() []*Field {
 	return s.fields
 }
 
-func (s *Struct) Methods() []*Method {
-	return s.methods
-}
-
 func (s *Struct) AddField(field *Field) {
 	s.fields = append(s.fields, field)
-}
-
-func (s *Struct) AddMethod(method *Method) {
-	s.methods = append(s.methods, method)
+	field.parent = s
+	field.pkg = s.pkg
 }
 
 func (s *Struct) Serialize() any {
@@ -612,24 +700,7 @@ func (s *Struct) Load() error {
 		if s.loader != nil {
 			err = s.loader(s)
 		}
-		// Load all fields
-		if err == nil {
-			for _, f := range s.fields {
-				err = f.Load()
-				if err != nil {
-					return
-				}
-			}
-		}
-		// Load all methods
-		if err == nil {
-			for _, m := range s.methods {
-				err = m.Load()
-				if err != nil {
-					return
-				}
-			}
-		}
+		// Don't load fields/methods - causes deadlock on circular types
 	})
 	return err
 }

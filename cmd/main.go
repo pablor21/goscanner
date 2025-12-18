@@ -5,7 +5,7 @@ import (
 	"flag"
 	"os"
 
-	"github.com/pablor21/goscanner/scanner"
+	"github.com/pablor21/goscanner/scannernew"
 )
 
 var pkg string
@@ -17,14 +17,16 @@ func main() {
 	flag.StringVar(&output, "out", "output.json", "Output file")
 	flag.Parse()
 
-	cfg := scanner.NewDefaultConfig()
+	cfg := scannernew.NewDefaultConfig()
 	cfg.Packages = []string{pkg}
 	cfg.LogLevel = "debug"
 
-	ret, err := scanner.NewScanner().ScanWithConfig(cfg)
+	ret, err := scannernew.NewScanner().ScanWithConfig(cfg)
 	if err != nil {
 		panic(err)
 	}
+
+	serializedret := ret.Serialize()
 
 	// // load details for each type
 	// for _, v := range ret.Types {
@@ -38,7 +40,7 @@ func main() {
 	// }
 
 	// convert the ret to a json
-	b, err := json.MarshalIndent(ret, "", "  ")
+	b, err := json.MarshalIndent(serializedret, "", "  ")
 	if err != nil {
 		panic(err)
 	}

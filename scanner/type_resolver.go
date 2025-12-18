@@ -42,9 +42,9 @@ var BasicTypes = []string{
 	"error",
 }
 
-type TypeCollection map[string]gct.Type
-type ValueCollection map[string]gct.ValueType
-type PackageCollection map[string]*gct.Package
+// type TypeCollection map[string]gct.Type
+// type ValueCollection map[string]gct.ValueType
+// type PackageCollection map[string]*gct.Package
 
 // TypeResolver is an interface for resolving types and managing type information
 type TypeResolver interface {

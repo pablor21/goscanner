@@ -165,6 +165,17 @@ func (p *Package) SetComments(name string, comments []Comment) {
 	p.comments[name] = comments
 }
 
+func (p *Package) AddComments(name string, comments []Comment) {
+	if name == PackageCommentID {
+		p.pkgComments = append(p.pkgComments, comments...)
+		return
+	}
+	if p.comments == nil {
+		p.comments = make(map[string][]Comment)
+	}
+	p.comments[name] = append(p.comments[name], comments...)
+}
+
 func (p *Package) GoPackage() *packages.Package {
 	return p.pkg
 }

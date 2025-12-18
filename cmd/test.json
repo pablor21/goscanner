@@ -128,12 +128,6 @@
       "kind": "struct",
       "named": true,
       "package": "bufio",
-      "comments": [
-        {
-          "text": "Reader implements buffering for an io.Reader object.\nA new Reader is created by calling [NewReader] or [NewReaderSize];\nalternatively the zero value of a Reader may be used after calling [Reset]\non it.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "bufio.Reader#buf",
@@ -141,8 +135,8 @@
           "kind": "field",
           "package": "bufio",
           "type": {
-            "id": "__unnamed_slice__45__",
-            "name": "__unnamed_slice__45__",
+            "id": "__unnamed_slice__44__",
+            "name": "__unnamed_slice__44__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -291,8 +285,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__46__",
-                "name": "__unnamed_slice__46__",
+                "id": "__unnamed_slice__45__",
+                "name": "__unnamed_slice__45__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -364,8 +358,8 @@
             {
               "name": "p",
               "type": {
-                "id": "__unnamed_slice__47__",
-                "name": "__unnamed_slice__47__",
+                "id": "__unnamed_slice__46__",
+                "name": "__unnamed_slice__46__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -539,8 +533,8 @@
             {
               "name": "line",
               "type": {
-                "id": "__unnamed_slice__48__",
-                "name": "__unnamed_slice__48__",
+                "id": "__unnamed_slice__47__",
+                "name": "__unnamed_slice__47__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -575,8 +569,8 @@
             {
               "name": "line",
               "type": {
-                "id": "__unnamed_slice__49__",
-                "name": "__unnamed_slice__49__",
+                "id": "__unnamed_slice__48__",
+                "name": "__unnamed_slice__48__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -628,8 +622,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__50__",
-                "name": "__unnamed_slice__50__",
+                "id": "__unnamed_slice__49__",
+                "name": "__unnamed_slice__49__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -858,12 +852,6 @@
       "kind": "struct",
       "named": true,
       "package": "crypto/tls",
-      "comments": [
-        {
-          "text": "ConnectionState records basic TLS details about the connection.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "crypto/tls.ConnectionState#Version",
@@ -1308,12 +1296,6 @@
       "kind": "struct",
       "named": true,
       "package": "crypto/x509",
-      "comments": [
-        {
-          "text": "CertPool is a set of certificates.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "crypto/x509.CertPool#byName",
@@ -1321,8 +1303,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_map__9__",
-            "name": "__unnamed_map__9__",
+            "id": "__unnamed_map__8__",
+            "name": "__unnamed_map__8__",
             "kind": "map",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "key": {
@@ -1331,8 +1313,8 @@
               "kind": "basic"
             },
             "value": {
-              "id": "__unnamed_slice__149__",
-              "name": "__unnamed_slice__149__",
+              "id": "__unnamed_slice__147__",
+              "name": "__unnamed_slice__147__",
               "kind": "slice",
               "package": "github.com/pablor21/goscanner/examples/starwars/basic",
               "element": {
@@ -1353,8 +1335,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__150__",
-            "name": "__unnamed_slice__150__",
+            "id": "__unnamed_slice__148__",
+            "name": "__unnamed_slice__148__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -1375,8 +1357,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_map__10__",
-            "name": "__unnamed_map__10__",
+            "id": "__unnamed_map__9__",
+            "name": "__unnamed_map__9__",
             "kind": "map",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "key": {
@@ -1476,8 +1458,8 @@
             {
               "name": "pemCerts",
               "type": {
-                "id": "__unnamed_slice__151__",
-                "name": "__unnamed_slice__151__",
+                "id": "__unnamed_slice__149__",
+                "name": "__unnamed_slice__149__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -1513,13 +1495,13 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__153__",
-                "name": "__unnamed_slice__153__",
+                "id": "__unnamed_slice__151__",
+                "name": "__unnamed_slice__151__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
-                  "id": "__unnamed_slice__152__",
-                  "name": "__unnamed_slice__152__",
+                  "id": "__unnamed_slice__150__",
+                  "name": "__unnamed_slice__150__",
                   "kind": "slice",
                   "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                   "element": {
@@ -1612,8 +1594,8 @@
                   {
                     "name": "",
                     "type": {
-                      "id": "__unnamed_slice__154__",
-                      "name": "__unnamed_slice__154__",
+                      "id": "__unnamed_slice__152__",
+                      "name": "__unnamed_slice__152__",
                       "kind": "slice",
                       "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                       "element": {
@@ -1659,12 +1641,6 @@
       "kind": "struct",
       "named": true,
       "package": "crypto/x509",
-      "comments": [
-        {
-          "text": "A Certificate represents an X.509 certificate.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "crypto/x509.Certificate#Raw",
@@ -1672,8 +1648,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__51__",
-            "name": "__unnamed_slice__51__",
+            "id": "__unnamed_slice__50__",
+            "name": "__unnamed_slice__50__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -1692,8 +1668,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__52__",
-            "name": "__unnamed_slice__52__",
+            "id": "__unnamed_slice__51__",
+            "name": "__unnamed_slice__51__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -1712,8 +1688,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__53__",
-            "name": "__unnamed_slice__53__",
+            "id": "__unnamed_slice__52__",
+            "name": "__unnamed_slice__52__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -1732,8 +1708,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__54__",
-            "name": "__unnamed_slice__54__",
+            "id": "__unnamed_slice__53__",
+            "name": "__unnamed_slice__53__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -1752,8 +1728,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__55__",
-            "name": "__unnamed_slice__55__",
+            "id": "__unnamed_slice__54__",
+            "name": "__unnamed_slice__54__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -1772,8 +1748,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__56__",
-            "name": "__unnamed_slice__56__",
+            "id": "__unnamed_slice__55__",
+            "name": "__unnamed_slice__55__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -1935,8 +1911,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__57__",
-            "name": "__unnamed_slice__57__",
+            "id": "__unnamed_slice__56__",
+            "name": "__unnamed_slice__56__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -1957,8 +1933,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__58__",
-            "name": "__unnamed_slice__58__",
+            "id": "__unnamed_slice__57__",
+            "name": "__unnamed_slice__57__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -1979,8 +1955,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__59__",
-            "name": "__unnamed_slice__59__",
+            "id": "__unnamed_slice__58__",
+            "name": "__unnamed_slice__58__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2001,8 +1977,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__60__",
-            "name": "__unnamed_slice__60__",
+            "id": "__unnamed_slice__59__",
+            "name": "__unnamed_slice__59__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2023,8 +1999,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__61__",
-            "name": "__unnamed_slice__61__",
+            "id": "__unnamed_slice__60__",
+            "name": "__unnamed_slice__60__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2093,8 +2069,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__62__",
-            "name": "__unnamed_slice__62__",
+            "id": "__unnamed_slice__61__",
+            "name": "__unnamed_slice__61__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2113,8 +2089,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__63__",
-            "name": "__unnamed_slice__63__",
+            "id": "__unnamed_slice__62__",
+            "name": "__unnamed_slice__62__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2133,8 +2109,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__64__",
-            "name": "__unnamed_slice__64__",
+            "id": "__unnamed_slice__63__",
+            "name": "__unnamed_slice__63__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2153,8 +2129,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__65__",
-            "name": "__unnamed_slice__65__",
+            "id": "__unnamed_slice__64__",
+            "name": "__unnamed_slice__64__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2173,8 +2149,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__66__",
-            "name": "__unnamed_slice__66__",
+            "id": "__unnamed_slice__65__",
+            "name": "__unnamed_slice__65__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2193,8 +2169,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__67__",
-            "name": "__unnamed_slice__67__",
+            "id": "__unnamed_slice__66__",
+            "name": "__unnamed_slice__66__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2213,8 +2189,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__68__",
-            "name": "__unnamed_slice__68__",
+            "id": "__unnamed_slice__67__",
+            "name": "__unnamed_slice__67__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2235,8 +2211,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__69__",
-            "name": "__unnamed_slice__69__",
+            "id": "__unnamed_slice__68__",
+            "name": "__unnamed_slice__68__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2276,8 +2252,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__70__",
-            "name": "__unnamed_slice__70__",
+            "id": "__unnamed_slice__69__",
+            "name": "__unnamed_slice__69__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2296,8 +2272,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__71__",
-            "name": "__unnamed_slice__71__",
+            "id": "__unnamed_slice__70__",
+            "name": "__unnamed_slice__70__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2316,8 +2292,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__72__",
-            "name": "__unnamed_slice__72__",
+            "id": "__unnamed_slice__71__",
+            "name": "__unnamed_slice__71__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2345,8 +2321,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__73__",
-            "name": "__unnamed_slice__73__",
+            "id": "__unnamed_slice__72__",
+            "name": "__unnamed_slice__72__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2374,8 +2350,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__74__",
-            "name": "__unnamed_slice__74__",
+            "id": "__unnamed_slice__73__",
+            "name": "__unnamed_slice__73__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2394,8 +2370,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__75__",
-            "name": "__unnamed_slice__75__",
+            "id": "__unnamed_slice__74__",
+            "name": "__unnamed_slice__74__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2414,8 +2390,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__76__",
-            "name": "__unnamed_slice__76__",
+            "id": "__unnamed_slice__75__",
+            "name": "__unnamed_slice__75__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2434,8 +2410,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__77__",
-            "name": "__unnamed_slice__77__",
+            "id": "__unnamed_slice__76__",
+            "name": "__unnamed_slice__76__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2454,8 +2430,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__78__",
-            "name": "__unnamed_slice__78__",
+            "id": "__unnamed_slice__77__",
+            "name": "__unnamed_slice__77__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2474,8 +2450,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__79__",
-            "name": "__unnamed_slice__79__",
+            "id": "__unnamed_slice__78__",
+            "name": "__unnamed_slice__78__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2496,8 +2472,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__80__",
-            "name": "__unnamed_slice__80__",
+            "id": "__unnamed_slice__79__",
+            "name": "__unnamed_slice__79__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2590,8 +2566,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__81__",
-            "name": "__unnamed_slice__81__",
+            "id": "__unnamed_slice__80__",
+            "name": "__unnamed_slice__80__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -2630,13 +2606,13 @@
             {
               "name": "chains",
               "type": {
-                "id": "__unnamed_slice__83__",
-                "name": "__unnamed_slice__83__",
+                "id": "__unnamed_slice__82__",
+                "name": "__unnamed_slice__82__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
-                  "id": "__unnamed_slice__82__",
-                  "name": "__unnamed_slice__82__",
+                  "id": "__unnamed_slice__81__",
+                  "name": "__unnamed_slice__81__",
                   "kind": "slice",
                   "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                   "element": {
@@ -2798,8 +2774,8 @@
             {
               "name": "signed",
               "type": {
-                "id": "__unnamed_slice__84__",
-                "name": "__unnamed_slice__84__",
+                "id": "__unnamed_slice__83__",
+                "name": "__unnamed_slice__83__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -2814,8 +2790,8 @@
             {
               "name": "signature",
               "type": {
-                "id": "__unnamed_slice__85__",
-                "name": "__unnamed_slice__85__",
+                "id": "__unnamed_slice__84__",
+                "name": "__unnamed_slice__84__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -2907,8 +2883,8 @@
             {
               "name": "revokedCerts",
               "type": {
-                "id": "__unnamed_slice__86__",
-                "name": "__unnamed_slice__86__",
+                "id": "__unnamed_slice__85__",
+                "name": "__unnamed_slice__85__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -2947,8 +2923,8 @@
             {
               "name": "crlBytes",
               "type": {
-                "id": "__unnamed_slice__87__",
-                "name": "__unnamed_slice__87__",
+                "id": "__unnamed_slice__86__",
+                "name": "__unnamed_slice__86__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -3005,12 +2981,6 @@
       "kind": "struct",
       "named": true,
       "package": "crypto/x509",
-      "comments": [
-        {
-          "text": "An OID represents an ASN.1 OBJECT IDENTIFIER.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "crypto/x509.OID#der",
@@ -3018,8 +2988,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__104__",
-            "name": "__unnamed_slice__104__",
+            "id": "__unnamed_slice__102__",
+            "name": "__unnamed_slice__102__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -3044,8 +3014,8 @@
             {
               "name": "b",
               "type": {
-                "id": "__unnamed_slice__105__",
-                "name": "__unnamed_slice__105__",
+                "id": "__unnamed_slice__103__",
+                "name": "__unnamed_slice__103__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -3061,8 +3031,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__106__",
-                "name": "__unnamed_slice__106__",
+                "id": "__unnamed_slice__104__",
+                "name": "__unnamed_slice__104__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -3095,8 +3065,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__107__",
-                "name": "__unnamed_slice__107__",
+                "id": "__unnamed_slice__105__",
+                "name": "__unnamed_slice__105__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -3130,8 +3100,8 @@
             {
               "name": "text",
               "type": {
-                "id": "__unnamed_slice__108__",
-                "name": "__unnamed_slice__108__",
+                "id": "__unnamed_slice__106__",
+                "name": "__unnamed_slice__106__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -3167,8 +3137,8 @@
             {
               "name": "b",
               "type": {
-                "id": "__unnamed_slice__109__",
-                "name": "__unnamed_slice__109__",
+                "id": "__unnamed_slice__107__",
+                "name": "__unnamed_slice__107__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -3184,8 +3154,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__110__",
-                "name": "__unnamed_slice__110__",
+                "id": "__unnamed_slice__108__",
+                "name": "__unnamed_slice__108__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -3218,8 +3188,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__111__",
-                "name": "__unnamed_slice__111__",
+                "id": "__unnamed_slice__109__",
+                "name": "__unnamed_slice__109__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -3253,8 +3223,8 @@
             {
               "name": "b",
               "type": {
-                "id": "__unnamed_slice__112__",
-                "name": "__unnamed_slice__112__",
+                "id": "__unnamed_slice__110__",
+                "name": "__unnamed_slice__110__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -3369,12 +3339,6 @@
       "kind": "struct",
       "named": true,
       "package": "crypto/x509",
-      "comments": [
-        {
-          "text": "PolicyMapping represents a policy mapping entry in the policyMappings extension.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "crypto/x509.PolicyMapping#IssuerDomainPolicy",
@@ -3436,12 +3400,6 @@
       "kind": "struct",
       "named": true,
       "package": "crypto/x509",
-      "comments": [
-        {
-          "text": "VerifyOptions contains parameters for Certificate.Verify.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "crypto/x509.VerifyOptions#DNSName",
@@ -3517,8 +3475,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__113__",
-            "name": "__unnamed_slice__113__",
+            "id": "__unnamed_slice__111__",
+            "name": "__unnamed_slice__111__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -3551,8 +3509,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__114__",
-            "name": "__unnamed_slice__114__",
+            "id": "__unnamed_slice__112__",
+            "name": "__unnamed_slice__112__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -3611,12 +3569,6 @@
       "kind": "struct",
       "named": true,
       "package": "crypto/x509",
-      "comments": [
-        {
-          "text": "lazyCert is minimal metadata about a Cert and a func to retrieve it\nin its normal expanded *Certificate form.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "crypto/x509.lazyCert#rawSubject",
@@ -3624,8 +3576,8 @@
           "kind": "field",
           "package": "crypto/x509",
           "type": {
-            "id": "__unnamed_slice__164__",
-            "name": "__unnamed_slice__164__",
+            "id": "__unnamed_slice__162__",
+            "name": "__unnamed_slice__162__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -3652,8 +3604,8 @@
               {
                 "name": "",
                 "type": {
-                  "id": "__unnamed_slice__154__",
-                  "name": "__unnamed_slice__154__",
+                  "id": "__unnamed_slice__152__",
+                  "name": "__unnamed_slice__152__",
                   "kind": "slice",
                   "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                   "element": {
@@ -3747,12 +3699,6 @@
       "kind": "struct",
       "named": true,
       "package": "crypto/x509/pkix",
-      "comments": [
-        {
-          "text": "AlgorithmIdentifier represents the ASN.1 structure of the same name. See RFC\n5280, section 4.1.1.2.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "crypto/x509/pkix.AlgorithmIdentifier#Algorithm",
@@ -3791,12 +3737,6 @@
       "kind": "struct",
       "named": true,
       "package": "crypto/x509/pkix",
-      "comments": [
-        {
-          "text": "AttributeTypeAndValue mirrors the ASN.1 structure of the same name in\nRFC 5280, Section 4.1.2.4.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "crypto/x509/pkix.AttributeTypeAndValue#Type",
@@ -3832,12 +3772,6 @@
       "kind": "struct",
       "named": true,
       "package": "crypto/x509/pkix",
-      "comments": [
-        {
-          "text": "CertificateList represents the ASN.1 structure of the same name. See RFC\n5280, section 5.1. Use Certificate.CheckCRLSignature to verify the\nsignature.\nDeprecated: x509.RevocationList should be used instead.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "crypto/x509/pkix.CertificateList#TBSCertList",
@@ -3922,12 +3856,6 @@
       "kind": "struct",
       "named": true,
       "package": "crypto/x509/pkix",
-      "comments": [
-        {
-          "text": "Extension represents the ASN.1 structure of the same name. See RFC\n5280, section 4.2.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "crypto/x509/pkix.Extension#Id",
@@ -3962,8 +3890,8 @@
           "kind": "field",
           "package": "crypto/x509/pkix",
           "type": {
-            "id": "__unnamed_slice__115__",
-            "name": "__unnamed_slice__115__",
+            "id": "__unnamed_slice__113__",
+            "name": "__unnamed_slice__113__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -3984,12 +3912,6 @@
       "kind": "struct",
       "named": true,
       "package": "crypto/x509/pkix",
-      "comments": [
-        {
-          "text": "Name represents an X.509 distinguished name. This only includes the common\nelements of a DN. Note that Name is only an approximation of the X.509\nstructure. If an accurate representation is needed, asn1.Unmarshal the raw\nsubject or issuer as an [RDNSequence].",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "crypto/x509/pkix.Name#Country",
@@ -3997,8 +3919,8 @@
           "kind": "field",
           "package": "crypto/x509/pkix",
           "type": {
-            "id": "__unnamed_slice__116__",
-            "name": "__unnamed_slice__116__",
+            "id": "__unnamed_slice__114__",
+            "name": "__unnamed_slice__114__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -4017,8 +3939,8 @@
           "kind": "field",
           "package": "crypto/x509/pkix",
           "type": {
-            "id": "__unnamed_slice__117__",
-            "name": "__unnamed_slice__117__",
+            "id": "__unnamed_slice__115__",
+            "name": "__unnamed_slice__115__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -4037,8 +3959,8 @@
           "kind": "field",
           "package": "crypto/x509/pkix",
           "type": {
-            "id": "__unnamed_slice__118__",
-            "name": "__unnamed_slice__118__",
+            "id": "__unnamed_slice__116__",
+            "name": "__unnamed_slice__116__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -4057,8 +3979,8 @@
           "kind": "field",
           "package": "crypto/x509/pkix",
           "type": {
-            "id": "__unnamed_slice__119__",
-            "name": "__unnamed_slice__119__",
+            "id": "__unnamed_slice__117__",
+            "name": "__unnamed_slice__117__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -4077,8 +3999,8 @@
           "kind": "field",
           "package": "crypto/x509/pkix",
           "type": {
-            "id": "__unnamed_slice__120__",
-            "name": "__unnamed_slice__120__",
+            "id": "__unnamed_slice__118__",
+            "name": "__unnamed_slice__118__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -4097,8 +4019,8 @@
           "kind": "field",
           "package": "crypto/x509/pkix",
           "type": {
-            "id": "__unnamed_slice__121__",
-            "name": "__unnamed_slice__121__",
+            "id": "__unnamed_slice__119__",
+            "name": "__unnamed_slice__119__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -4117,8 +4039,8 @@
           "kind": "field",
           "package": "crypto/x509/pkix",
           "type": {
-            "id": "__unnamed_slice__122__",
-            "name": "__unnamed_slice__122__",
+            "id": "__unnamed_slice__120__",
+            "name": "__unnamed_slice__120__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -4161,8 +4083,8 @@
           "kind": "field",
           "package": "crypto/x509/pkix",
           "type": {
-            "id": "__unnamed_slice__123__",
-            "name": "__unnamed_slice__123__",
+            "id": "__unnamed_slice__121__",
+            "name": "__unnamed_slice__121__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -4183,8 +4105,8 @@
           "kind": "field",
           "package": "crypto/x509/pkix",
           "type": {
-            "id": "__unnamed_slice__124__",
-            "name": "__unnamed_slice__124__",
+            "id": "__unnamed_slice__122__",
+            "name": "__unnamed_slice__122__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -4311,12 +4233,6 @@
       "kind": "struct",
       "named": true,
       "package": "crypto/x509/pkix",
-      "comments": [
-        {
-          "text": "RevokedCertificate represents the ASN.1 structure of the same name. See RFC\n5280, section 5.1.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "crypto/x509/pkix.RevokedCertificate#SerialNumber",
@@ -4359,8 +4275,8 @@
           "kind": "field",
           "package": "crypto/x509/pkix",
           "type": {
-            "id": "__unnamed_slice__125__",
-            "name": "__unnamed_slice__125__",
+            "id": "__unnamed_slice__123__",
+            "name": "__unnamed_slice__123__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -4384,12 +4300,6 @@
       "kind": "struct",
       "named": true,
       "package": "crypto/x509/pkix",
-      "comments": [
-        {
-          "text": "TBSCertificateList represents the ASN.1 structure of the same name. See RFC\n5280, section 5.1.\nDeprecated: x509.RevocationList should be used instead.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "crypto/x509/pkix.TBSCertificateList#Raw",
@@ -4481,8 +4391,8 @@
           "kind": "field",
           "package": "crypto/x509/pkix",
           "type": {
-            "id": "__unnamed_slice__155__",
-            "name": "__unnamed_slice__155__",
+            "id": "__unnamed_slice__153__",
+            "name": "__unnamed_slice__153__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -4504,8 +4414,8 @@
           "kind": "field",
           "package": "crypto/x509/pkix",
           "type": {
-            "id": "__unnamed_slice__156__",
-            "name": "__unnamed_slice__156__",
+            "id": "__unnamed_slice__154__",
+            "name": "__unnamed_slice__154__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -4529,12 +4439,6 @@
       "kind": "struct",
       "named": true,
       "package": "encoding/asn1",
-      "comments": [
-        {
-          "text": "BitString is the structure to use when you want an ASN.1 BIT STRING type. A\nbit string is padded up to the nearest byte in memory and the number of\nvalid bits is recorded. Padding bits will be zero.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "encoding/asn1.BitString#Bytes",
@@ -4542,8 +4446,8 @@
           "kind": "field",
           "package": "encoding/asn1",
           "type": {
-            "id": "__unnamed_slice__157__",
-            "name": "__unnamed_slice__157__",
+            "id": "__unnamed_slice__155__",
+            "name": "__unnamed_slice__155__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -4608,8 +4512,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__158__",
-                "name": "__unnamed_slice__158__",
+                "id": "__unnamed_slice__156__",
+                "name": "__unnamed_slice__156__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -4674,12 +4578,6 @@
       "kind": "struct",
       "named": true,
       "package": "encoding/asn1",
-      "comments": [
-        {
-          "text": "A RawValue represents an undecoded ASN.1 object.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "encoding/asn1.RawValue#Class",
@@ -4723,8 +4621,8 @@
           "kind": "field",
           "package": "encoding/asn1",
           "type": {
-            "id": "__unnamed_slice__165__",
-            "name": "__unnamed_slice__165__",
+            "id": "__unnamed_slice__163__",
+            "name": "__unnamed_slice__163__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -4743,8 +4641,8 @@
           "kind": "field",
           "package": "encoding/asn1",
           "type": {
-            "id": "__unnamed_slice__166__",
-            "name": "__unnamed_slice__166__",
+            "id": "__unnamed_slice__164__",
+            "name": "__unnamed_slice__164__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -4782,8 +4680,8 @@
             {
               "name": "buf",
               "type": {
-                "id": "__unnamed_slice__159__",
-                "name": "__unnamed_slice__159__",
+                "id": "__unnamed_slice__157__",
+                "name": "__unnamed_slice__157__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -4912,8 +4810,8 @@
             {
               "name": "token",
               "type": {
-                "id": "__unnamed_slice__160__",
-                "name": "__unnamed_slice__160__",
+                "id": "__unnamed_slice__158__",
+                "name": "__unnamed_slice__158__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -5095,8 +4993,8 @@
             {
               "name": "b",
               "type": {
-                "id": "__unnamed_slice__161__",
-                "name": "__unnamed_slice__161__",
+                "id": "__unnamed_slice__159__",
+                "name": "__unnamed_slice__159__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -5197,8 +5095,8 @@
         {
           "name": "",
           "type": {
-            "id": "__unnamed_slice__154__",
-            "name": "__unnamed_slice__154__",
+            "id": "__unnamed_slice__152__",
+            "name": "__unnamed_slice__152__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -5414,12 +5312,6 @@
       "kind": "struct",
       "named": true,
       "package": "internal/sync",
-      "comments": [
-        {
-          "text": "A Mutex is a mutual exclusion lock.\nSee package [sync.Mutex] documentation.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "internal/sync.Mutex#state",
@@ -5591,8 +5483,8 @@
             {
               "name": "p",
               "type": {
-                "id": "__unnamed_slice__126__",
-                "name": "__unnamed_slice__126__",
+                "id": "__unnamed_slice__124__",
+                "name": "__unnamed_slice__124__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -5708,12 +5600,6 @@
       "kind": "struct",
       "named": true,
       "package": "math/big",
-      "comments": [
-        {
-          "text": "An Int represents a signed multi-precision integer.\nThe zero value for an Int represents the value 0.\nOperations always take pointer arguments (*Int) rather\nthan Int values, and each unique Int value requires\nits own unique *Int pointer. To \"copy\" an Int value,\nan existing (or newly allocated) Int must be set to\na new value using the [Int.Set] method; shallow copies\nof Ints are not supported and may lead to errors.\nNote that methods may leak the Int's value through timing side-channels.\nBecause of this and because of the scope and complexity of the\nimplementation, Int is not well-suited to implement cryptographic operations.\nThe standard library avoids exposing non-trivial Int methods to\nattacker-controlled inputs and the determination of whether a bug in math/big\nis considered a security vulnerability might depend on the impact on the\nstandard library.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "math/big.Int#neg",
@@ -5894,8 +5780,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__127__",
-                "name": "__unnamed_slice__127__",
+                "id": "__unnamed_slice__125__",
+                "name": "__unnamed_slice__125__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -5924,8 +5810,8 @@
             {
               "name": "abs",
               "type": {
-                "id": "__unnamed_slice__128__",
-                "name": "__unnamed_slice__128__",
+                "id": "__unnamed_slice__126__",
+                "name": "__unnamed_slice__126__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -7034,8 +6920,8 @@
             {
               "name": "buf",
               "type": {
-                "id": "__unnamed_slice__129__",
-                "name": "__unnamed_slice__129__",
+                "id": "__unnamed_slice__127__",
+                "name": "__unnamed_slice__127__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -7079,8 +6965,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__130__",
-                "name": "__unnamed_slice__130__",
+                "id": "__unnamed_slice__128__",
+                "name": "__unnamed_slice__128__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -7107,8 +6993,8 @@
             {
               "name": "buf",
               "type": {
-                "id": "__unnamed_slice__131__",
-                "name": "__unnamed_slice__131__",
+                "id": "__unnamed_slice__129__",
+                "name": "__unnamed_slice__129__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -7124,8 +7010,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__132__",
-                "name": "__unnamed_slice__132__",
+                "id": "__unnamed_slice__130__",
+                "name": "__unnamed_slice__130__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -8142,8 +8028,8 @@
             {
               "name": "buf",
               "type": {
-                "id": "__unnamed_slice__133__",
-                "name": "__unnamed_slice__133__",
+                "id": "__unnamed_slice__131__",
+                "name": "__unnamed_slice__131__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -8167,8 +8053,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__134__",
-                "name": "__unnamed_slice__134__",
+                "id": "__unnamed_slice__132__",
+                "name": "__unnamed_slice__132__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -8282,8 +8168,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__135__",
-                "name": "__unnamed_slice__135__",
+                "id": "__unnamed_slice__133__",
+                "name": "__unnamed_slice__133__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -8317,8 +8203,8 @@
             {
               "name": "buf",
               "type": {
-                "id": "__unnamed_slice__136__",
-                "name": "__unnamed_slice__136__",
+                "id": "__unnamed_slice__134__",
+                "name": "__unnamed_slice__134__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -8354,8 +8240,8 @@
             {
               "name": "b",
               "type": {
-                "id": "__unnamed_slice__137__",
-                "name": "__unnamed_slice__137__",
+                "id": "__unnamed_slice__135__",
+                "name": "__unnamed_slice__135__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -8372,8 +8258,8 @@
             {
               "name": "text",
               "type": {
-                "id": "__unnamed_slice__138__",
-                "name": "__unnamed_slice__138__",
+                "id": "__unnamed_slice__136__",
+                "name": "__unnamed_slice__136__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -8408,8 +8294,8 @@
             {
               "name": "text",
               "type": {
-                "id": "__unnamed_slice__139__",
-                "name": "__unnamed_slice__139__",
+                "id": "__unnamed_slice__137__",
+                "name": "__unnamed_slice__137__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -8444,8 +8330,8 @@
             {
               "name": "text",
               "type": {
-                "id": "__unnamed_slice__140__",
-                "name": "__unnamed_slice__140__",
+                "id": "__unnamed_slice__138__",
+                "name": "__unnamed_slice__138__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -8480,8 +8366,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__141__",
-                "name": "__unnamed_slice__141__",
+                "id": "__unnamed_slice__139__",
+                "name": "__unnamed_slice__139__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -8515,8 +8401,8 @@
             {
               "name": "text",
               "type": {
-                "id": "__unnamed_slice__142__",
-                "name": "__unnamed_slice__142__",
+                "id": "__unnamed_slice__140__",
+                "name": "__unnamed_slice__140__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -8613,12 +8499,6 @@
       "kind": "struct",
       "named": true,
       "package": "math/rand",
-      "comments": [
-        {
-          "text": "A Rand is a source of random numbers.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "math/rand.Rand#src",
@@ -8971,8 +8851,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__162__",
-                "name": "__unnamed_slice__162__",
+                "id": "__unnamed_slice__160__",
+                "name": "__unnamed_slice__160__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -9046,8 +8926,8 @@
             {
               "name": "p",
               "type": {
-                "id": "__unnamed_slice__163__",
-                "name": "__unnamed_slice__163__",
+                "id": "__unnamed_slice__161__",
+                "name": "__unnamed_slice__161__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -9395,12 +9275,6 @@
       "kind": "struct",
       "named": true,
       "package": "mime/multipart",
-      "comments": [
-        {
-          "text": "A FileHeader describes a file part of a multipart request.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "mime/multipart.FileHeader#Filename",
@@ -9534,12 +9408,6 @@
       "kind": "struct",
       "named": true,
       "package": "mime/multipart",
-      "comments": [
-        {
-          "text": "Form is a parsed multipart form.\nIts File parts are stored either in memory or on disk,\nand are accessible via the [*FileHeader]'s Open method.\nIts Value parts are stored as strings.\nBoth are keyed by field name.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "mime/multipart.Form#Value",
@@ -9643,12 +9511,6 @@
       "kind": "struct",
       "named": true,
       "package": "mime/multipart",
-      "comments": [
-        {
-          "text": "A Part represents a single part in a multipart body.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "mime/multipart.Part#Header",
@@ -9703,8 +9565,8 @@
           "kind": "field",
           "package": "mime/multipart",
           "type": {
-            "id": "__unnamed_map__8__",
-            "name": "__unnamed_map__8__",
+            "id": "__unnamed_map__7__",
+            "name": "__unnamed_map__7__",
             "kind": "map",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "key": {
@@ -9833,8 +9695,8 @@
             {
               "name": "d",
               "type": {
-                "id": "__unnamed_slice__88__",
-                "name": "__unnamed_slice__88__",
+                "id": "__unnamed_slice__87__",
+                "name": "__unnamed_slice__87__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -9896,12 +9758,6 @@
       "kind": "struct",
       "named": true,
       "package": "mime/multipart",
-      "comments": [
-        {
-          "text": "Reader is an iterator over parts in a MIME multipart body.\nReader's underlying parser consumes its input as needed. Seeking\nisn't supported.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "mime/multipart.Reader#bufReader",
@@ -10214,12 +10070,6 @@
       "kind": "struct",
       "named": true,
       "package": "net",
-      "comments": [
-        {
-          "text": "An IPNet represents an IP network.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "net.IPNet#IP",
@@ -10328,12 +10178,6 @@
       "kind": "struct",
       "named": true,
       "package": "net/http",
-      "comments": [
-        {
-          "text": "A Cookie represents an HTTP cookie as sent in the Set-Cookie header of an\nHTTP response or the Cookie header of an HTTP request.\nSee https://tools.ietf.org/html/rfc6265 for details.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "net/http.Cookie#Name",
@@ -10643,12 +10487,6 @@
       "kind": "struct",
       "named": true,
       "package": "net/http",
-      "comments": [
-        {
-          "text": "A Request represents an HTTP request received by a server\nor to be sent by a client.\nThe field semantics differ slightly between client and server\nusage. In addition to the notes on the fields below, see the\ndocumentation for [Request.Write] and [RoundTripper].",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "net/http.Request#Method",
@@ -11795,12 +11633,6 @@
       "kind": "struct",
       "named": true,
       "package": "net/http",
-      "comments": [
-        {
-          "text": "Response represents the response from an HTTP request.\nThe [Client] and [Transport] return Responses from servers once\nthe response headers have been received. The response body\nis streamed on demand as the Body field is read.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "net/http.Response#Status",
@@ -11908,8 +11740,8 @@
           "kind": "field",
           "package": "net/http",
           "type": {
-            "id": "__unnamed_slice__36__",
-            "name": "__unnamed_slice__36__",
+            "id": "__unnamed_slice__35__",
+            "name": "__unnamed_slice__35__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -12013,8 +11845,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__37__",
-                "name": "__unnamed_slice__37__",
+                "id": "__unnamed_slice__36__",
+                "name": "__unnamed_slice__36__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -12263,12 +12095,6 @@
       "kind": "struct",
       "named": true,
       "package": "net/http",
-      "comments": [
-        {
-          "text": "ServeMux is an HTTP request multiplexer.\nIt matches the URL of each incoming request against a list of registered\npatterns and calls the handler for the pattern that\nmost closely matches the URL.\n# Patterns\nPatterns can match the method, host and path of a request.\nSome examples:\n- \"/index.html\" matches the path \"/index.html\" for any host and method.\n- \"GET /static/\" matches a GET request whose path begins with \"/static/\".\n- \"example.com/\" matches any request to the host \"example.com\".\n- \"example.com/{$}\" matches requests with host \"example.com\" and path \"/\".\n- \"/b/{bucket}/o/{objectname...}\" matches paths whose first segment is \"b\"\nand whose third segment is \"o\". The name \"bucket\" denotes the second\nsegment and \"objectname\" denotes the remainder of the path.\nIn general, a pattern looks like\n[METHOD ][HOST]/[PATH]\nAll three parts are optional; \"/\" is a valid pattern.\nIf METHOD is present, it must be followed by at least one space or tab.\nLiteral (that is, non-wildcard) parts of a pattern match\nthe corresponding parts of a request case-sensitively.\nA pattern with no method matches every method. A pattern\nwith the method GET matches both GET and HEAD requests.\nOtherwise, the method must match exactly.\nA pattern with no host matches every host.\nA pattern with a host matches URLs on that host only.\nA path can include wildcard segments of the form {NAME} or {NAME...}.\nFor example, \"/b/{bucket}/o/{objectname...}\".\nThe wildcard name must be a valid Go identifier.\nWildcards must be full path segments: they must be preceded by a slash and followed by\neither a slash or the end of the string.\nFor example, \"/b_{bucket}\" is not a valid pattern.\nNormally a wildcard matches only a single path segment,\nending at the next literal slash (not %2F) in the request URL.\nBut if the \"...\" is present, then the wildcard matches the remainder of the URL path, including slashes.\n(Therefore it is invalid for a \"...\" wildcard to appear anywhere but at the end of a pattern.)\nThe match for a wildcard can be obtained by calling [Request.PathValue] with the wildcard's name.\nA trailing slash in a path acts as an anonymous \"...\" wildcard.\nThe special wildcard {$} matches only the end of the URL.\nFor example, the pattern \"/{$}\" matches only the path \"/\",\nwhereas the pattern \"/\" matches every path.\nFor matching, both pattern paths and incoming request paths are unescaped segment by segment.\nSo, for example, the path \"/a%2Fb/100%25\" is treated as having two segments, \"a/b\" and \"100%\".\nThe pattern \"/a%2fb/\" matches it, but the pattern \"/a/b/\" does not.\n# Precedence\nIf two or more patterns match a request, then the most specific pattern takes precedence.\nA pattern P1 is more specific than P2 if P1 matches a strict subset of P2’s requests;\nthat is, if P2 matches all the requests of P1 and more.\nIf neither is more specific, then the patterns conflict.\nThere is one exception to this rule, for backwards compatibility:\nif two patterns would otherwise conflict and one has a host while the other does not,\nthen the pattern with the host takes precedence.\nIf a pattern passed to [ServeMux.Handle] or [ServeMux.HandleFunc] conflicts with\nanother pattern that is already registered, those functions panic.\nAs an example of the general rule, \"/images/thumbnails/\" is more specific than \"/images/\",\nso both can be registered.\nThe former matches paths beginning with \"/images/thumbnails/\"\nand the latter will match any other path in the \"/images/\" subtree.\nAs another example, consider the patterns \"GET /\" and \"/index.html\":\nboth match a GET request for \"/index.html\", but the former pattern\nmatches all other GET and HEAD requests, while the latter matches any\nrequest for \"/index.html\" that uses a different method.\nThe patterns conflict.\n# Trailing-slash redirection\nConsider a [ServeMux] with a handler for a subtree, registered using a trailing slash or \"...\" wildcard.\nIf the ServeMux receives a request for the subtree root without a trailing slash,\nit redirects the request by adding the trailing slash.\nThis behavior can be overridden with a separate registration for the path without\nthe trailing slash or \"...\" wildcard. For example, registering \"/images/\" causes ServeMux\nto redirect a request for \"/images\" to \"/images/\", unless \"/images\" has\nbeen registered separately.\n# Request sanitizing\nServeMux also takes care of sanitizing the URL request path and the Host\nheader, stripping the port number and redirecting any request containing . or\n.. segments or repeated slashes to an equivalent, cleaner URL.\nEscaped path elements such as \"%2e\" for \".\" and \"%2f\" for \"/\" are preserved\nand aren't considered separators for request routing.\n# Compatibility\nThe pattern syntax and matching behavior of ServeMux changed significantly\nin Go 1.22. To restore the old behavior, set the GODEBUG environment variable\nto \"httpmuxgo121=1\". This setting is read once, at program startup; changes\nduring execution will be ignored.\nThe backwards-incompatible changes include:\n- Wildcards are just ordinary literal path segments in 1.21.\nFor example, the pattern \"/{x}\" will match only that path in 1.21,\nbut will match any one-segment path in 1.22.\n- In 1.21, no pattern was rejected, unless it was empty or conflicted with an existing pattern.\nIn 1.22, syntactically invalid patterns will cause [ServeMux.Handle] and [ServeMux.HandleFunc] to panic.\nFor example, in 1.21, the patterns \"/{\"  and \"/a{x}\" match themselves,\nbut in 1.22 they are invalid and will cause a panic when registered.\n- In 1.22, each segment of a pattern is unescaped; this was not done in 1.21.\nFor example, in 1.22 the pattern \"/%61\" matches the path \"/a\" (\"%61\" being the URL escape sequence for \"a\"),\nbut in 1.21 it would match only the path \"/%2561\" (where \"%25\" is the escape for the percent sign).\n- When matching patterns to paths, in 1.22 each segment of the path is unescaped; in 1.21, the entire path is unescaped.\nThis change mostly affects how paths with %2F escapes adjacent to slashes are treated.\nSee https://go.dev/issue/21955 for details.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "net/http.ServeMux#mu",
@@ -12554,12 +12380,6 @@
       "kind": "struct",
       "named": true,
       "package": "net/http",
-      "comments": [
-        {
-          "text": "A mapping is a collection of key-value pairs where the keys are unique.\nA zero mapping is empty and ready to use.\nA mapping tries to pick a representation that makes [mapping.find] most efficient.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "net/http.mapping[string, *net/http.routingNode]#s",
@@ -12567,8 +12387,8 @@
           "kind": "field",
           "package": "net/http",
           "type": {
-            "id": "__unnamed_slice__38__",
-            "name": "__unnamed_slice__38__",
+            "id": "__unnamed_slice__37__",
+            "name": "__unnamed_slice__37__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -12589,8 +12409,8 @@
           "kind": "field",
           "package": "net/http",
           "type": {
-            "id": "__unnamed_map__7__",
-            "name": "__unnamed_map__7__",
+            "id": "__unnamed_map__6__",
+            "name": "__unnamed_map__6__",
             "kind": "map",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "key": {
@@ -12659,12 +12479,6 @@
       "kind": "struct",
       "named": true,
       "package": "net/http",
-      "comments": [
-        {
-          "text": "A pattern is something that can be matched against an HTTP request.\nIt has an optional method, an optional host, and a path.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "net/http.pattern#str",
@@ -12708,8 +12522,8 @@
           "kind": "field",
           "package": "net/http",
           "type": {
-            "id": "__unnamed_slice__39__",
-            "name": "__unnamed_slice__39__",
+            "id": "__unnamed_slice__38__",
+            "name": "__unnamed_slice__38__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -12765,12 +12579,6 @@
       "kind": "struct",
       "named": true,
       "package": "net/http",
-      "comments": [
-        {
-          "text": "A routingIndex optimizes conflict detection by indexing patterns.\nThe basic idea is to rule out patterns that cannot conflict with a given\npattern because they have a different literal in a corresponding segment.\nSee the comments in [routingIndex.possiblyConflictingPatterns] for more details.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "net/http.routingIndex#segments",
@@ -12885,12 +12693,6 @@
       "kind": "struct",
       "named": true,
       "package": "net/http",
-      "comments": [
-        {
-          "text": "A routingNode is a node in the decision tree.\nThe same struct is used for leaf and interior nodes.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "net/http.routingNode#pattern",
@@ -12991,12 +12793,6 @@
       "kind": "struct",
       "named": true,
       "package": "net/http",
-      "comments": [
-        {
-          "text": "A segment is a pattern piece that matches one or more path segments, or\na trailing slash.\nIf wild is false, it matches a literal segment, or, if s == \"/\", a trailing slash.\nExamples:\n\"a\" =\u003e segment{s: \"a\"}\n\"/{$}\" =\u003e segment{s: \"/\"}\nIf wild is true and multi is false, it matches a single path segment.\nExample:\n\"{x}\" =\u003e segment{s: \"x\", wild: true}\nIf both wild and multi are true, it matches all remaining path segments.\nExample:\n\"{rest...}\" =\u003e segment{s: \"rest\", wild: true, multi: true}",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "net/http.segment#s",
@@ -13042,12 +12838,6 @@
       "kind": "struct",
       "named": true,
       "package": "net/http",
-      "comments": [
-        {
-          "text": "serveMux121 holds the state of a ServeMux needed for Go 1.21 behavior.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "net/http.serveMux121#mu",
@@ -13157,12 +12947,6 @@
       "kind": "struct",
       "named": true,
       "package": "net/url",
-      "comments": [
-        {
-          "text": "A URL represents a parsed URL (technically, a URI reference).\nThe general form represented is:\n[scheme:][//[userinfo@]host][/]path[?query][#fragment]\nURLs that do not start with a slash after the scheme are interpreted as:\nscheme:opaque[?query][#fragment]\nThe Host field contains the host and port subcomponents of the URL.\nWhen the port is present, it is separated from the host with a colon.\nWhen the host is an IPv6 address, it must be enclosed in square brackets:\n\"[fe80::1]:80\". The [net.JoinHostPort] function combines a host and port\ninto a string suitable for the Host field, adding square brackets to\nthe host when necessary.\nNote that the Path field is stored in decoded form: /%47%6f%2f becomes /Go/.\nA consequence is that it is impossible to tell which slashes in the Path were\nslashes in the raw URL and which were %2f. This distinction is rarely important,\nbut when it is, the code should use the [URL.EscapedPath] method, which preserves\nthe original encoding of Path.\nThe RawPath field is an optional field which is only set when the default\nencoding of Path is different from the escaped path. See the EscapedPath method\nfor more details.\nURL's String method uses the EscapedPath method to obtain the path.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "net/url.URL#Scheme",
@@ -13582,8 +13366,8 @@
             {
               "name": "text",
               "type": {
-                "id": "__unnamed_slice__40__",
-                "name": "__unnamed_slice__40__",
+                "id": "__unnamed_slice__39__",
+                "name": "__unnamed_slice__39__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -13618,8 +13402,8 @@
             {
               "name": "b",
               "type": {
-                "id": "__unnamed_slice__41__",
-                "name": "__unnamed_slice__41__",
+                "id": "__unnamed_slice__40__",
+                "name": "__unnamed_slice__40__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -13635,8 +13419,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__42__",
-                "name": "__unnamed_slice__42__",
+                "id": "__unnamed_slice__41__",
+                "name": "__unnamed_slice__41__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -13670,8 +13454,8 @@
             {
               "name": "text",
               "type": {
-                "id": "__unnamed_slice__43__",
-                "name": "__unnamed_slice__43__",
+                "id": "__unnamed_slice__42__",
+                "name": "__unnamed_slice__42__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -13707,8 +13491,8 @@
             {
               "name": "elem",
               "type": {
-                "id": "__unnamed_slice__44__",
-                "name": "__unnamed_slice__44__",
+                "id": "__unnamed_slice__43__",
+                "name": "__unnamed_slice__43__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -13753,12 +13537,6 @@
       "kind": "struct",
       "named": true,
       "package": "net/url",
-      "comments": [
-        {
-          "text": "The Userinfo type is an immutable encapsulation of username and\npassword details for a [URL]. An existing Userinfo value is guaranteed\nto have a username set (potentially empty, as allowed by RFC 2396),\nand optionally a password.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "net/url.Userinfo#username",
@@ -13937,12 +13715,6 @@
       "kind": "struct",
       "named": true,
       "package": "sync",
-      "comments": [
-        {
-          "text": "A Mutex is a mutual exclusion lock.\nThe zero value for a Mutex is an unlocked mutex.\nA Mutex must not be copied after first use.\nIn the terminology of [the Go memory model],\nthe n'th call to [Mutex.Unlock] “synchronizes before” the m'th call to [Mutex.Lock]\nfor any n \u003c m.\nA successful call to [Mutex.TryLock] is equivalent to a call to Lock.\nA failed call to TryLock does not establish any “synchronizes before”\nrelation at all.\n[the Go memory model]: https://go.dev/ref/mem",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "sync.Mutex#_",
@@ -14021,12 +13793,6 @@
       "kind": "struct",
       "named": true,
       "package": "sync",
-      "comments": [
-        {
-          "text": "A RWMutex is a reader/writer mutual exclusion lock.\nThe lock can be held by an arbitrary number of readers or a single writer.\nThe zero value for a RWMutex is an unlocked mutex.\nA RWMutex must not be copied after first use.\nIf any goroutine calls [RWMutex.Lock] while the lock is already held by\none or more readers, concurrent calls to [RWMutex.RLock] will block until\nthe writer has acquired (and released) the lock, to ensure that\nthe lock eventually becomes available to the writer.\nNote that this prohibits recursive read-locking.\nA [RWMutex.RLock] cannot be upgraded into a [RWMutex.Lock],\nnor can a [RWMutex.Lock] be downgraded into a [RWMutex.RLock].\nIn the terminology of [the Go memory model],\nthe n'th call to [RWMutex.Unlock] “synchronizes before” the m'th call to Lock\nfor any n \u003c m, just as for [Mutex].\nFor any call to RLock, there exists an n such that\nthe n'th call to Unlock “synchronizes before” that call to RLock,\nand the corresponding call to [RWMutex.RUnlock] “synchronizes before”\nthe n+1'th call to Lock.\n[the Go memory model]: https://go.dev/ref/mem",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "sync.RWMutex#w",
@@ -14203,12 +13969,6 @@
       "kind": "struct",
       "named": true,
       "package": "sync",
-      "comments": [
-        {
-          "text": "noCopy may be added to structs which must not be copied\nafter the first use.\nSee https://golang.org/issues/8005#issuecomment-190753527\nfor details.\nNote that it must not be embedded, due to the Lock and Unlock methods.",
-          "placement": "above"
-        }
-      ],
       "methods": [
         {
           "id": "sync.noCopy#Lock",
@@ -14238,12 +13998,6 @@
       "kind": "struct",
       "named": true,
       "package": "sync/atomic",
-      "comments": [
-        {
-          "text": "An Int32 is an atomic int32. The zero value is zero.\nInt32 must not be copied after first use.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "sync/atomic.Int32#_",
@@ -14478,12 +14232,6 @@
       "kind": "struct",
       "named": true,
       "package": "sync/atomic",
-      "comments": [
-        {
-          "text": "noCopy may be added to structs which must not be copied\nafter the first use.\nSee https://golang.org/issues/8005#issuecomment-190753527\nfor details.\nNote that it must not be embedded, due to the Lock and Unlock methods.",
-          "placement": "above"
-        }
-      ],
       "methods": [
         {
           "id": "sync/atomic.noCopy#Lock",
@@ -14525,12 +14273,6 @@
       "kind": "struct",
       "named": true,
       "package": "time",
-      "comments": [
-        {
-          "text": "A Location maps time instants to the zone in use at that time.\nTypically, the Location represents the collection of time offsets\nin use in a geographical area. For many Locations the time offset varies\ndepending on whether daylight savings time is in use at the time instant.\nLocation is used to provide a time zone in a printed Time value and for\ncalculations involving intervals that may cross daylight savings time\nboundaries.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "time.Location#name",
@@ -14550,8 +14292,8 @@
           "kind": "field",
           "package": "time",
           "type": {
-            "id": "__unnamed_slice__147__",
-            "name": "__unnamed_slice__147__",
+            "id": "__unnamed_slice__145__",
+            "name": "__unnamed_slice__145__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -14572,8 +14314,8 @@
           "kind": "field",
           "package": "time",
           "type": {
-            "id": "__unnamed_slice__148__",
-            "name": "__unnamed_slice__148__",
+            "id": "__unnamed_slice__146__",
+            "name": "__unnamed_slice__146__",
             "kind": "slice",
             "package": "github.com/pablor21/goscanner/examples/starwars/basic",
             "element": {
@@ -14686,12 +14428,6 @@
       "kind": "struct",
       "named": true,
       "package": "time",
-      "comments": [
-        {
-          "text": "A Time represents an instant in time with nanosecond precision.\nPrograms using times should typically store and pass them as values,\nnot pointers. That is, time variables and struct fields should be of\ntype [time.Time], not *time.Time.\nA Time value can be used by multiple goroutines simultaneously except\nthat the methods [Time.GobDecode], [Time.UnmarshalBinary], [Time.UnmarshalJSON] and\n[Time.UnmarshalText] are not concurrency-safe.\nTime instants can be compared using the [Time.Before], [Time.After], and [Time.Equal] methods.\nThe [Time.Sub] method subtracts two instants, producing a [Duration].\nThe [Time.Add] method adds a Time and a Duration, producing a Time.\nThe zero value of type Time is January 1, year 1, 00:00:00.000000000 UTC.\nAs this time is unlikely to come up in practice, the [Time.IsZero] method gives\na simple way of detecting a time that has not been initialized explicitly.\nEach time has an associated [Location]. The methods [Time.Local], [Time.UTC], and Time.In return a\nTime with a specific Location. Changing the Location of a Time value with\nthese methods does not change the actual instant it represents, only the time\nzone in which to interpret it.\nRepresentations of a Time value saved by the [Time.GobEncode], [Time.MarshalBinary], [Time.AppendBinary],\n[Time.MarshalJSON], [Time.MarshalText] and [Time.AppendText] methods store the [Time.Location]'s offset,\nbut not the location name. They therefore lose information about Daylight Saving Time.\nIn addition to the required “wall clock” reading, a Time may contain an optional\nreading of the current process's monotonic clock, to provide additional precision\nfor comparison or subtraction.\nSee the “Monotonic Clocks” section in the package documentation for details.\nNote that the Go == operator compares not just the time instant but also the\nLocation and the monotonic clock reading. Therefore, Time values should not\nbe used as map or database keys without first guaranteeing that the\nidentical Location has been set for all values, which can be achieved\nthrough use of the UTC or Local method, and that the monotonic clock reading\nhas been stripped by setting t = t.Round(0). In general, prefer t.Equal(u)\nto t == u, since t.Equal uses the most accurate comparison available and\ncorrectly handles the case when only one of its arguments has a monotonic\nclock reading.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "time.Time#wall",
@@ -14817,8 +14553,8 @@
             {
               "name": "b",
               "type": {
-                "id": "__unnamed_slice__90__",
-                "name": "__unnamed_slice__90__",
+                "id": "__unnamed_slice__88__",
+                "name": "__unnamed_slice__88__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -14842,8 +14578,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__91__",
-                "name": "__unnamed_slice__91__",
+                "id": "__unnamed_slice__89__",
+                "name": "__unnamed_slice__89__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -15649,8 +15385,8 @@
             {
               "name": "b",
               "type": {
-                "id": "__unnamed_slice__92__",
-                "name": "__unnamed_slice__92__",
+                "id": "__unnamed_slice__90__",
+                "name": "__unnamed_slice__90__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -15666,8 +15402,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__93__",
-                "name": "__unnamed_slice__93__",
+                "id": "__unnamed_slice__91__",
+                "name": "__unnamed_slice__91__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -15700,8 +15436,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__94__",
-                "name": "__unnamed_slice__94__",
+                "id": "__unnamed_slice__92__",
+                "name": "__unnamed_slice__92__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -15728,6 +15464,77 @@
         {
           "id": "time.Time#UnmarshalBinary",
           "name": "UnmarshalBinary",
+          "kind": "method",
+          "named": true,
+          "package": "time",
+          "parameters": [
+            {
+              "name": "data",
+              "type": {
+                "id": "__unnamed_slice__93__",
+                "name": "__unnamed_slice__93__",
+                "kind": "slice",
+                "package": "github.com/pablor21/goscanner/examples/starwars/basic",
+                "element": {
+                  "id": "byte",
+                  "name": "byte",
+                  "kind": "basic"
+                },
+                "length": -1,
+                "structure": "[]byte"
+              }
+            }
+          ],
+          "results": [
+            {
+              "type": {
+                "id": "error",
+                "name": "error",
+                "kind": "basic"
+              }
+            }
+          ],
+          "isPointerReceiver": true,
+          "receiver": "time.Time",
+          "structure": "func(data []byte) error"
+        },
+        {
+          "id": "time.Time#GobEncode",
+          "name": "GobEncode",
+          "kind": "method",
+          "named": true,
+          "package": "time",
+          "results": [
+            {
+              "type": {
+                "id": "__unnamed_slice__94__",
+                "name": "__unnamed_slice__94__",
+                "kind": "slice",
+                "package": "github.com/pablor21/goscanner/examples/starwars/basic",
+                "element": {
+                  "id": "byte",
+                  "name": "byte",
+                  "kind": "basic"
+                },
+                "length": -1,
+                "structure": "[]byte"
+              }
+            },
+            {
+              "type": {
+                "id": "error",
+                "name": "error",
+                "kind": "basic"
+              }
+            }
+          ],
+          "isPointerReceiver": false,
+          "receiver": "time.Time",
+          "structure": "func() ([]byte, error)"
+        },
+        {
+          "id": "time.Time#GobDecode",
+          "name": "GobDecode",
           "kind": "method",
           "named": true,
           "package": "time",
@@ -15763,8 +15570,8 @@
           "structure": "func(data []byte) error"
         },
         {
-          "id": "time.Time#GobEncode",
-          "name": "GobEncode",
+          "id": "time.Time#MarshalJSON",
+          "name": "MarshalJSON",
           "kind": "method",
           "named": true,
           "package": "time",
@@ -15797,8 +15604,8 @@
           "structure": "func() ([]byte, error)"
         },
         {
-          "id": "time.Time#GobDecode",
-          "name": "GobDecode",
+          "id": "time.Time#UnmarshalJSON",
+          "name": "UnmarshalJSON",
           "kind": "method",
           "named": true,
           "package": "time",
@@ -15834,13 +15641,14 @@
           "structure": "func(data []byte) error"
         },
         {
-          "id": "time.Time#MarshalJSON",
-          "name": "MarshalJSON",
+          "id": "time.Time#AppendText",
+          "name": "AppendText",
           "kind": "method",
           "named": true,
           "package": "time",
-          "results": [
+          "parameters": [
             {
+              "name": "b",
               "type": {
                 "id": "__unnamed_slice__98__",
                 "name": "__unnamed_slice__98__",
@@ -15854,85 +15662,13 @@
                 "length": -1,
                 "structure": "[]byte"
               }
-            },
-            {
-              "type": {
-                "id": "error",
-                "name": "error",
-                "kind": "basic"
-              }
             }
           ],
-          "isPointerReceiver": false,
-          "receiver": "time.Time",
-          "structure": "func() ([]byte, error)"
-        },
-        {
-          "id": "time.Time#UnmarshalJSON",
-          "name": "UnmarshalJSON",
-          "kind": "method",
-          "named": true,
-          "package": "time",
-          "parameters": [
+          "results": [
             {
-              "name": "data",
               "type": {
                 "id": "__unnamed_slice__99__",
                 "name": "__unnamed_slice__99__",
-                "kind": "slice",
-                "package": "github.com/pablor21/goscanner/examples/starwars/basic",
-                "element": {
-                  "id": "byte",
-                  "name": "byte",
-                  "kind": "basic"
-                },
-                "length": -1,
-                "structure": "[]byte"
-              }
-            }
-          ],
-          "results": [
-            {
-              "type": {
-                "id": "error",
-                "name": "error",
-                "kind": "basic"
-              }
-            }
-          ],
-          "isPointerReceiver": true,
-          "receiver": "time.Time",
-          "structure": "func(data []byte) error"
-        },
-        {
-          "id": "time.Time#AppendText",
-          "name": "AppendText",
-          "kind": "method",
-          "named": true,
-          "package": "time",
-          "parameters": [
-            {
-              "name": "b",
-              "type": {
-                "id": "__unnamed_slice__100__",
-                "name": "__unnamed_slice__100__",
-                "kind": "slice",
-                "package": "github.com/pablor21/goscanner/examples/starwars/basic",
-                "element": {
-                  "id": "byte",
-                  "name": "byte",
-                  "kind": "basic"
-                },
-                "length": -1,
-                "structure": "[]byte"
-              }
-            }
-          ],
-          "results": [
-            {
-              "type": {
-                "id": "__unnamed_slice__101__",
-                "name": "__unnamed_slice__101__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -15965,8 +15701,8 @@
           "results": [
             {
               "type": {
-                "id": "__unnamed_slice__102__",
-                "name": "__unnamed_slice__102__",
+                "id": "__unnamed_slice__100__",
+                "name": "__unnamed_slice__100__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -16000,8 +15736,8 @@
             {
               "name": "data",
               "type": {
-                "id": "__unnamed_slice__103__",
-                "name": "__unnamed_slice__103__",
+                "id": "__unnamed_slice__101__",
+                "name": "__unnamed_slice__101__",
                 "kind": "slice",
                 "package": "github.com/pablor21/goscanner/examples/starwars/basic",
                 "element": {
@@ -16132,12 +15868,6 @@
       "kind": "struct",
       "named": true,
       "package": "time",
-      "comments": [
-        {
-          "text": "A zone represents a single time zone such as CET.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "time.zone#name",
@@ -16183,12 +15913,6 @@
       "kind": "struct",
       "named": true,
       "package": "time",
-      "comments": [
-        {
-          "text": "A zoneTrans represents a single time zone transition.",
-          "placement": "above"
-        }
-      ],
       "fields": [
         {
           "id": "time.zoneTrans#when",

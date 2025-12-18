@@ -1,5 +1,7 @@
 package basic
 
+import "net/http"
+
 // import "net/http"
 
 // // type InterfaceA interface {
@@ -129,6 +131,81 @@ package basic
 // // 	return usc.hiddenField
 // // }
 
-type MyMap map[string]string
-type MyDeepMap map[string]MyMap
-type MyMapSlice []MyMap
+// docs
+// type MyMap *map[string]*****string
+// type MyDeepMap map[string]MyMap
+// type MyMapSlice []*MyMap
+
+// this is a struct that uses the deep map
+// another line of comment
+// type MyStruct struct {
+// 	// Field1 is a simple string field
+// 	// Field1  string    `json:"field1"`   // end of comment for Field1
+// 	SelfRef *MyStruct `json:"self_ref"` // end of comment for SelfRef
+// } // end of comment for MyStruct
+
+// this is a map of string to deep slices
+// type MyBasic int // underlying basic type
+
+// func (mb MyBasic) PonterReceiver() int {
+// 	return int(mb) * 2
+// }
+
+// // this is a slice of pointers to deep pointers to strings
+// // type MySlice []*****string
+
+// // func (ms MySlice) CountNonNil() int {
+// // 	count := 0
+// // 	for _, sptr := range ms {
+// // 		if sptr != nil {
+// // 			count++
+// // 		}
+// // 	}
+// // 	return count
+// // }
+
+// // type MySlice2 *[]*int
+
+// type MyStruct struct {
+// 	// Data map[string]MySlice2
+// 	Str *MyStruct `json:"str"`
+// }
+
+// func (ms *MyStruct) TotalLength() int {
+// 	return 0
+// }
+
+type MyInterface interface {
+	Describe() http.ServeMux
+}
+
+// // this method gets a value from the map
+// func (ms *MyStruct) GetData(key string) (MyMap, bool) {
+// 	if ms.Data == nil {
+// 		return nil, false
+// 	}
+// 	val, exists := ms.Data[key]
+// 	return val, exists
+// }
+
+// func PkgFunction(data MyMapSlice) int {
+// 	total := 0
+// 	for _, mptr := range data {
+// 		if mptr != nil {
+// 			m := *mptr
+// 			for _, vptr := range *m {
+// 				if vptr != nil {
+// 					v := *****vptr
+// 					total += len(v)
+// 				}
+// 			}
+// 		}
+// 	}
+// 	return total
+// }
+
+// type NamedPkgFunction func(data MyMapSlice) int
+
+// func (f NamedPkgFunction) Describe() string {
+// 	return "This is a named function type that takes MyMapSlice and returns an int"
+// }
