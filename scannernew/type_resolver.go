@@ -36,12 +36,13 @@ type defaultTypeResolver struct {
 	ignoredTypes   map[string]struct{}                   // Types to ignore
 	docTypes       map[string]*doc.Type                  // Documentation for types
 	docFuncs       map[string]*doc.Func                  // Documentation for functions
+	docPackages    map[string]*doc.Package               // Cached doc.Package by package path
 	pkgs           map[string]*packages.Package          // Raw go/packages
 	loadedPkgs     map[string]bool                       // Track processed packages
 	basicTypes     map[string]typesnew.Type              // Cache of basic types
 	currentPkg     *typesnew.Package                     // Currently processing package
 	unnamedCounter map[string]int                        // Counter for unnamed types per kind
-	unnamedIDs     map[string]string                     // Map structure -> ID for unnamed types
+	qualifier      types.Qualifier                       // Cached qualifier function for GetCanonicalName
 	config         *Config
 	logger         logger.Logger
 }
@@ -59,12 +60,16 @@ func NewDefaultTypeResolver(config *Config, log logger.Logger) *defaultTypeResol
 		ignoredTypes:   make(map[string]struct{}),
 		docTypes:       make(map[string]*doc.Type),
 		docFuncs:       make(map[string]*doc.Func),
+		docPackages:    make(map[string]*doc.Package),
 		pkgs:           make(map[string]*packages.Package),
 		loadedPkgs:     make(map[string]bool),
 		basicTypes:     make(map[string]typesnew.Type),
 		unnamedCounter: make(map[string]int),
-		config:         config,
-		logger:         log,
+		qualifier: func(pkg *types.Package) string {
+			return pkg.Path()
+		},
+		config: config,
+		logger: log,
 	}
 
 	tr.logger.SetTag("TypeResolver")
@@ -111,9 +116,7 @@ func (r *defaultTypeResolver) GetCanonicalName(t types.Type) string {
 		return basic.Name()
 	}
 
-	name := types.TypeString(t, func(pkg *types.Package) string {
-		return pkg.Path()
-	})
+	name := types.TypeString(t, r.qualifier)
 
 	return name
 }
@@ -143,7 +146,11 @@ func (r *defaultTypeResolver) loadExternalPackageDoc(pkgPath string, obj types.O
 	}
 
 	// Build the canonical type name
-	typeName := pkgPath + "." + obj.Name()
+	var sb strings.Builder
+	sb.WriteString(pkgPath)
+	sb.WriteString(".")
+	sb.WriteString(obj.Name())
+	typeName := sb.String()
 
 	// If we've already loaded this package's docs, return from cache
 	if r.loadedPkgs[pkgPath] {
@@ -161,21 +168,32 @@ func (r *defaultTypeResolver) loadExternalPackageDoc(pkgPath string, obj types.O
 	}
 
 	// Extract documentation from the package
-	if pkg.Syntax != nil && len(pkg.Syntax) > 0 {
-		docPkg, err := doc.NewFromFiles(
-			pkg.Fset,
-			pkg.Syntax,
-			pkg.PkgPath,
-			doc.AllMethods|doc.AllDecls,
-		)
-		if err != nil {
-			r.logger.Debug(fmt.Sprintf("Failed to extract docs from external package %s: %v", pkgPath, err))
-			return nil
+	if len(pkg.Syntax) > 0 {
+		// Check if we already have the doc.Package cached
+		docPkg, cached := r.docPackages[pkgPath]
+		if !cached {
+			// Not cached - parse and cache it
+			var err error
+			docPkg, err = doc.NewFromFiles(
+				pkg.Fset,
+				pkg.Syntax,
+				pkg.PkgPath,
+				doc.AllMethods|doc.AllDecls,
+			)
+			if err != nil {
+				r.logger.Debugf("Failed to extract docs from external package %s: %v", pkgPath, err)
+				return nil
+			}
+			r.docPackages[pkgPath] = docPkg
 		}
 
 		// Cache the doc types from this package
 		for _, docType := range docPkg.Types {
-			canonical := pkgPath + "." + docType.Name
+			var sb strings.Builder
+			sb.WriteString(pkgPath)
+			sb.WriteString(".")
+			sb.WriteString(docType.Name)
+			canonical := sb.String()
 			r.docTypes[canonical] = docType
 		}
 
@@ -196,26 +214,38 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 
 	// Extract comments from AST
 	if err := r.extractComments(pkgInfo, pkg); err != nil {
-		r.logger.Warn(fmt.Sprintf("Failed to extract comments: %v", err))
+		r.logger.Warnf("Failed to extract comments: %v", err)
 	}
 
-	// Extract documentation
-	docPkg, err := doc.NewFromFiles(
-		pkg.Fset,
-		pkg.Syntax,
-		pkg.PkgPath,
-		doc.AllMethods|doc.AllDecls,
-	)
-	if err != nil {
-		return err
+	// Extract documentation - check cache first
+	docPkg, cached := r.docPackages[pkg.PkgPath]
+	if !cached {
+		var err error
+		docPkg, err = doc.NewFromFiles(
+			pkg.Fset,
+			pkg.Syntax,
+			pkg.PkgPath,
+			doc.AllMethods|doc.AllDecls,
+		)
+		if err != nil {
+			return err
+		}
+		r.docPackages[pkg.PkgPath] = docPkg
 	}
 
 	r.pkgs[pkg.PkgPath] = pkg
 	r.loadedPkgs[pkg.PkgPath] = true
 
+	// Cache scope for efficiency
+	scope := pkg.Types.Scope()
+
 	// Package-level functions documentation
 	for _, docFunc := range docPkg.Funcs {
-		canonical := pkg.PkgPath + "." + docFunc.Name
+		var sb strings.Builder
+		sb.WriteString(pkg.PkgPath)
+		sb.WriteString(".")
+		sb.WriteString(docFunc.Name)
+		canonical := sb.String()
 		r.docFuncs[canonical] = docFunc
 	}
 
@@ -223,7 +253,7 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 	if r.config.ScanMode.Has(ScanModeConsts) {
 		for _, value := range docPkg.Consts {
 			for _, name := range value.Names {
-				obj := pkg.Types.Scope().Lookup(name)
+				obj := scope.Lookup(name)
 				r.parseValue(obj)
 			}
 		}
@@ -233,7 +263,7 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 	if r.config.ScanMode.Has(ScanModeVariables) {
 		for _, value := range docPkg.Vars {
 			for _, name := range value.Names {
-				obj := pkg.Types.Scope().Lookup(name)
+				obj := scope.Lookup(name)
 				r.parseValue(obj)
 			}
 		}
@@ -242,17 +272,25 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 	// Types + associated functions
 	if r.config.ScanMode.Has(ScanModeTypes) {
 		for _, docType := range docPkg.Types {
-			typeCanonical := pkg.PkgPath + "." + docType.Name
+			var sb strings.Builder
+			sb.WriteString(pkg.PkgPath)
+			sb.WriteString(".")
+			sb.WriteString(docType.Name)
+			typeCanonical := sb.String()
 			r.docTypes[typeCanonical] = docType
 
 			// Factory functions associated with the type
 			for _, typeFunc := range docType.Funcs {
-				funcCanonical := pkg.PkgPath + "." + typeFunc.Name
+				var sb strings.Builder
+				sb.WriteString(pkg.PkgPath)
+				sb.WriteString(".")
+				sb.WriteString(typeFunc.Name)
+				funcCanonical := sb.String()
 				r.docFuncs[funcCanonical] = typeFunc
 			}
 
 			// Resolve the actual type
-			obj := pkg.Types.Scope().Lookup(docType.Name)
+			obj := scope.Lookup(docType.Name)
 			if obj == nil {
 				continue
 			}
@@ -268,7 +306,7 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 			if r.config.ScanMode.Has(ScanModeEnums) {
 				for _, constDecl := range docType.Consts {
 					for _, name := range constDecl.Names {
-						obj := pkg.Types.Scope().Lookup(name)
+						obj := scope.Lookup(name)
 						r.parseValue(obj)
 					}
 				}
@@ -278,8 +316,9 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 
 	// Package-level functions
 	if r.config.ScanMode.Has(ScanModeFunctions) {
-		for _, name := range pkg.Types.Scope().Names() {
-			obj := pkg.Types.Scope().Lookup(name)
+		scope := pkg.Types.Scope()
+		for _, name := range scope.Names() {
+			obj := scope.Lookup(name)
 			if f, ok := obj.(*types.Func); ok {
 				// Skip methods - they have a receiver and are handled by their parent struct/interface
 				sig, ok := f.Type().(*types.Signature)
@@ -287,7 +326,11 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 					continue
 				}
 
-				canonical := pkg.PkgPath + "." + f.Name()
+				var sb strings.Builder
+				sb.WriteString(pkg.PkgPath)
+				sb.WriteString(".")
+				sb.WriteString(f.Name())
+				canonical := sb.String()
 				// makeFunction already caches it, no need to cache again
 				fn := r.makeFunction(canonical, sig, nil, f, nil, typesnew.TypeKindFunction)
 				if fn != nil {
@@ -308,7 +351,7 @@ func isNilType(t typesnew.Type) bool {
 	}
 	// Use reflection to check if the interface contains a nil pointer
 	v := reflect.ValueOf(t)
-	return v.Kind() == reflect.Ptr && v.IsNil()
+	return v.Kind() == reflect.Pointer && v.IsNil()
 }
 
 // ResolveType resolves a Go type to typesnew.Type
@@ -347,7 +390,7 @@ func (r *defaultTypeResolver) resolveGoType(t types.Type, forceKind typesnew.Typ
 		return ti
 	}
 
-	r.logger.Debug(fmt.Sprintf("Resolving Go type: %v", typeName))
+	r.logger.Debugf("Resolving Go type: %v", typeName)
 
 	// Unwrap named types to get the underlying type
 	var namedType *types.Named
@@ -361,7 +404,7 @@ func (r *defaultTypeResolver) resolveGoType(t types.Type, forceKind typesnew.Typ
 		docType = r.docTypes[typeName]
 
 		// If docType is nil and this is from an external package, try to load it
-		if docType == nil && obj != nil && obj.Pkg() != nil {
+		if docType == nil && obj.Pkg() != nil {
 			pkgPath := obj.Pkg().Path()
 			// Only try to load if this is not the current package we're processing
 			if r.currentPkg == nil || pkgPath != r.currentPkg.Path() {
@@ -404,13 +447,13 @@ func (r *defaultTypeResolver) resolveGoType(t types.Type, forceKind typesnew.Typ
 		ti = r.makeMap(typeName, gt, namedType, obj, docType, forceKind)
 
 	default:
-		r.logger.Warn(fmt.Sprintf("Unsupported type: %s (%T)", t.String(), t))
+		r.logger.Warnf("Unsupported type: %s (%T)", t.String(), t)
 	}
 
 	if ti != nil {
 		// Check if the interface contains a nil pointer
 		if isNilType(ti) {
-			r.logger.Warn(fmt.Sprintf("Type resolution returned typed nil for: %s", typeName))
+			r.logger.Warnf("Type resolution returned typed nil for: %s", typeName)
 			return nil
 		}
 	}
@@ -549,7 +592,7 @@ func (r *defaultTypeResolver) makePointer(
 	// Resolve the element type (the type being pointed to)
 	elem := r.ResolveType(elemType)
 	if elem == nil {
-		r.logger.Warn(fmt.Sprintf("Failed to resolve pointer element type: %v", elemType))
+		r.logger.Warnf("Failed to resolve pointer element type: %v", elemType)
 		return nil
 	}
 
@@ -614,7 +657,7 @@ func (r *defaultTypeResolver) makeCollection(
 		// Resolve the underlying element type
 		elem = r.ResolveType(elemType)
 		if elem == nil {
-			r.logger.Warn(fmt.Sprintf("Failed to resolve collection element type: %v", elemType))
+			r.logger.Warnf("Failed to resolve collection element type: %v", elemType)
 			return nil
 		}
 
@@ -623,12 +666,18 @@ func (r *defaultTypeResolver) makeCollection(
 			ptrID := r.generateUnnamedID("pointer")
 			ptr := typesnew.NewPointer(ptrID, ptrID, elem, pointerDepth)
 			ptr.SetGoType(originalElemType) // Use original, not unwrapped
+			// Set package based on named type context or current package
+			if namedType != nil && obj != nil {
+				ptr.SetPackage(r.getPackageInfo(obj))
+			} else {
+				ptr.SetPackage(r.currentPkg)
+			}
 			elem = ptr
 		}
 	}
 
 	if elem == nil {
-		r.logger.Warn(fmt.Sprintf("Failed to resolve collection element type: %v", elemType))
+		r.logger.Warnf("Failed to resolve collection element type: %v", elemType)
 		return nil
 	}
 
@@ -652,6 +701,10 @@ func (r *defaultTypeResolver) makeCollection(
 		slice = typesnew.NewSlice(typeID, simpleName, elem)
 	}
 	r.setupCommonTypeFields(slice, obj, docType, collType)
+	// For unnamed collections, set package based on context
+	if namedType == nil {
+		slice.SetPackage(r.currentPkg)
+	}
 
 	// Set loader for named types
 	if namedType != nil && obj != nil {
@@ -702,18 +755,24 @@ func (r *defaultTypeResolver) makeMap(
 		keyType, keyPointerDepth = r.deferPtr(keyType)
 		key = r.ResolveType(keyType)
 		if key == nil {
-			r.logger.Warn(fmt.Sprintf("Failed to resolve map key type: %v", keyType))
+			r.logger.Warnf("Failed to resolve map key type: %v", keyType)
 			return nil
 		}
 		if keyPointerDepth > 0 {
 			ptrID := r.generateUnnamedID("pointer")
 			ptr := typesnew.NewPointer(ptrID, ptrID, key, keyPointerDepth)
 			ptr.SetGoType(originalKeyType) // Use original, not unwrapped
+			// Set package based on named type context or current package
+			if namedType != nil && obj != nil {
+				ptr.SetPackage(r.getPackageInfo(obj))
+			} else {
+				ptr.SetPackage(r.currentPkg)
+			}
 			key = ptr
 		}
 	}
 	if key == nil {
-		r.logger.Warn(fmt.Sprintf("Failed to resolve map key type: %v", keyType))
+		r.logger.Warnf("Failed to resolve map key type: %v", keyType)
 		return nil
 	}
 
@@ -729,18 +788,24 @@ func (r *defaultTypeResolver) makeMap(
 		valueType, valuePointerDepth = r.deferPtr(valueType)
 		value = r.ResolveType(valueType)
 		if value == nil {
-			r.logger.Warn(fmt.Sprintf("Failed to resolve map value type: %v", valueType))
+			r.logger.Warnf("Failed to resolve map value type: %v", valueType)
 			return nil
 		}
 		if valuePointerDepth > 0 {
 			ptrID := r.generateUnnamedID("pointer")
 			ptr := typesnew.NewPointer(ptrID, ptrID, value, valuePointerDepth)
 			ptr.SetGoType(originalValueType) // Use original, not unwrapped
+			// Set package based on named type context or current package
+			if namedType != nil && obj != nil {
+				ptr.SetPackage(r.getPackageInfo(obj))
+			} else {
+				ptr.SetPackage(r.currentPkg)
+			}
 			value = ptr
 		}
 	}
 	if value == nil {
-		r.logger.Warn(fmt.Sprintf("Failed to resolve map value type: %v", valueType))
+		r.logger.Warnf("Failed to resolve map value type: %v", valueType)
 		return nil
 	}
 
@@ -757,6 +822,10 @@ func (r *defaultTypeResolver) makeMap(
 	}
 	mapT := typesnew.NewMap(typeID, simpleName, key, value)
 	r.setupCommonTypeFields(mapT, obj, docType, mapType)
+	// For unnamed maps, set package based on context
+	if namedType == nil {
+		mapT.SetPackage(r.currentPkg)
+	}
 
 	// Set loader for named types
 	if namedType != nil && obj != nil {
@@ -816,18 +885,24 @@ func (r *defaultTypeResolver) makeChannel(
 		elemType, pointerDepth = r.deferPtr(elemType)
 		elem = r.ResolveType(elemType)
 		if elem == nil {
-			r.logger.Warn(fmt.Sprintf("Failed to resolve channel element type: %v", elemType))
+			r.logger.Warnf("Failed to resolve channel element type: %v", elemType)
 			return nil
 		}
 		if pointerDepth > 0 {
 			ptrID := r.generateUnnamedID("pointer")
 			ptr := typesnew.NewPointer(ptrID, ptrID, elem, pointerDepth)
 			ptr.SetGoType(originalElemType) // Use original, not unwrapped
+			// Set package based on named type context or current package
+			if namedType != nil && obj != nil {
+				ptr.SetPackage(r.getPackageInfo(obj))
+			} else {
+				ptr.SetPackage(r.currentPkg)
+			}
 			elem = ptr
 		}
 	}
 	if elem == nil {
-		r.logger.Warn(fmt.Sprintf("Failed to resolve channel element type: %v", elemType))
+		r.logger.Warnf("Failed to resolve channel element type: %v", elemType)
 		return nil
 	}
 
@@ -844,6 +919,10 @@ func (r *defaultTypeResolver) makeChannel(
 	}
 	ch := typesnew.NewChan(typeID, simpleName, elem, direction)
 	r.setupCommonTypeFields(ch, obj, docType, chanType)
+	// For unnamed channels, set package based on context
+	if namedType == nil {
+		ch.SetPackage(r.currentPkg)
+	}
 
 	// Set loader for named types
 	if namedType != nil && obj != nil {
@@ -876,13 +955,13 @@ func (r *defaultTypeResolver) extractMethods(
 	docType *doc.Type,
 	parent typesnew.Type,
 ) ([]*typesnew.Method, error) {
-	methods := []*typesnew.Method{}
+	methods := make([]*typesnew.Method, 0, namedType.NumMethods())
 
 	for method := range namedType.Methods() {
 
 		// Check if method should be exported
 		if !r.shouldExport(method) {
-			r.logger.Debug(fmt.Sprintf("Skipping unexported %s method: %s.%s", parent.Kind(), parent.Id(), method.Name()))
+			r.logger.Debugf("Skipping unexported %s method: %s.%s", parent.Kind(), parent.Id(), method.Name())
 			continue
 		}
 
@@ -905,7 +984,7 @@ func (r *defaultTypeResolver) extractMethods(
 		m.SetStructure(sig.String())
 
 		// Process signature
-		parameters, results := r.processSignature(sig)
+		parameters, results := r.processSignature(sig, parent.Package())
 		for _, p := range parameters {
 			m.AddParameter(p)
 		}
@@ -925,7 +1004,8 @@ func (r *defaultTypeResolver) extractMethods(
 
 // processSignature processes a function signature and returns parameters and results
 // This is a helper function used by both functions and methods to avoid code duplication
-func (r *defaultTypeResolver) processSignature(sig *types.Signature) ([]*typesnew.Parameter, []*typesnew.Result) {
+// pkgContext is the package to assign to unnamed types (nil means use currentPkg)
+func (r *defaultTypeResolver) processSignature(sig *types.Signature, pkgContext *typesnew.Package) ([]*typesnew.Parameter, []*typesnew.Result) {
 	var parameters []*typesnew.Parameter
 	var results []*typesnew.Result
 
@@ -939,11 +1019,25 @@ func (r *defaultTypeResolver) processSignature(sig *types.Signature) ([]*typesne
 			continue
 		}
 
+		// For unnamed parameter types, set package to context package
+		if !paramTypeResolved.IsNamed() {
+			if pkgContext != nil {
+				paramTypeResolved.SetPackage(pkgContext)
+			} else {
+				paramTypeResolved.SetPackage(r.currentPkg)
+			}
+		}
+
 		var finalParamType typesnew.Type = paramTypeResolved
 		if pointerDepth > 0 {
 			ptrID := r.generateUnnamedID("pointer")
 			finalParamType = typesnew.NewPointer(ptrID, ptrID, paramTypeResolved, pointerDepth)
 			finalParamType.SetGoType(types.NewPointer(paramType))
+			if pkgContext != nil {
+				finalParamType.SetPackage(pkgContext)
+			} else {
+				finalParamType.SetPackage(r.currentPkg)
+			}
 		}
 
 		isVariadic := sig.Variadic() && i == params.Len()-1
@@ -961,11 +1055,25 @@ func (r *defaultTypeResolver) processSignature(sig *types.Signature) ([]*typesne
 			continue
 		}
 
+		// For unnamed result types, set package to context package
+		if resultTypeResolved != nil && !resultTypeResolved.IsNamed() {
+			if pkgContext != nil {
+				resultTypeResolved.SetPackage(pkgContext)
+			} else {
+				resultTypeResolved.SetPackage(r.currentPkg)
+			}
+		}
+
 		var finalResultType typesnew.Type = resultTypeResolved
 		if pointerDepth > 0 {
 			ptrID := r.generateUnnamedID("pointer")
 			finalResultType = typesnew.NewPointer(ptrID, ptrID, resultTypeResolved, pointerDepth)
 			finalResultType.SetGoType(types.NewPointer(resultType))
+			if pkgContext != nil {
+				finalResultType.SetPackage(pkgContext)
+			} else {
+				finalResultType.SetPackage(r.currentPkg)
+			}
 		}
 
 		result := typesnew.NewResult(resultVar.Name(), finalResultType)
@@ -989,7 +1097,7 @@ func (r *defaultTypeResolver) makeFunction(
 	r.setupCommonTypeFields(fn, obj, docType, sig)
 
 	// Process signature using helper
-	parameters, results := r.processSignature(sig)
+	parameters, results := r.processSignature(sig, r.currentPkg)
 	for _, p := range parameters {
 		fn.AddParameter(p)
 	}
@@ -1036,7 +1144,7 @@ func (r *defaultTypeResolver) makeAlias(
 	// Resolve the underlying type
 	underlying := r.ResolveType(underlyingType)
 	if underlying == nil {
-		r.logger.Warn(fmt.Sprintf("Failed to resolve alias underlying type: %v", underlyingType))
+		r.logger.Warnf("Failed to resolve alias underlying type: %v", underlyingType)
 		return nil
 	}
 
@@ -1086,7 +1194,7 @@ func (r *defaultTypeResolver) makeInterface(
 		if !ok {
 			// Remove from cache if we couldn't resolve
 			r.types.Delete(id)
-			r.logger.Warn(fmt.Sprintf("Failed to resolve interface underlying type: %v", namedType))
+			r.logger.Warnf("Failed to resolve interface underlying type: %v", namedType)
 			return nil
 		}
 	} else {
@@ -1098,12 +1206,12 @@ func (r *defaultTypeResolver) makeInterface(
 
 		// Extract methods if needed
 		if r.config.ScanMode.Has(ScanModeMethods) {
-			methods := []*typesnew.Method{}
+			methods := make([]*typesnew.Method, 0, underlying.NumMethods())
 			for method := range underlying.Methods() {
 
 				// Check if method should be exported
 				if !r.shouldExport(method) {
-					r.logger.Debug(fmt.Sprintf("Skipping unexported interface method: %s.%s", id, method.Name()))
+					r.logger.Debugf("Skipping unexported interface method: %s.%s", id, method.Name())
 					continue
 				}
 
@@ -1120,7 +1228,7 @@ func (r *defaultTypeResolver) makeInterface(
 				m.SetStructure(sig.String())
 
 				// Process signature using helper
-				parameters, results := r.processSignature(sig)
+				parameters, results := r.processSignature(sig, iface.Package())
 				for _, p := range parameters {
 					m.AddParameter(p)
 				}
@@ -1172,7 +1280,7 @@ func (r *defaultTypeResolver) makeStruct(
 		if !ok {
 			// Remove from cache if we couldn't resolve
 			r.types.Delete(id)
-			r.logger.Warn(fmt.Sprintf("Failed to resolve struct underlying type: %v", namedType))
+			r.logger.Warnf("Failed to resolve struct underlying type: %v", namedType)
 			return nil
 		}
 	} else {
@@ -1194,21 +1302,18 @@ func (r *defaultTypeResolver) makeStruct(
 					continue
 				}
 
+				// For unnamed field types, set package to struct's package
+				if fieldTypeResolved != nil && !fieldTypeResolved.IsNamed() {
+					fieldTypeResolved.SetPackage(strct.Package())
+				}
+
 				// Create pointer wrapper if needed
 				var finalFieldType typesnew.Type = fieldTypeResolved
 				if pointerDepth > 0 {
 					ptrID := r.generateUnnamedID("pointer")
 					finalFieldType = typesnew.NewPointer(ptrID, ptrID, fieldTypeResolved, pointerDepth)
 					finalFieldType.SetGoType(types.NewPointer(fieldType))
-				}
-
-				// Handle embedded fields
-				if field.Embedded() {
-					// Load the embedded type to get its fields
-					if err := finalFieldType.Load(); err != nil {
-						r.logger.Warn(fmt.Sprintf("Failed to load embedded type %s: %v", finalFieldType.Id(), err))
-					}
-
+					// Set package to the struct's package for unnamed types
 					// Get the embedded struct's fields if it's a struct
 					if embeddedStruct, ok := fieldTypeResolved.(*typesnew.Struct); ok {
 						// Add each field from the embedded struct as a promoted field
@@ -1292,10 +1397,14 @@ func (r *defaultTypeResolver) parseValue(obj types.Object) typesnew.Type {
 		return nil
 	}
 
-	// Get canonical name
-	id := r.GetCanonicalName(obj.Type())
+	// Build canonical name for the value
+	var id string
 	if obj.Pkg() != nil {
-		id = obj.Pkg().Path() + "." + obj.Name()
+		var sb strings.Builder
+		sb.WriteString(obj.Pkg().Path())
+		sb.WriteString(".")
+		sb.WriteString(obj.Name())
+		id = sb.String()
 	} else {
 		id = obj.Name()
 	}
@@ -1318,6 +1427,8 @@ func (r *defaultTypeResolver) parseValue(obj types.Object) typesnew.Type {
 		ptrID := r.generateUnnamedID("pointer")
 		finalValueType = typesnew.NewPointer(ptrID, ptrID, valueTypeResolved, pointerDepth)
 		finalValueType.SetGoType(types.NewPointer(valueType))
+		// Unnamed pointer for value uses current package
+		finalValueType.SetPackage(r.currentPkg)
 	}
 
 	var value typesnew.Type
@@ -1339,7 +1450,7 @@ func (r *defaultTypeResolver) parseValue(obj types.Object) typesnew.Type {
 		value = typesnew.NewVariable(id, obj.Name(), finalValueType)
 
 	default:
-		r.logger.Warn(fmt.Sprintf("Unsupported value type: %T", obj))
+		r.logger.Warnf("Unsupported value type: %T", obj)
 		return nil
 	}
 
@@ -1360,7 +1471,7 @@ func (r *defaultTypeResolver) parseValue(obj types.Object) typesnew.Type {
 func (r *defaultTypeResolver) handleGenerics(t types.Type) typesnew.Type {
 	// TODO: Implement generics handling
 	// For now, we'll just log that we encountered a generic type
-	r.logger.Debug(fmt.Sprintf("Generics not yet fully supported: %v", t))
+	r.logger.Debugf("Generics not yet fully supported: %v", t)
 	return nil
 }
 
@@ -1399,12 +1510,12 @@ func (r *defaultTypeResolver) extractComments(pkgInfo *typesnew.Package, pkg *pa
 					case *ast.TypeSpec:
 						// Type declarations
 						comment := r.extractComment(s.Doc, s.Comment, d.Doc)
-						r.logger.Debug(fmt.Sprintf("Type %s: doc=%v, comment=%v, parent=%v, extracted=%d comments",
+						r.logger.Debugf("Type %s: doc=%v, comment=%v, parent=%v, extracted=%d comments",
 							s.Name.Name,
 							s.Doc != nil,
 							s.Comment != nil,
 							d.Doc != nil,
-							len(comment)))
+							len(comment))
 						pkgInfo.AddComments(s.Name.Name, comment)
 
 						// Extract struct field comments
@@ -1438,7 +1549,11 @@ func (r *defaultTypeResolver) extractComments(pkgInfo *typesnew.Package, pkg *pa
 				if d.Recv != nil && len(d.Recv.List) > 0 {
 					// Method: extract receiver type
 					recvType := r.getTypeName(d.Recv.List[0].Type)
-					funcName = recvType + "." + funcName
+					var sb strings.Builder
+					sb.WriteString(recvType)
+					sb.WriteString(".")
+					sb.WriteString(funcName)
+					funcName = sb.String()
 				}
 				comment = strings.TrimSpace(comment)
 				if comment != "" {
@@ -1485,7 +1600,11 @@ func (r *defaultTypeResolver) getTypeName(expr ast.Expr) string {
 	case *ast.StarExpr:
 		return r.getTypeName(t.X)
 	case *ast.SelectorExpr:
-		return r.getTypeName(t.X) + "." + t.Sel.Name
+		var sb strings.Builder
+		sb.WriteString(r.getTypeName(t.X))
+		sb.WriteString(".")
+		sb.WriteString(t.Sel.Name)
+		return sb.String()
 	default:
 		return ""
 	}

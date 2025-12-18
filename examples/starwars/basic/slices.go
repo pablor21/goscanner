@@ -1,7 +1,5 @@
 package basic
 
-import "net/http"
-
 // import "net/http"
 
 // // type InterfaceA interface {
@@ -175,9 +173,32 @@ import "net/http"
 // 	return 0
 // }
 
-type MyInterface interface {
-	Describe() http.ServeMux
+// type MyInterface interface {
+// 	Describe() http.ServeMux
+// }
+
+type MyStruct struct {
+	Anonymous struct {
+		FieldA string
+		FieldB int
+	}
+	OtherAnonymous *struct {
+		FieldC bool
+		FieldD MyStruct
+	}
+	AnonymousInterface interface {
+		DoSomething() error
+	}
+	AnonymousFunc func(x int) string
 }
+
+// type MyEnum int
+
+// const (
+// 	EnumValueA MyEnum = iota // EnumValueA represents the first value
+// 	EnumValueB               // EnumValueB represents the second value
+// 	EnumValueC               // EnumValueC represents the third value
+// )
 
 // // this method gets a value from the map
 // func (ms *MyStruct) GetData(key string) (MyMap, bool) {
