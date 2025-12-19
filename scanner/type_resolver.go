@@ -120,13 +120,24 @@ func (r *defaultTypeResolver) GetCanonicalName(t types.Type) string {
 		return basic.Name()
 	}
 
-	// For named types with type parameters, return just the base name without params
-	if named, ok := t.(*types.Named); ok && named.TypeParams() != nil && named.TypeParams().Len() > 0 {
-		obj := named.Obj()
-		if obj.Pkg() != nil {
-			return obj.Pkg().Path() + "." + obj.Name()
+	// For named types, check if it's an instantiated generic first (has type arguments)
+	// If it is, use the full name with type arguments (e.g., GenericStruct[int])
+	// Otherwise, if it's a generic type definition (has type parameters), return the base name
+	if named, ok := t.(*types.Named); ok {
+		// Check for type arguments first (instantiated generic like GenericStruct[int])
+		if named.TypeArgs() != nil && named.TypeArgs().Len() > 0 {
+			// This is an instantiated generic, use TypeString to get full name with args
+			name := types.TypeString(t, r.qualifier)
+			return name
 		}
-		return obj.Name()
+		// Check for type parameters (generic type definition like GenericStruct[T])
+		if named.TypeParams() != nil && named.TypeParams().Len() > 0 {
+			obj := named.Obj()
+			if obj.Pkg() != nil {
+				return obj.Pkg().Path() + "." + obj.Name()
+			}
+			return obj.Name()
+		}
 	}
 
 	name := types.TypeString(t, r.qualifier)

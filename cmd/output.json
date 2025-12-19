@@ -21404,6 +21404,16 @@
 			]
 		},
 		"net/http.entry": {
+			"id": "net/http.entry",
+			"name": "entry",
+			"kind": "struct",
+			"named": true,
+			"exported": false,
+			"distance": 1,
+			"package": "net/http",
+			"files": [
+				"net/http/mapping.go"
+			],
 			"fields": [
 				{
 					"id": "net/http.entry#key",
@@ -21434,9 +21444,77 @@
 					"parent": "net/http.entry"
 				}
 			],
-			"id": "net/http.entry",
+			"typeParams": [
+				{
+					"id": "net/http.entry.K",
+					"name": "K",
+					"kind": "type_parameter",
+					"named": true,
+					"exported": false,
+					"distance": 0,
+					"package": "net/http",
+					"index": 0,
+					"constraint": {
+						"id": "comparable",
+						"name": "comparable",
+						"kind": "basic",
+						"exported": false,
+						"distance": 0
+					}
+				},
+				{
+					"id": "net/http.entry.V",
+					"name": "V",
+					"kind": "type_parameter",
+					"named": true,
+					"exported": false,
+					"distance": 0,
+					"package": "net/http",
+					"index": 1,
+					"constraint": {
+						"id": "any",
+						"name": "any",
+						"kind": "basic",
+						"exported": false,
+						"distance": 0
+					}
+				}
+			]
+		},
+		"net/http.entry[K, V]": {
+			"fields": [
+				{
+					"id": "net/http.entry#key",
+					"name": "key",
+					"kind": "field",
+					"named": true,
+					"exported": false,
+					"distance": 1,
+					"package": "net/http",
+					"type": {
+						"id": "K",
+						"kind": "type_parameter"
+					},
+					"parent": "net/http.entry"
+				},
+				{
+					"id": "net/http.entry#value",
+					"name": "value",
+					"kind": "field",
+					"named": true,
+					"exported": false,
+					"distance": 1,
+					"package": "net/http",
+					"type": {
+						"id": "V",
+						"kind": "type_parameter"
+					},
+					"parent": "net/http.entry"
+				}
+			],
+			"id": "net/http.entry[K, V]",
 			"kind": "instantiated",
-			"name": "entry",
+			"name": "entry[K, V]",
 			"named": false,
 			"origin": "net/http.entry",
 			"package": "net/http",
@@ -21562,6 +21640,22 @@
 			]
 		},
 		"net/http.mapping": {
+			"id": "net/http.mapping",
+			"name": "mapping",
+			"kind": "struct",
+			"named": true,
+			"exported": false,
+			"distance": 1,
+			"package": "net/http",
+			"files": [
+				"net/http/mapping.go"
+			],
+			"comments": [
+				{
+					"text": "A mapping is a collection of key-value pairs where the keys are unique.\nA zero mapping is empty and ready to use.\nA mapping tries to pick a representation that makes [mapping.find] most efficient.",
+					"placement": "above"
+				}
+			],
 			"fields": [
 				{
 					"id": "net/http.mapping#s",
@@ -21615,9 +21709,9 @@
 									"parent": "net/http.entry"
 								}
 							],
-							"id": "net/http.entry",
+							"id": "net/http.entry[K, V]",
 							"kind": "instantiated",
-							"name": "entry",
+							"name": "entry[K, V]",
 							"named": false,
 							"origin": "net/http.entry",
 							"package": "net/http",
@@ -21679,7 +21773,284 @@
 					"parent": "net/http.mapping"
 				}
 			],
-			"id": "net/http.mapping",
+			"methods": [
+				{
+					"id": "net/http.mapping#add",
+					"name": "add",
+					"kind": "method",
+					"named": true,
+					"exported": false,
+					"distance": 1,
+					"package": "net/http",
+					"parameters": [
+						{
+							"name": "k",
+							"type": {
+								"id": "K",
+								"kind": "type_parameter"
+							}
+						},
+						{
+							"name": "v",
+							"type": {
+								"id": "V",
+								"kind": "type_parameter"
+							}
+						}
+					],
+					"isPointerReceiver": true,
+					"receiver": "net/http.mapping",
+					"structure": "func(k K, v V)"
+				},
+				{
+					"id": "net/http.mapping#find",
+					"name": "find",
+					"kind": "method",
+					"named": true,
+					"exported": false,
+					"distance": 1,
+					"package": "net/http",
+					"parameters": [
+						{
+							"name": "k",
+							"type": {
+								"id": "K",
+								"kind": "type_parameter"
+							}
+						}
+					],
+					"results": [
+						{
+							"name": "v",
+							"type": {
+								"id": "V",
+								"kind": "type_parameter"
+							}
+						},
+						{
+							"name": "found",
+							"type": {
+								"id": "bool",
+								"name": "bool",
+								"kind": "basic",
+								"exported": false,
+								"distance": 0
+							}
+						}
+					],
+					"isPointerReceiver": true,
+					"receiver": "net/http.mapping",
+					"structure": "func(k K) (v V, found bool)"
+				},
+				{
+					"id": "net/http.mapping#eachPair",
+					"name": "eachPair",
+					"kind": "method",
+					"named": true,
+					"exported": false,
+					"distance": 1,
+					"package": "net/http",
+					"parameters": [
+						{
+							"name": "f",
+							"type": {
+								"id": "__unnamed_function__7__",
+								"name": "__unnamed_function__7__",
+								"kind": "function",
+								"exported": false,
+								"distance": 0,
+								"package": "net/http",
+								"parameters": [
+									{
+										"name": "k",
+										"type": {
+											"id": "K",
+											"kind": "type_parameter"
+										}
+									},
+									{
+										"name": "v",
+										"type": {
+											"id": "V",
+											"kind": "type_parameter"
+										}
+									}
+								],
+								"results": [
+									{
+										"type": {
+											"id": "bool",
+											"name": "bool",
+											"kind": "basic",
+											"exported": false,
+											"distance": 0
+										}
+									}
+								]
+							}
+						}
+					],
+					"isPointerReceiver": true,
+					"receiver": "net/http.mapping",
+					"structure": "func(f func(k K, v V) bool)"
+				}
+			],
+			"typeParams": [
+				{
+					"id": "net/http.mapping.K",
+					"name": "K",
+					"kind": "type_parameter",
+					"named": true,
+					"exported": false,
+					"distance": 0,
+					"package": "net/http",
+					"index": 0,
+					"constraint": {
+						"id": "comparable",
+						"name": "comparable",
+						"kind": "basic",
+						"exported": false,
+						"distance": 0
+					}
+				},
+				{
+					"id": "net/http.mapping.V",
+					"name": "V",
+					"kind": "type_parameter",
+					"named": true,
+					"exported": false,
+					"distance": 0,
+					"package": "net/http",
+					"index": 1,
+					"constraint": {
+						"id": "any",
+						"name": "any",
+						"kind": "basic",
+						"exported": false,
+						"distance": 0
+					}
+				}
+			]
+		},
+		"net/http.mapping[string, *net/http.routingNode]": {
+			"fields": [
+				{
+					"id": "net/http.mapping#s",
+					"name": "s",
+					"kind": "field",
+					"named": true,
+					"exported": false,
+					"distance": 1,
+					"package": "net/http",
+					"comments": [
+						{
+							"text": "for few pairs",
+							"placement": "inline"
+						}
+					],
+					"type": {
+						"id": "__unnamed_slice__55__",
+						"name": "__unnamed_slice__55__",
+						"kind": "slice",
+						"exported": false,
+						"distance": 0,
+						"package": "net/http",
+						"element": {
+							"fields": [
+								{
+									"id": "net/http.entry#key",
+									"name": "key",
+									"kind": "field",
+									"named": true,
+									"exported": false,
+									"distance": 1,
+									"package": "net/http",
+									"type": {
+										"id": "K",
+										"kind": "type_parameter"
+									},
+									"parent": "net/http.entry"
+								},
+								{
+									"id": "net/http.entry#value",
+									"name": "value",
+									"kind": "field",
+									"named": true,
+									"exported": false,
+									"distance": 1,
+									"package": "net/http",
+									"type": {
+										"id": "V",
+										"kind": "type_parameter"
+									},
+									"parent": "net/http.entry"
+								}
+							],
+							"id": "net/http.entry[K, V]",
+							"kind": "instantiated",
+							"name": "entry[K, V]",
+							"named": false,
+							"origin": "net/http.entry",
+							"package": "net/http",
+							"typeArgs": [
+								{
+									"index": 0,
+									"param": "K",
+									"type": {
+										"id": "K",
+										"kind": "type_parameter"
+									}
+								},
+								{
+									"index": 1,
+									"param": "V",
+									"type": {
+										"id": "V",
+										"kind": "type_parameter"
+									}
+								}
+							]
+						},
+						"length": -1,
+						"structure": "[]net/http.entry[K, V]"
+					},
+					"parent": "net/http.mapping"
+				},
+				{
+					"id": "net/http.mapping#m",
+					"name": "m",
+					"kind": "field",
+					"named": true,
+					"exported": false,
+					"distance": 1,
+					"package": "net/http",
+					"comments": [
+						{
+							"text": "for many pairs",
+							"placement": "inline"
+						}
+					],
+					"type": {
+						"id": "__unnamed_map__11__",
+						"name": "__unnamed_map__11__",
+						"kind": "map",
+						"exported": false,
+						"distance": 0,
+						"package": "net/http",
+						"key": {
+							"id": "K",
+							"kind": "type_parameter"
+						},
+						"value": {
+							"id": "V",
+							"kind": "type_parameter"
+						},
+						"structure": "map[K]V"
+					},
+					"parent": "net/http.mapping"
+				}
+			],
+			"id": "net/http.mapping[string, *net/http.routingNode]",
 			"kind": "instantiated",
 			"methods": [
 				{
@@ -21803,7 +22174,7 @@
 					"structure": "func(f func(k K, v V) bool)"
 				}
 			],
-			"name": "mapping",
+			"name": "routingNode]",
 			"named": false,
 			"origin": "net/http.mapping",
 			"package": "net/http",
@@ -22657,9 +23028,9 @@
 												"parent": "net/http.entry"
 											}
 										],
-										"id": "net/http.entry",
+										"id": "net/http.entry[K, V]",
 										"kind": "instantiated",
-										"name": "entry",
+										"name": "entry[K, V]",
 										"named": false,
 										"origin": "net/http.entry",
 										"package": "net/http",
@@ -22721,7 +23092,7 @@
 								"parent": "net/http.mapping"
 							}
 						],
-						"id": "net/http.mapping",
+						"id": "net/http.mapping[string, *net/http.routingNode]",
 						"kind": "instantiated",
 						"methods": [
 							{
@@ -22845,7 +23216,7 @@
 								"structure": "func(f func(k K, v V) bool)"
 							}
 						],
-						"name": "mapping",
+						"name": "routingNode]",
 						"named": false,
 						"origin": "net/http.mapping",
 						"package": "net/http",
