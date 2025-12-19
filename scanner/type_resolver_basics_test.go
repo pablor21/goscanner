@@ -1,6 +1,7 @@
 package scanner
 
 import (
+	"context"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -14,6 +15,7 @@ import (
 // test basic types
 func TestTypeResolver_resolveBasicType(t *testing.T) {
 	r := NewDefaultTypeResolver(NewDefaultConfig(), logger.NewDefaultLogger())
+	scanCtx := NewScanningContext(context.Background(), NewDefaultConfig())
 
 	// Define test cases for basic types based on the go/types package
 	tests := []struct {
@@ -46,7 +48,7 @@ func TestTypeResolver_resolveBasicType(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.goType.String(), func(t *testing.T) {
-			got := r.ResolveType(tt.goType)
+			got := r.ResolveType(scanCtx, tt.goType)
 			if got == nil {
 				t.Errorf("resolveType(%v) = nil, want %v", tt.goType, tt.wantKind)
 				return
@@ -100,8 +102,10 @@ func TestTypeResolver_resolveNamedBasicTypes(t *testing.T) {
 	l.SetLevel(logger.LogLevelDebug)
 
 	r := NewDefaultTypeResolver(NewDefaultConfig(), l)
-	r.currentPkg = gstypes.NewPackage("test", "test", nil)
-	r.currentPkg.SetLogger(l)
+	scanCtx := NewScanningContext(context.Background(), NewDefaultConfig())
+	testPkg := gstypes.NewPackage("test", "test", nil)
+	testPkg.SetLogger(l)
+	scanCtx = scanCtx.WithPackage(testPkg)
 
 	tests := []struct {
 		name           string
@@ -126,7 +130,7 @@ func TestTypeResolver_resolveNamedBasicTypes(t *testing.T) {
 				t.Fatalf("Type %s not found", tt.name)
 			}
 
-			got := r.ResolveType(obj.Type())
+			got := r.ResolveType(scanCtx, obj.Type())
 			if got == nil {
 				t.Errorf("resolveType(%v) = nil", tt.name)
 				return
@@ -175,8 +179,10 @@ func TestTypeResolver_resolvePointerTypes(t *testing.T) {
 
 	l := logger.NewDefaultLogger()
 	r := NewDefaultTypeResolver(NewDefaultConfig(), l)
-	r.currentPkg = gstypes.NewPackage("test", "test", nil)
-	r.currentPkg.SetLogger(l)
+	scanCtx := NewScanningContext(context.Background(), NewDefaultConfig())
+	testPkg := gstypes.NewPackage("test", "test", nil)
+	testPkg.SetLogger(l)
+	scanCtx = scanCtx.WithPackage(testPkg)
 
 	tests := []struct {
 		name      string
@@ -195,7 +201,7 @@ func TestTypeResolver_resolvePointerTypes(t *testing.T) {
 				t.Fatalf("Type %s not found", tt.name)
 			}
 
-			got := r.ResolveType(obj.Type())
+			got := r.ResolveType(scanCtx, obj.Type())
 			if got == nil {
 				t.Errorf("resolveType(%v) = nil", tt.name)
 				return
@@ -244,8 +250,10 @@ func TestTypeResolver_resolveSliceTypes(t *testing.T) {
 
 	l := logger.NewDefaultLogger()
 	r := NewDefaultTypeResolver(NewDefaultConfig(), l)
-	r.currentPkg = gstypes.NewPackage("test", "test", nil)
-	r.currentPkg.SetLogger(l)
+	scanCtx := NewScanningContext(context.Background(), NewDefaultConfig())
+	testPkg := gstypes.NewPackage("test", "test", nil)
+	testPkg.SetLogger(l)
+	scanCtx = scanCtx.WithPackage(testPkg)
 
 	tests := []struct {
 		name       string
@@ -264,7 +272,7 @@ func TestTypeResolver_resolveSliceTypes(t *testing.T) {
 				t.Fatalf("Type %s not found", tt.name)
 			}
 
-			got := r.ResolveType(obj.Type())
+			got := r.ResolveType(scanCtx, obj.Type())
 			if got == nil {
 				t.Errorf("resolveType(%v) = nil", tt.name)
 				return
@@ -315,8 +323,10 @@ func TestTypeResolver_resolveMapTypes(t *testing.T) {
 
 	l := logger.NewDefaultLogger()
 	r := NewDefaultTypeResolver(NewDefaultConfig(), l)
-	r.currentPkg = gstypes.NewPackage("test", "test", nil)
-	r.currentPkg.SetLogger(l)
+	scanCtx := NewScanningContext(context.Background(), NewDefaultConfig())
+	testPkg := gstypes.NewPackage("test", "test", nil)
+	testPkg.SetLogger(l)
+	scanCtx = scanCtx.WithPackage(testPkg)
 
 	tests := []struct {
 		name     string
@@ -336,7 +346,7 @@ func TestTypeResolver_resolveMapTypes(t *testing.T) {
 				t.Fatalf("Type %s not found", tt.name)
 			}
 
-			got := r.ResolveType(obj.Type())
+			got := r.ResolveType(scanCtx, obj.Type())
 			if got == nil {
 				t.Errorf("resolveType(%v) = nil", tt.name)
 				return
@@ -389,8 +399,10 @@ func TestTypeResolver_resolveChanTypes(t *testing.T) {
 
 	l := logger.NewDefaultLogger()
 	r := NewDefaultTypeResolver(NewDefaultConfig(), l)
-	r.currentPkg = gstypes.NewPackage("test", "test", nil)
-	r.currentPkg.SetLogger(l)
+	scanCtx := NewScanningContext(context.Background(), NewDefaultConfig())
+	testPkg := gstypes.NewPackage("test", "test", nil)
+	testPkg.SetLogger(l)
+	scanCtx = scanCtx.WithPackage(testPkg)
 
 	tests := []struct {
 		name     string
@@ -410,7 +422,7 @@ func TestTypeResolver_resolveChanTypes(t *testing.T) {
 				t.Fatalf("Type %s not found", tt.name)
 			}
 
-			got := r.ResolveType(obj.Type())
+			got := r.ResolveType(scanCtx, obj.Type())
 			if got == nil {
 				t.Errorf("resolveType(%v) = nil", tt.name)
 				return
@@ -467,8 +479,10 @@ func TestTypeResolver_resolveFunctions(t *testing.T) {
 
 	l := logger.NewDefaultLogger()
 	r := NewDefaultTypeResolver(NewDefaultConfig(), l)
-	r.currentPkg = gstypes.NewPackage("test", "test", nil)
-	r.currentPkg.SetLogger(l)
+	scanCtx := NewScanningContext(context.Background(), NewDefaultConfig())
+	testPkg := gstypes.NewPackage("test", "test", nil)
+	testPkg.SetLogger(l)
+	scanCtx = scanCtx.WithPackage(testPkg)
 
 	tests := []struct {
 		name       string
@@ -524,7 +538,7 @@ func TestTypeResolver_resolveFunctions(t *testing.T) {
 				t.Fatalf("Type %s not found", tt.name)
 			}
 
-			got := r.ResolveType(obj.Type())
+			got := r.ResolveType(scanCtx, obj.Type())
 			if got == nil {
 				t.Errorf("resolveType(%v) = nil", tt.name)
 				return
@@ -593,15 +607,17 @@ func TestTypeResolver_resolveEmptyInterface(t *testing.T) {
 
 	l := logger.NewDefaultLogger()
 	r := NewDefaultTypeResolver(NewDefaultConfig(), l)
-	r.currentPkg = gstypes.NewPackage("test", "test", nil)
-	r.currentPkg.SetLogger(l)
+	scanCtx := NewScanningContext(context.Background(), NewDefaultConfig())
+	testPkg := gstypes.NewPackage("test", "test", nil)
+	testPkg.SetLogger(l)
+	scanCtx = scanCtx.WithPackage(testPkg)
 
 	obj := pkg.Scope().Lookup("MyEmptyInterface")
 	if obj == nil {
 		t.Fatalf("Type MyEmptyInterface not found")
 	}
 
-	got := r.ResolveType(obj.Type())
+	got := r.ResolveType(scanCtx, obj.Type())
 	if got == nil {
 		t.Errorf("resolveType(MyEmptyInterface) = nil")
 		return
@@ -646,8 +662,10 @@ func TestTypeResolver_testMakeStruct(t *testing.T) {
 
 	l := logger.NewDefaultLogger()
 	r := NewDefaultTypeResolver(NewDefaultConfig(), l)
-	r.currentPkg = gstypes.NewPackage("test", "test", nil)
-	r.currentPkg.SetLogger(l)
+	scanCtx := NewScanningContext(context.Background(), NewDefaultConfig())
+	testPkg := gstypes.NewPackage("test", "test", nil)
+	testPkg.SetLogger(l)
+	scanCtx = scanCtx.WithPackage(testPkg)
 
 	tests := []struct {
 		name       string
@@ -677,7 +695,7 @@ func TestTypeResolver_testMakeStruct(t *testing.T) {
 				t.Fatalf("Type %s not found", tt.name)
 			}
 
-			got := r.ResolveType(obj.Type())
+			got := r.ResolveType(scanCtx, obj.Type())
 			if got == nil {
 				t.Errorf("resolveType(%v) = nil", tt.name)
 				return
