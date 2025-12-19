@@ -171,16 +171,29 @@ func (v VisibilityLevel) MarshalJSON() ([]byte, error) {
 //go:embed config.json
 var defaultConfigFs embed.FS
 
+type OutOfScopeHandling string
+
+const (
+	OutOfScopeIgnore OutOfScopeHandling = "ignore"
+	OutOfScopeWarn   OutOfScopeHandling = "warn"
+	OutOfScopeError  OutOfScopeHandling = "error"
+)
+
+type ExternalPackagesOptions struct {
+	ScanMode    ScanMode           `json:"scan_mode" yaml:"scan_mode"`
+	ParseFiles  bool               `json:"parse_files" yaml:"parse_files"`
+	Visibility  VisibilityLevel    `json:"visibility" yaml:"visibility"`
+	Packages    []string           `json:"packages" yaml:"packages"`
+	MaxDistance int                `json:"max_distance" yaml:"max_distance"`
+	OutOfScope  OutOfScopeHandling `json:"out_of_scope" yaml:"out_of_scope"`
+}
+
 type Config struct {
-	Packages   []string        `json:"packages" yaml:"packages"`
-	ScanMode   ScanMode        `json:"scan_mode" yaml:"scan_mode"`
-	Visibility VisibilityLevel `json:"visibility" yaml:"visibility"`
-	// FieldVisibility    VisibilityLevel `json:"field_visibility" yaml:"field_visibility"`
-	// MethodVisibility   VisibilityLevel `json:"method_visibility" yaml:"method_visibility"`
-	// FunctionVisibility VisibilityLevel `json:"function_visibility" yaml:"function_visibility"`
-	// TypeVisibility     VisibilityLevel `json:"type_visibility" yaml:"type_visibility"`
-	// EnumVisibility     VisibilityLevel `json:"enum_visibility" yaml:"enum_visibility"`
-	LogLevel logger.LogLevel `json:"log_level" yaml:"log_level"`
+	Packages                []string                 `json:"packages" yaml:"packages"`
+	ScanMode                ScanMode                 `json:"scan_mode" yaml:"scan_mode"`
+	Visibility              VisibilityLevel          `json:"visibility" yaml:"visibility"`
+	ExternalPackagesOptions *ExternalPackagesOptions `json:"external_packages_options,omitempty" yaml:"external_packages_options,omitempty"`
+	LogLevel                logger.LogLevel          `json:"log_level" yaml:"log_level"`
 }
 
 func NewDefaultConfig() *Config {

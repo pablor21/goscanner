@@ -138,10 +138,33 @@ func (r *defaultTypeResolver) getPackageInfo(obj types.Object) *typesnew.Package
 		if pkgInfo, exists := r.packages.Get(pkgPath); exists {
 			return pkgInfo
 		}
-		// If package not in our cache, create it
-		pkgInfo := typesnew.NewPackage(pkgPath, obj.Pkg().Name(), nil)
+
+		// Check if this is an external package and if we should parse its files
+		isExternal := r.currentPkg != nil && pkgPath != r.currentPkg.Path()
+		shouldParseFiles := isExternal &&
+			r.config.ExternalPackagesOptions != nil &&
+			r.config.ExternalPackagesOptions.ParseFiles
+
+		var rawPkg *packages.Package
+		if shouldParseFiles {
+			// Load the external package with AST to extract comments and files
+			rawPkg = r.loadExternalPackage(pkgPath)
+		}
+
+		// Create package info
+		pkgInfo := typesnew.NewPackage(pkgPath, obj.Pkg().Name(), rawPkg)
 		pkgInfo.SetLogger(r.logger)
 		r.packages.Set(pkgPath, pkgInfo)
+
+		// Extract comments and files if we loaded the AST
+		if rawPkg != nil && len(rawPkg.Syntax) > 0 {
+			if err := r.extractComments(pkgInfo, rawPkg); err != nil {
+				r.logger.Warnf("Failed to extract comments for external package %s: %v", pkgPath, err)
+			}
+			// Store the raw package for later use
+			r.pkgs[pkgPath] = rawPkg
+		}
+
 		return pkgInfo
 	}
 	return r.currentPkg
@@ -177,6 +200,39 @@ func (r *defaultTypeResolver) getModuleRelativePath(osPath string, pkgPath strin
 	sb.WriteString("/")
 	sb.WriteString(fileName)
 	return sb.String()
+}
+
+// loadExternalPackage loads an external package with its AST for comment extraction
+func (r *defaultTypeResolver) loadExternalPackage(pkgPath string) *packages.Package {
+	// Check if already loaded
+	if pkg, exists := r.pkgs[pkgPath]; exists {
+		return pkg
+	}
+
+	r.logger.Debugf("Loading external package with AST: %s", pkgPath)
+
+	// Load package with AST (NeedSyntax includes NeedTypes and NeedImports)
+	cfg := &packages.Config{
+		Mode: packages.NeedName | packages.NeedFiles | packages.NeedImports |
+			packages.NeedTypes | packages.NeedSyntax | packages.NeedTypesInfo,
+	}
+
+	pkgs, err := packages.Load(cfg, pkgPath)
+	if err != nil {
+		r.logger.Warnf("Failed to load external package %s: %v", pkgPath, err)
+		return nil
+	}
+
+	if len(pkgs) == 0 {
+		r.logger.Warnf("No packages found for %s", pkgPath)
+		return nil
+	}
+
+	if len(pkgs[0].Errors) > 0 {
+		r.logger.Warnf("Errors loading package %s: %v", pkgPath, pkgs[0].Errors)
+	}
+
+	return pkgs[0]
 }
 
 // loadExternalPackageDoc loads documentation for an external package if not already loaded
@@ -443,6 +499,11 @@ func (r *defaultTypeResolver) checkCaches(t types.Type) typesnew.Type {
 	t = r.normalizeUntyped(t)
 	typeName := r.GetCanonicalName(t)
 
+	// Check main type cache first (for all named types)
+	if ti, exists := r.types.Get(typeName); exists {
+		return ti
+	}
+
 	// Handle predeclared types (error, comparable) as basic types
 	if typeName == "error" || typeName == "comparable" {
 		if basicType, exists := r.basicTypes[typeName]; exists {
@@ -508,11 +569,6 @@ func (r *defaultTypeResolver) resolveUnderlyingType(t types.Type) typesnew.Type 
 			if r.currentPkg == nil || pkgPath != r.currentPkg.Path() {
 				docType = r.loadExternalPackageDoc(pkgPath, obj)
 			}
-		}
-
-		// Check cache for named types
-		if ti, exists := r.types.Get(typeName); exists {
-			return ti
 		}
 
 		t = named.Underlying()
@@ -585,11 +641,13 @@ func (r *defaultTypeResolver) cache(t typesnew.Type) {
 	r.types.Set(t.Id(), t)
 }
 
-// setupCommonTypeFields sets common fields on a type (package, object, doc, goType, files)
+// setupCommonTypeFields sets common fields on a type (package, object, doc, goType, files, exported)
 func (r *defaultTypeResolver) setupCommonTypeFields(t typesnew.Type, obj types.Object, docType *doc.Type, goType types.Type) {
 	t.SetPackage(r.getPackageInfo(obj))
 	if obj != nil {
 		t.SetObject(obj)
+		// Set whether the type is exported
+		t.SetExported(obj.Exported())
 		// Set the file where this type is defined
 		if obj.Pos().IsValid() {
 			pkg := r.getPackageForObj(obj)
@@ -1986,13 +2044,29 @@ func (r *defaultTypeResolver) handleGenerics(t types.Type) typesnew.Type {
 	return nil
 }
 
-// shouldExport checks if an object should be exported based on its name
+// shouldExport checks if an object should be exported based on visibility configuration
 func (r *defaultTypeResolver) shouldExport(obj types.Object) bool {
 	if obj == nil {
 		return true
 	}
-	return obj.Exported()
-	// return true
+
+	// Determine if this is from an external package
+	isExternal := obj.Pkg() != nil && r.currentPkg != nil && obj.Pkg().Path() != r.currentPkg.Path()
+
+	// Get the appropriate visibility setting
+	var visibility VisibilityLevel
+	if isExternal && r.config.ExternalPackagesOptions != nil {
+		visibility = r.config.ExternalPackagesOptions.Visibility
+	} else {
+		visibility = r.config.Visibility
+	}
+
+	// Check visibility
+	if obj.Exported() {
+		return visibility.Has(VisibilityLevelExported)
+	} else {
+		return visibility.Has(VisibilityLevelUnexported)
+	}
 }
 
 // extractComments extracts comments for all declarations from parsed AST files

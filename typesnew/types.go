@@ -133,6 +133,12 @@ type Type interface {
 	// SetFiles sets the files where this type is defined
 	SetFiles(files []string)
 
+	// IsExported returns true if this type is exported
+	IsExported() bool
+
+	// SetExported sets whether this type is exported
+	SetExported(exported bool)
+
 	// SetGoType sets the original go/types.Type (used for unnamed types)
 	SetGoType(t types.Type)
 
@@ -225,6 +231,7 @@ type baseType struct {
 	commentId      string
 	commentsLoaded bool
 	files          []string // Files where this type is defined
+	exported       bool     // Whether this type is exported
 }
 
 // newBaseType creates a new base type
@@ -296,6 +303,16 @@ func (b *baseType) Files() []string {
 // SetFiles sets the files where this type is defined
 func (b *baseType) SetFiles(files []string) {
 	b.files = files
+}
+
+// IsExported returns true if this type is exported
+func (b *baseType) IsExported() bool {
+	return b.exported
+}
+
+// SetExported sets whether this type is exported
+func (b *baseType) SetExported(exported bool) {
+	b.exported = exported
 }
 
 // SetObject sets the go/types.Object

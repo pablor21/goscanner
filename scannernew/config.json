@@ -14,13 +14,13 @@
     "external_packages_options": {
         // Scan modes: "basic", "default", "full", or a comma-separated list of:
         // "types", "methods", "fields", "functions", "docs", "comments", "consts", "vars"
-        "scan_mode": "all",
+        "scan_mode": "full",
         // Whether to parse files for external packages to extract comments and docs
-        "parse_files": false,
+        "parse_files": true,
         // Visibility levels: "exported", "all", "none"
-        "visibility": "exported",
+        "visibility": "all",
         // list of packages or package patterns that are
-        // enabled for external scanning
+        // enabled for external scanning, empty means all packages are enabled, glob patterns are supported
         "packages": [],
         // Maximum distance for dependency scanning (how far to go in the dependency graph)
         "max_distance": 3,
