@@ -101,7 +101,7 @@ func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (*ScanningResult,
 		visited[pkg.PkgPath] = true
 
 		// Register this package in the type resolver's package map
-		s.TypeResolver.(*defaultTypeResolver).pkgs[pkg.PkgPath] = pkg
+		s.TypeResolver.(*defaultTypeResolver).pkgs.Set(pkg.PkgPath, pkg)
 
 		// Recursively register dependencies
 		for _, dep := range pkg.Imports {

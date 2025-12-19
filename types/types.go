@@ -161,69 +161,13 @@ type Type interface {
 	HasMethods
 }
 
+// TypesCol is a specialized SyncMap for Serializable types with string keys.
+// It embeds SyncMap and adds a Serialize method.
 type TypesCol[T Serializable] struct {
-	mu     sync.RWMutex
-	values map[string]T
+	*SyncMap[string, T]
 }
 
-func (c *TypesCol[T]) Get(id string) (T, bool) {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-	t, exists := c.values[id]
-	return t, exists
-}
-
-func (c *TypesCol[T]) Set(id string, t T) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	c.values[id] = t
-}
-
-func (c *TypesCol[T]) Has(id string) bool {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-	_, exists := c.values[id]
-	return exists
-}
-
-func (c *TypesCol[T]) Delete(id string) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	delete(c.values, id)
-}
-
-func (c *TypesCol[T]) Keys() []string {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-	keys := make([]string, 0, len(c.values))
-	for k := range c.values {
-		keys = append(keys, k)
-	}
-	return keys
-}
-
-func (c *TypesCol[T]) Values() []T {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-	values := make([]T, 0, len(c.values))
-	for _, v := range c.values {
-		values = append(values, v)
-	}
-	return values
-}
-
-func (c *TypesCol[T]) Len() int {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-	return len(c.values)
-}
-
-func (c *TypesCol[T]) Clear() {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	c.values = make(map[string]T)
-}
-
+// Serialize converts the collection to a serializable map format.
 func (c *TypesCol[T]) Serialize() any {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
@@ -234,9 +178,10 @@ func (c *TypesCol[T]) Serialize() any {
 	return result
 }
 
+// NewTypesCol creates a new TypesCol instance.
 func NewTypesCol[T Serializable]() *TypesCol[T] {
 	return &TypesCol[T]{
-		values: make(map[string]T),
+		SyncMap: NewSyncMap[string, T](),
 	}
 }
 
