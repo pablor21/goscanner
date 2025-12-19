@@ -29,18 +29,17 @@ jobs:
 
     - name: Download dependencies
       run: go mod download
-      working-directory: goscanner
 
     - name: Make test script executable
-      run: chmod +x goscanner/run-tests.sh
+      run: chmod +x ./run-tests.sh
 
     - name: Run tests (fast unit tests)
-      run: ./goscanner/run-tests.sh tests -race -count=1 -coverprofile=coverage.out
+      run: ./run-tests.sh tests -race -count=1 -coverprofile=coverage.out
 
     - name: Upload coverage
       uses: codecov/codecov-action@v4
       with:
-        file: goscanner/coverage.out
+        file: ./coverage.out
         fail_ci_if_error: false
 
   build:
@@ -59,7 +58,6 @@ jobs:
 
     - name: Build
       run: go build -v ./...
-      working-directory: goscanner
 
   lint:
     name: Lint
@@ -97,10 +95,9 @@ jobs:
 
     - name: Download dependencies
       run: go mod download
-      working-directory: goscanner
 
     - name: Make test script executable
-      run: chmod +x goscanner/run-tests.sh
+      run: chmod +x ./run-tests.sh
 
     - name: Run profiling tests only
-      run: ./goscanner/run-tests.sh profiling -v -timeout "${{ github.event.inputs.timeout }}"
+      run: ./run-tests.sh profiling -v -timeout "${{ github.event.inputs.timeout }}"
