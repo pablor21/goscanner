@@ -68,12 +68,11 @@ func BenchmarkTypeResolver_ResolveComplexPackage(b *testing.B) {
 	config := NewDefaultConfig()
 	log := logger.NewDefaultLogger()
 
-	b.ResetTimer()
 	b.ReportAllocs()
 
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		r := NewDefaultTypeResolver(config, log)
-		r.ProcessPackage(pkg)
+		_ = r.ProcessPackage(pkg)
 	}
 }
 
@@ -121,9 +120,9 @@ func BenchmarkTypeResolver_StringConcatenation(b *testing.B) {
 	b.ResetTimer()
 	b.ReportAllocs()
 
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		r := NewDefaultTypeResolver(config, log)
-		r.ProcessPackage(pkg)
+		_ = r.ProcessPackage(pkg)
 	}
 }
 
@@ -166,9 +165,9 @@ func BenchmarkTypeResolver_ExternalPackageDoc(b *testing.B) {
 	b.ResetTimer()
 	b.ReportAllocs()
 
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		r := NewDefaultTypeResolver(config, log)
-		r.ProcessPackage(pkg)
+		_ = r.ProcessPackage(pkg)
 	}
 }
 
@@ -211,8 +210,8 @@ func BenchmarkTypeResolver_GetCanonicalName(b *testing.B) {
 	b.ResetTimer()
 	b.ReportAllocs()
 
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		r := NewDefaultTypeResolver(config, log)
-		r.ProcessPackage(pkg)
+		_ = r.ProcessPackage(pkg)
 	}
 }
