@@ -1231,8 +1231,8 @@
 					"distance": 3,
 					"package": "bufio",
 					"type": {
-						"id": "__unnamed_slice__69__",
-						"name": "__unnamed_slice__69__",
+						"id": "__unnamed_slice__59__",
+						"name": "__unnamed_slice__59__",
 						"kind": "slice",
 						"package": "bufio",
 						"element": {
@@ -1252,12 +1252,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "bufio",
-					"comments": [
-						{
-							"text": "reader provided by the client",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "io.Reader",
 						"kind": "interface"
@@ -1271,12 +1265,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "bufio",
-					"comments": [
-						{
-							"text": "buf read and write positions",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -1291,12 +1279,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "bufio",
-					"comments": [
-						{
-							"text": "buf read and write positions",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -1325,12 +1307,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "bufio",
-					"comments": [
-						{
-							"text": "last byte read for UnreadByte; -1 means invalid",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -1345,12 +1321,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "bufio",
-					"comments": [
-						{
-							"text": "size of last rune read for UnreadRune; -1 means invalid",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -1411,8 +1381,8 @@
 						{
 							"name": "buf",
 							"type": {
-								"id": "__unnamed_slice__71__",
-								"name": "__unnamed_slice__71__",
+								"id": "__unnamed_slice__60__",
+								"name": "__unnamed_slice__60__",
 								"kind": "slice",
 								"package": "bufio",
 								"element": {
@@ -1487,8 +1457,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__74__",
-								"name": "__unnamed_slice__74__",
+								"id": "__unnamed_slice__61__",
+								"name": "__unnamed_slice__61__",
 								"kind": "slice",
 								"package": "bufio",
 								"element": {
@@ -1562,8 +1532,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__77__",
-								"name": "__unnamed_slice__77__",
+								"id": "__unnamed_slice__62__",
+								"name": "__unnamed_slice__62__",
 								"kind": "slice",
 								"package": "bufio",
 								"element": {
@@ -1743,8 +1713,8 @@
 						{
 							"name": "line",
 							"type": {
-								"id": "__unnamed_slice__78__",
-								"name": "__unnamed_slice__78__",
+								"id": "__unnamed_slice__63__",
+								"name": "__unnamed_slice__63__",
 								"kind": "slice",
 								"package": "bufio",
 								"element": {
@@ -1780,8 +1750,8 @@
 						{
 							"name": "line",
 							"type": {
-								"id": "__unnamed_slice__80__",
-								"name": "__unnamed_slice__80__",
+								"id": "__unnamed_slice__64__",
+								"name": "__unnamed_slice__64__",
 								"kind": "slice",
 								"package": "bufio",
 								"element": {
@@ -1835,13 +1805,13 @@
 						{
 							"name": "fullBuffers",
 							"type": {
-								"id": "__unnamed_slice__86__",
-								"name": "__unnamed_slice__86__",
+								"id": "__unnamed_slice__66__",
+								"name": "__unnamed_slice__66__",
 								"kind": "slice",
 								"package": "bufio",
 								"element": {
-									"id": "__unnamed_slice__85__",
-									"name": "__unnamed_slice__85__",
+									"id": "__unnamed_slice__65__",
+									"name": "__unnamed_slice__65__",
 									"kind": "slice",
 									"package": "bufio",
 									"element": {
@@ -1859,8 +1829,8 @@
 						{
 							"name": "finalFragment",
 							"type": {
-								"id": "__unnamed_slice__87__",
-								"name": "__unnamed_slice__87__",
+								"id": "__unnamed_slice__67__",
+								"name": "__unnamed_slice__67__",
 								"kind": "slice",
 								"package": "bufio",
 								"element": {
@@ -1913,8 +1883,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__88__",
-								"name": "__unnamed_slice__88__",
+								"id": "__unnamed_slice__68__",
+								"name": "__unnamed_slice__68__",
 								"kind": "slice",
 								"package": "bufio",
 								"element": {
@@ -2076,12 +2046,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "context",
-					"comments": [
-						{
-							"text": "Deadline returns the time when work done on behalf of this context\nshould be canceled. Deadline returns ok==false when no deadline is\nset. Successive calls to Deadline return the same results.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"name": "deadline",
@@ -2110,12 +2074,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "context",
-					"comments": [
-						{
-							"text": "Done returns a channel that's closed when work done on behalf of this\ncontext should be canceled. Done may return nil if this context can\nnever be canceled. Successive calls to Done return the same value.\nThe close of the Done channel may happen asynchronously,\nafter the cancel function returns.\n\nWithCancel arranges for Done to be closed when cancel is called;\nWithDeadline arranges for Done to be closed when the deadline\nexpires; WithTimeout arranges for Done to be closed when the timeout\nelapses.\n\nDone is provided for use in select statements:\n\n // Stream generates values with DoSomething and sends them to out\n // until DoSomething returns an error or ctx.Done is closed.\n func Stream(ctx context.Context, out chan\u003c- Value) error {\n \tfor {\n \t\tv, err := DoSomething(ctx)\n \t\tif err != nil {\n \t\t\treturn err\n \t\t}\n \t\tselect {\n \t\tcase \u003c-ctx.Done():\n \t\t\treturn ctx.Err()\n \t\tcase out \u003c- v:\n \t\t}\n \t}\n }\n\nSee https://blog.golang.org/pipelines for more examples of how to use\na Done channel for cancellation.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -2145,12 +2103,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "context",
-					"comments": [
-						{
-							"text": "If Done is not yet closed, Err returns nil.\nIf Done is closed, Err returns a non-nil error explaining why:\nDeadlineExceeded if the context's deadline passed,\nor Canceled if the context was canceled for some other reason.\nAfter Err returns a non-nil error, successive calls to Err return the same error.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -2171,12 +2123,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "context",
-					"comments": [
-						{
-							"text": "Value returns the value associated with this context for key, or nil\nif no value is associated with key. Successive calls to Value with\nthe same key returns the same result.\n\nUse context values only for request-scoped data that transits\nprocesses and API boundaries, not for passing optional parameters to\nfunctions.\n\nA key identifies a specific value in a Context. Functions that wish\nto store values in Context typically allocate a key in a global\nvariable then use that key as the argument to context.WithValue and\nContext.Value. A key can be any type that supports equality;\npackages should define keys as an unexported type to avoid\ncollisions.\n\nPackages that define a Context key should provide type-safe accessors\nfor the values stored using that key:\n\n\t// Package user defines a User type that's stored in Contexts.\n\tpackage user\n\n\timport \"context\"\n\n\t// User is the type of value stored in the Contexts.\n\ttype User struct {...}\n\n\t// key is an unexported type for keys defined in this package.\n\t// This prevents collisions with keys defined in other packages.\n\ttype key int\n\n\t// userKey is the key for user.User values in Contexts. It is\n\t// unexported; clients use user.NewContext and user.FromContext\n\t// instead of using this key directly.\n\tvar userKey key\n\n\t// NewContext returns a new Context that carries value u.\n\tfunc NewContext(ctx context.Context, u *User) context.Context {\n\t\treturn context.WithValue(ctx, userKey, u)\n\t}\n\n\t// FromContext returns the User value stored in ctx, if any.\n\tfunc FromContext(ctx context.Context) (*User, bool) {\n\t\tu, ok := ctx.Value(userKey).(*User)\n\t\treturn u, ok\n\t}",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "key",
@@ -2244,12 +2190,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "Version is the TLS version used by the connection (e.g. VersionTLS12).",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "uint16",
 						"name": "uint16",
@@ -2264,12 +2204,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "HandshakeComplete is true if the handshake has concluded.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -2284,12 +2218,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "DidResume is true if this connection was successfully resumed from a\nprevious session with a session ticket or similar mechanism.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -2304,12 +2232,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "CipherSuite is the cipher suite negotiated for the connection (e.g.\nTLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, TLS_AES_128_GCM_SHA256).",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "uint16",
 						"name": "uint16",
@@ -2324,12 +2246,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "CurveID is the key exchange mechanism used for the connection. The name\nrefers to elliptic curves for legacy reasons, see [CurveID]. If a legacy\nRSA key exchange is used, this value is zero.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "crypto/tls.CurveID",
 						"kind": "basic"
@@ -2343,12 +2259,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "NegotiatedProtocol is the application protocol negotiated with ALPN.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -2363,12 +2273,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "NegotiatedProtocolIsMutual used to indicate a mutual NPN negotiation.\n\nDeprecated: this value is always true.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -2383,12 +2287,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "ServerName is the value of the Server Name Indication extension sent by\nthe client. It's available both on the server and on the client side.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -2403,12 +2301,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "PeerCertificates are the parsed certificates sent by the peer, in the\norder in which they were sent. The first element is the leaf certificate\nthat the connection is verified against.\n\nOn the client side, it can't be empty. On the server side, it can be\nempty if Config.ClientAuth is not RequireAnyClientCert or\nRequireAndVerifyClientCert.\n\nPeerCertificates and its contents should not be modified.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__48__",
 						"name": "__unnamed_slice__48__",
@@ -2438,12 +2330,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "VerifiedChains is a list of one or more chains where the first element is\nPeerCertificates[0] and the last element is from Config.RootCAs (on the\nclient side) or Config.ClientCAs (on the server side).\n\nOn the client side, it's set if Config.InsecureSkipVerify is false. On\nthe server side, it's set if Config.ClientAuth is VerifyClientCertIfGiven\n(and the peer provided a certificate) or RequireAndVerifyClientCert.\n\nVerifiedChains and its contents should not be modified.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__50__",
 						"name": "__unnamed_slice__50__",
@@ -2481,12 +2367,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "SignedCertificateTimestamps is a list of SCTs provided by the peer\nthrough the TLS handshake for the leaf certificate, if any.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__52__",
 						"name": "__unnamed_slice__52__",
@@ -2517,12 +2397,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "OCSPResponse is a stapled Online Certificate Status Protocol (OCSP)\nresponse provided by the peer for the leaf certificate, if any.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__53__",
 						"name": "__unnamed_slice__53__",
@@ -2545,12 +2419,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "TLSUnique contains the \"tls-unique\" channel binding value (see RFC 5929,\nSection 3). This value will be nil for TLS 1.3 connections and for\nresumed connections that don't support Extended Master Secret (RFC 7627).",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__54__",
 						"name": "__unnamed_slice__54__",
@@ -2573,12 +2441,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "ECHAccepted indicates if Encrypted Client Hello was offered by the client\nand accepted by the server. Currently, ECH is supported only on the\nclient side.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -2593,12 +2455,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "ekm is a closure exposed via ExportKeyingMaterial.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__7__",
 						"name": "__unnamed_function__7__",
@@ -2672,12 +2528,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "testingOnlyDidHRR is true if a HelloRetryRequest was sent/received.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -2692,12 +2542,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "crypto/tls",
-					"comments": [
-						{
-							"text": "testingOnlyPeerSignatureAlgorithm is the signature algorithm used by the\npeer to sign the handshake. It is not set for resumed connections.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "crypto/tls.SignatureScheme",
 						"kind": "basic"
@@ -2836,12 +2680,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "cert.RawSubject =\u003e index into lazyCerts",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "__unnamed_map__13__",
 						"name": "__unnamed_map__13__",
@@ -2876,12 +2714,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "lazyCerts contains funcs that return a certificate,\nlazily parsing/decompressing it as needed.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__192__",
 						"name": "__unnamed_slice__192__",
@@ -2903,12 +2735,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "haveSum maps from sum224(cert.Raw) to true. It's used only\nfor AddCert duplicate detection, to avoid CertPool.contains\ncalls in the AddCert path (because the contains method can\ncall getCert and otherwise negate savings from lazy getCert\nfuncs).",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_map__14__",
 						"name": "__unnamed_map__14__",
@@ -2934,12 +2760,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "systemPool indicates whether this is a special pool derived from the\nsystem roots. If it includes additional roots, it requires doing two\nverifications, one using the roots provided by the caller, and one using\nthe system platform verifier.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -3011,8 +2831,8 @@
 									{
 										"name": "",
 										"type": {
-											"id": "__unnamed_slice__197__",
-											"name": "__unnamed_slice__197__",
+											"id": "__unnamed_slice__193__",
+											"name": "__unnamed_slice__193__",
 											"kind": "slice",
 											"package": "crypto/x509",
 											"element": {
@@ -3109,8 +2929,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__202__",
-								"name": "__unnamed_slice__202__",
+								"id": "__unnamed_slice__194__",
+								"name": "__unnamed_slice__194__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -3217,8 +3037,8 @@
 						{
 							"name": "getCert",
 							"type": {
-								"id": "__unnamed_function__27__",
-								"name": "__unnamed_function__27__",
+								"id": "__unnamed_function__26__",
+								"name": "__unnamed_function__26__",
 								"kind": "function",
 								"package": "crypto/x509",
 								"results": [
@@ -3249,21 +3069,21 @@
 						{
 							"name": "constraint",
 							"type": {
-								"id": "__unnamed_function__28__",
-								"name": "__unnamed_function__28__",
+								"id": "__unnamed_function__27__",
+								"name": "__unnamed_function__27__",
 								"kind": "function",
 								"package": "crypto/x509",
 								"parameters": [
 									{
 										"name": "",
 										"type": {
-											"id": "__unnamed_slice__213__",
-											"name": "__unnamed_slice__213__",
+											"id": "__unnamed_slice__195__",
+											"name": "__unnamed_slice__195__",
 											"kind": "slice",
 											"package": "crypto/x509",
 											"element": {
-												"id": "__unnamed_pointer__244__",
-												"name": "__unnamed_pointer__244__",
+												"id": "__unnamed_pointer__225__",
+												"name": "__unnamed_pointer__225__",
 												"kind": "pointer",
 												"package": "crypto/x509",
 												"element": {
@@ -3305,8 +3125,8 @@
 						{
 							"name": "pemCerts",
 							"type": {
-								"id": "__unnamed_slice__214__",
-								"name": "__unnamed_slice__214__",
+								"id": "__unnamed_slice__196__",
+								"name": "__unnamed_slice__196__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -3343,13 +3163,13 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__216__",
-								"name": "__unnamed_slice__216__",
+								"id": "__unnamed_slice__198__",
+								"name": "__unnamed_slice__198__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
-									"id": "__unnamed_slice__215__",
-									"name": "__unnamed_slice__215__",
+									"id": "__unnamed_slice__197__",
+									"name": "__unnamed_slice__197__",
 									"kind": "slice",
 									"package": "crypto/x509",
 									"element": {
@@ -3380,8 +3200,8 @@
 						{
 							"name": "other",
 							"type": {
-								"id": "__unnamed_pointer__245__",
-								"name": "__unnamed_pointer__245__",
+								"id": "__unnamed_pointer__226__",
+								"name": "__unnamed_pointer__226__",
 								"kind": "pointer",
 								"package": "crypto/x509",
 								"element": {
@@ -3417,8 +3237,8 @@
 						{
 							"name": "cert",
 							"type": {
-								"id": "__unnamed_pointer__246__",
-								"name": "__unnamed_pointer__246__",
+								"id": "__unnamed_pointer__227__",
+								"name": "__unnamed_pointer__227__",
 								"kind": "pointer",
 								"package": "crypto/x509",
 								"element": {
@@ -3432,21 +3252,21 @@
 						{
 							"name": "constraint",
 							"type": {
-								"id": "__unnamed_function__30__",
-								"name": "__unnamed_function__30__",
+								"id": "__unnamed_function__28__",
+								"name": "__unnamed_function__28__",
 								"kind": "function",
 								"package": "crypto/x509",
 								"parameters": [
 									{
 										"name": "",
 										"type": {
-											"id": "__unnamed_slice__217__",
-											"name": "__unnamed_slice__217__",
+											"id": "__unnamed_slice__199__",
+											"name": "__unnamed_slice__199__",
 											"kind": "slice",
 											"package": "crypto/x509",
 											"element": {
-												"id": "__unnamed_pointer__247__",
-												"name": "__unnamed_pointer__247__",
+												"id": "__unnamed_pointer__228__",
+												"name": "__unnamed_pointer__228__",
 												"kind": "pointer",
 												"package": "crypto/x509",
 												"element": {
@@ -3504,15 +3324,9 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "Complete ASN.1 DER content (certificate, signature algorithm and signature).",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__61__",
-						"name": "__unnamed_slice__61__",
+						"id": "__unnamed_slice__69__",
+						"name": "__unnamed_slice__69__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -3532,15 +3346,9 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "Certificate part of raw ASN.1 DER content.",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__62__",
-						"name": "__unnamed_slice__62__",
+						"id": "__unnamed_slice__70__",
+						"name": "__unnamed_slice__70__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -3560,15 +3368,9 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "DER encoded SubjectPublicKeyInfo.",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__63__",
-						"name": "__unnamed_slice__63__",
+						"id": "__unnamed_slice__71__",
+						"name": "__unnamed_slice__71__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -3588,15 +3390,9 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "DER encoded Subject",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__64__",
-						"name": "__unnamed_slice__64__",
+						"id": "__unnamed_slice__72__",
+						"name": "__unnamed_slice__72__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -3616,15 +3412,9 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "DER encoded Issuer",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__65__",
-						"name": "__unnamed_slice__65__",
+						"id": "__unnamed_slice__73__",
+						"name": "__unnamed_slice__73__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -3645,8 +3435,8 @@
 					"distance": 3,
 					"package": "crypto/x509",
 					"type": {
-						"id": "__unnamed_slice__66__",
-						"name": "__unnamed_slice__66__",
+						"id": "__unnamed_slice__74__",
+						"name": "__unnamed_slice__74__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -3768,12 +3558,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "Validity bounds.",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "time.Time",
 						"kind": "struct"
@@ -3787,12 +3571,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "Validity bounds.",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "time.Time",
 						"kind": "struct"
@@ -3819,12 +3597,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "Extensions contains raw X.509 extensions. When parsing certificates,\nthis can be used to extract non-critical extensions that are not\nparsed by this package. When marshaling certificates, the Extensions\nfield is ignored, see ExtraExtensions.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__104__",
 						"name": "__unnamed_slice__104__",
@@ -3846,12 +3618,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "ExtraExtensions contains extensions to be copied, raw, into any\nmarshaled certificates. Values override any extensions that would\notherwise be produced based on the other fields. The ExtraExtensions\nfield is not populated when parsing certificates, see Extensions.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__105__",
 						"name": "__unnamed_slice__105__",
@@ -3873,12 +3639,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "UnhandledCriticalExtensions contains a list of extension IDs that\nwere not (fully) processed when parsing. Verify will fail if this\nslice is non-empty, unless verification is delegated to an OS\nlibrary which understands all the critical extensions.\n\nUsers can access these extensions using Extensions and can remove\nelements from this slice if they believe that they have been\nhandled.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__106__",
 						"name": "__unnamed_slice__106__",
@@ -3900,12 +3660,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "Sequence of extended key usages.",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__107__",
 						"name": "__unnamed_slice__107__",
@@ -3927,12 +3681,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "Encountered extended key usages unknown to this package.",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__108__",
 						"name": "__unnamed_slice__108__",
@@ -3954,12 +3702,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "BasicConstraintsValid indicates whether IsCA, MaxPathLen,\nand MaxPathLenZero are valid.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -3988,12 +3730,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "MaxPathLen and MaxPathLenZero indicate the presence and\nvalue of the BasicConstraints' \"pathLenConstraint\".\n\nWhen parsing a certificate, a positive non-zero MaxPathLen\nmeans that the field was specified, -1 means it was unset,\nand MaxPathLenZero being true mean that the field was\nexplicitly set to zero. The case of MaxPathLen==0 with MaxPathLenZero==false\nshould be treated equivalent to -1 (unset).\n\nWhen generating a certificate, an unset pathLenConstraint\ncan be requested with either MaxPathLen == -1 or using the\nzero value for both MaxPathLen and MaxPathLenZero.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -4008,12 +3744,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "MaxPathLenZero indicates that BasicConstraintsValid==true\nand MaxPathLen==0 should be interpreted as an actual\nmaximum path length of zero. Otherwise, that combination is\ninterpreted as MaxPathLen not being set.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -4072,12 +3802,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "RFC 5280, 4.2.2.1 (Authority Information Access)",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__111__",
 						"name": "__unnamed_slice__111__",
@@ -4122,12 +3846,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "Subject Alternate Name values. (Note that these values may not be valid\nif invalid values were contained within a parsed certificate. For\nexample, an element of DNSNames may not be a valid DNS domain name.)",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__113__",
 						"name": "__unnamed_slice__113__",
@@ -4222,16 +3940,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "Name constraints",
-							"placement": "above"
-						},
-						{
-							"text": "if true then the name constraints are marked critical.",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -4436,12 +4144,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "CRL Distribution Points",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__125__",
 						"name": "__unnamed_slice__125__",
@@ -4464,12 +4166,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "PolicyIdentifiers contains asn1.ObjectIdentifiers, the components\nof which are limited to int32. If a certificate contains a policy which\ncannot be represented by asn1.ObjectIdentifier, it will not be included in\nPolicyIdentifiers, but will be present in Policies, which contains all parsed\npolicy OIDs.\nSee CreateCertificate for context about how this field and the Policies field\ninteract.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__126__",
 						"name": "__unnamed_slice__126__",
@@ -4491,12 +4187,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "Policies contains all policy identifiers included in the certificate.\nSee CreateCertificate for context about how this field and the PolicyIdentifiers field\ninteract.\nIn Go 1.22, encoding/gob cannot handle and ignores this field.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__127__",
 						"name": "__unnamed_slice__127__",
@@ -4518,12 +4208,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "InhibitAnyPolicy and InhibitAnyPolicyZero indicate the presence and value\nof the inhibitAnyPolicy extension.\n\nThe value of InhibitAnyPolicy indicates the number of additional\ncertificates in the path after this certificate that may use the\nanyPolicy policy OID to indicate a match with any other policy.\n\nWhen parsing a certificate, a positive non-zero InhibitAnyPolicy means\nthat the field was specified, -1 means it was unset, and\nInhibitAnyPolicyZero being true mean that the field was explicitly set to\nzero. The case of InhibitAnyPolicy==0 with InhibitAnyPolicyZero==false\nshould be treated equivalent to -1 (unset).",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -4538,12 +4222,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "InhibitAnyPolicyZero indicates that InhibitAnyPolicy==0 should be\ninterpreted as an actual maximum path length of zero. Otherwise, that\ncombination is interpreted as InhibitAnyPolicy not being set.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -4558,12 +4236,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "InhibitPolicyMapping and InhibitPolicyMappingZero indicate the presence\nand value of the inhibitPolicyMapping field of the policyConstraints\nextension.\n\nThe value of InhibitPolicyMapping indicates the number of additional\ncertificates in the path after this certificate that may use policy\nmapping.\n\nWhen parsing a certificate, a positive non-zero InhibitPolicyMapping\nmeans that the field was specified, -1 means it was unset, and\nInhibitPolicyMappingZero being true mean that the field was explicitly\nset to zero. The case of InhibitPolicyMapping==0 with\nInhibitPolicyMappingZero==false should be treated equivalent to -1\n(unset).",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -4578,12 +4250,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "InhibitPolicyMappingZero indicates that InhibitPolicyMapping==0 should be\ninterpreted as an actual maximum path length of zero. Otherwise, that\ncombination is interpreted as InhibitAnyPolicy not being set.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -4598,12 +4264,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "RequireExplicitPolicy and RequireExplicitPolicyZero indicate the presence\nand value of the requireExplicitPolicy field of the policyConstraints\nextension.\n\nThe value of RequireExplicitPolicy indicates the number of additional\ncertificates in the path after this certificate before an explicit policy\nis required for the rest of the path. When an explicit policy is required,\neach subsequent certificate in the path must contain a required policy OID,\nor a policy OID which has been declared as equivalent through the policy\nmapping extension.\n\nWhen parsing a certificate, a positive non-zero RequireExplicitPolicy\nmeans that the field was specified, -1 means it was unset, and\nRequireExplicitPolicyZero being true mean that the field was explicitly\nset to zero. The case of RequireExplicitPolicy==0 with\nRequireExplicitPolicyZero==false should be treated equivalent to -1\n(unset).",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -4618,12 +4278,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "RequireExplicitPolicyZero indicates that RequireExplicitPolicy==0 should be\ninterpreted as an actual maximum path length of zero. Otherwise, that\ncombination is interpreted as InhibitAnyPolicy not being set.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -4638,12 +4292,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "PolicyMappings contains a list of policy mappings included in the certificate.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__128__",
 						"name": "__unnamed_slice__128__",
@@ -5520,8 +5168,8 @@
 					"distance": 3,
 					"package": "crypto/x509",
 					"type": {
-						"id": "__unnamed_slice__147__",
-						"name": "__unnamed_slice__147__",
+						"id": "__unnamed_slice__144__",
+						"name": "__unnamed_slice__144__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -5547,8 +5195,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__156__",
-								"name": "__unnamed_slice__156__",
+								"id": "__unnamed_slice__145__",
+								"name": "__unnamed_slice__145__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -5564,8 +5212,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__157__",
-								"name": "__unnamed_slice__157__",
+								"id": "__unnamed_slice__146__",
+								"name": "__unnamed_slice__146__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -5599,8 +5247,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__158__",
-								"name": "__unnamed_slice__158__",
+								"id": "__unnamed_slice__155__",
+								"name": "__unnamed_slice__155__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -5703,8 +5351,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__162__",
-								"name": "__unnamed_slice__162__",
+								"id": "__unnamed_slice__161__",
+								"name": "__unnamed_slice__161__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -5720,8 +5368,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__164__",
-								"name": "__unnamed_slice__164__",
+								"id": "__unnamed_slice__163__",
+								"name": "__unnamed_slice__163__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -5755,8 +5403,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__165__",
-								"name": "__unnamed_slice__165__",
+								"id": "__unnamed_slice__166__",
+								"name": "__unnamed_slice__166__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -5791,8 +5439,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__166__",
-								"name": "__unnamed_slice__166__",
+								"id": "__unnamed_slice__176__",
+								"name": "__unnamed_slice__176__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -5949,12 +5597,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "IssuerDomainPolicy contains a policy OID the issuing certificate considers\nequivalent to SubjectDomainPolicy in the subject certificate.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "crypto/x509.OID",
 						"kind": "struct"
@@ -5968,12 +5610,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "SubjectDomainPolicy contains a OID the issuing certificate considers\nequivalent to IssuerDomainPolicy in the subject certificate.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "crypto/x509.OID",
 						"kind": "struct"
@@ -6041,12 +5677,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "DNSName, if set, is checked against the leaf certificate with\nCertificate.VerifyHostname or the platform verifier.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -6061,15 +5691,9 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "Intermediates is an optional pool of certificates that are not trust\nanchors, but can be used to form a chain from the leaf certificate to a\nroot certificate.",
-							"placement": "above"
-						}
-					],
 					"type": {
-						"id": "__unnamed_pointer__98__",
-						"name": "__unnamed_pointer__98__",
+						"id": "__unnamed_pointer__96__",
+						"name": "__unnamed_pointer__96__",
 						"kind": "pointer",
 						"distance": 3,
 						"package": "crypto/x509",
@@ -6089,15 +5713,9 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "Roots is the set of trusted root certificates the leaf certificate needs\nto chain up to. If nil, the system roots or the platform verifier are used.",
-							"placement": "above"
-						}
-					],
 					"type": {
-						"id": "__unnamed_pointer__101__",
-						"name": "__unnamed_pointer__101__",
+						"id": "__unnamed_pointer__97__",
+						"name": "__unnamed_pointer__97__",
 						"kind": "pointer",
 						"distance": 3,
 						"package": "crypto/x509",
@@ -6117,12 +5735,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "CurrentTime is used to check the validity of all certificates in the\nchain. If zero, the current time is used.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "time.Time",
 						"kind": "struct"
@@ -6136,15 +5748,9 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "KeyUsages specifies which Extended Key Usage values are acceptable. A\nchain is accepted if it allows any of the listed values. An empty list\nmeans ExtKeyUsageServerAuth. To accept any key usage, include ExtKeyUsageAny.",
-							"placement": "above"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__145__",
-						"name": "__unnamed_slice__145__",
+						"id": "__unnamed_slice__158__",
+						"name": "__unnamed_slice__158__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -6163,12 +5769,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "MaxConstraintComparisions is the maximum number of comparisons to\nperform when checking a given certificate's name constraints. If\nzero, a sensible default is used. This limit prevents pathological\ncertificates from consuming excessive amounts of CPU time when\nvalidating. It does not apply to the platform verifier.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -6183,15 +5783,9 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "CertificatePolicies specifies which certificate policy OIDs are\nacceptable during policy validation. An empty CertificatePolices\nfield implies any valid policy is acceptable.",
-							"placement": "above"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__160__",
-						"name": "__unnamed_slice__160__",
+						"id": "__unnamed_slice__162__",
+						"name": "__unnamed_slice__162__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -6210,12 +5804,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "inhibitPolicyMapping indicates if policy mapping should be allowed\nduring path validation.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -6230,12 +5818,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "requireExplicitPolicy indidicates if explicit policies must be present\nfor each certificate being validated.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -6250,12 +5832,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "inhibitAnyPolicy indicates if the anyPolicy policy should be\nprocessed if present in a certificate being validated.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -6289,12 +5865,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "rawSubject is the Certificate.RawSubject value.\nIt's the same as the CertPool.byName key, but in []byte\nform to make CertPool.Subjects (as used by crypto/tls) do\nfewer allocations.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__218__",
 						"name": "__unnamed_slice__218__",
@@ -6317,12 +5887,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "constraint is a function to run against a chain when it is a candidate to\nbe added to the chain. This allows adding arbitrary constraints that are\nnot specified in the certificate itself.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__31__",
 						"name": "__unnamed_function__31__",
@@ -6372,12 +5936,6 @@
 					"named": true,
 					"distance": 3,
 					"package": "crypto/x509",
-					"comments": [
-						{
-							"text": "getCert returns the certificate.\n\nIt is not meant to do network operations or anything else\nwhere a failure is likely; the func is meant to lazily\nparse/decompress data that is already known to be good. The\nerror in the signature primarily is meant for use in the\ncase where a cert file existed on local disk when the program\nstarted up is deleted later before it's read.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__33__",
 						"name": "__unnamed_function__33__",
@@ -6460,8 +6018,8 @@
 							{
 								"name": "",
 								"type": {
-									"id": "__unnamed_slice__222__",
-									"name": "__unnamed_slice__222__",
+									"id": "__unnamed_slice__220__",
+									"name": "__unnamed_slice__220__",
 									"kind": "slice",
 									"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 									"element": {
@@ -6751,8 +6309,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__144__",
-						"name": "__unnamed_slice__144__",
+						"id": "__unnamed_slice__143__",
+						"name": "__unnamed_slice__143__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -6793,8 +6351,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__149__",
-						"name": "__unnamed_slice__149__",
+						"id": "__unnamed_slice__147__",
+						"name": "__unnamed_slice__147__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -6815,8 +6373,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__150__",
-						"name": "__unnamed_slice__150__",
+						"id": "__unnamed_slice__148__",
+						"name": "__unnamed_slice__148__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -6837,8 +6395,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__151__",
-						"name": "__unnamed_slice__151__",
+						"id": "__unnamed_slice__149__",
+						"name": "__unnamed_slice__149__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -6859,8 +6417,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__153__",
-						"name": "__unnamed_slice__153__",
+						"id": "__unnamed_slice__150__",
+						"name": "__unnamed_slice__150__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -6881,8 +6439,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__154__",
-						"name": "__unnamed_slice__154__",
+						"id": "__unnamed_slice__151__",
+						"name": "__unnamed_slice__151__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -6903,8 +6461,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__161__",
-						"name": "__unnamed_slice__161__",
+						"id": "__unnamed_slice__154__",
+						"name": "__unnamed_slice__154__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -6925,8 +6483,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__163__",
-						"name": "__unnamed_slice__163__",
+						"id": "__unnamed_slice__164__",
+						"name": "__unnamed_slice__164__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -6974,15 +6532,9 @@
 					"named": true,
 					"distance": 4,
 					"package": "crypto/x509/pkix",
-					"comments": [
-						{
-							"text": "Names contains all parsed attributes. When parsing distinguished names,\nthis can be used to extract non-standard attributes that are not parsed\nby this package. When marshaling to RDNSequences, the Names field is\nignored, see ExtraNames.",
-							"placement": "above"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__174__",
-						"name": "__unnamed_slice__174__",
+						"id": "__unnamed_slice__167__",
+						"name": "__unnamed_slice__167__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -7001,15 +6553,9 @@
 					"named": true,
 					"distance": 4,
 					"package": "crypto/x509/pkix",
-					"comments": [
-						{
-							"text": "ExtraNames contains attributes to be copied, raw, into any marshaled\ndistinguished names. Values override any attributes with the same OID.\nThe ExtraNames field is not populated when parsing, see Names.",
-							"placement": "above"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__175__",
-						"name": "__unnamed_slice__175__",
+						"id": "__unnamed_slice__168__",
+						"name": "__unnamed_slice__168__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -7034,8 +6580,8 @@
 						{
 							"name": "rdns",
 							"type": {
-								"id": "__unnamed_pointer__129__",
-								"name": "__unnamed_pointer__129__",
+								"id": "__unnamed_pointer__106__",
+								"name": "__unnamed_pointer__106__",
 								"kind": "pointer",
 								"package": "crypto/x509/pkix",
 								"element": {
@@ -7069,8 +6615,8 @@
 						{
 							"name": "values",
 							"type": {
-								"id": "__unnamed_slice__176__",
-								"name": "__unnamed_slice__176__",
+								"id": "__unnamed_slice__170__",
+								"name": "__unnamed_slice__170__",
 								"kind": "slice",
 								"package": "crypto/x509/pkix",
 								"element": {
@@ -7206,8 +6752,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_pointer__115__",
-						"name": "__unnamed_pointer__115__",
+						"id": "__unnamed_pointer__102__",
+						"name": "__unnamed_pointer__102__",
 						"kind": "pointer",
 						"distance": 4,
 						"package": "crypto/x509/pkix",
@@ -7364,8 +6910,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__195__",
-						"name": "__unnamed_slice__195__",
+						"id": "__unnamed_slice__200__",
+						"name": "__unnamed_slice__200__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -7386,8 +6932,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__198__",
-						"name": "__unnamed_slice__198__",
+						"id": "__unnamed_slice__201__",
+						"name": "__unnamed_slice__201__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -7427,15 +6973,9 @@
 					"named": true,
 					"distance": 4,
 					"package": "encoding/asn1",
-					"comments": [
-						{
-							"text": "bits packed into bytes.",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__193__",
-						"name": "__unnamed_slice__193__",
+						"id": "__unnamed_slice__202__",
+						"name": "__unnamed_slice__202__",
 						"kind": "slice",
 						"package": "encoding/asn1",
 						"element": {
@@ -7455,12 +6995,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "encoding/asn1",
-					"comments": [
-						{
-							"text": "length in bits.",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -7510,8 +7044,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__196__",
-								"name": "__unnamed_slice__196__",
+								"id": "__unnamed_slice__203__",
+								"name": "__unnamed_slice__203__",
 								"kind": "slice",
 								"package": "encoding/asn1",
 								"element": {
@@ -7648,8 +7182,8 @@
 					"distance": 4,
 					"package": "encoding/asn1",
 					"type": {
-						"id": "__unnamed_slice__220__",
-						"name": "__unnamed_slice__220__",
+						"id": "__unnamed_slice__221__",
+						"name": "__unnamed_slice__221__",
 						"kind": "slice",
 						"package": "encoding/asn1",
 						"element": {
@@ -7669,15 +7203,9 @@
 					"named": true,
 					"distance": 4,
 					"package": "encoding/asn1",
-					"comments": [
-						{
-							"text": "includes the tag and length",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__221__",
-						"name": "__unnamed_slice__221__",
+						"id": "__unnamed_slice__222__",
+						"name": "__unnamed_slice__222__",
 						"kind": "slice",
 						"package": "encoding/asn1",
 						"element": {
@@ -7717,18 +7245,12 @@
 					"named": true,
 					"distance": 5,
 					"package": "fmt",
-					"comments": [
-						{
-							"text": "Because ReadRune is implemented by the interface, Read should never be\ncalled by the scanning routines and a valid implementation of\nScanState may choose always to return an error from Read.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "buf",
 							"type": {
-								"id": "__unnamed_slice__194__",
-								"name": "__unnamed_slice__194__",
+								"id": "__unnamed_slice__204__",
+								"name": "__unnamed_slice__204__",
 								"kind": "slice",
 								"package": "fmt",
 								"element": {
@@ -7770,12 +7292,6 @@
 					"named": true,
 					"distance": 5,
 					"package": "fmt",
-					"comments": [
-						{
-							"text": "ReadRune reads the next rune (Unicode code point) from the input.\nIf invoked during Scanln, Fscanln, or Sscanln, ReadRune() will\nreturn EOF after returning the first '\\n' or when reading beyond\nthe specified width.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"name": "r",
@@ -7813,12 +7329,6 @@
 					"named": true,
 					"distance": 5,
 					"package": "fmt",
-					"comments": [
-						{
-							"text": "SkipSpace skips space in the input. Newlines are treated appropriately\nfor the operation being performed; see the package documentation\nfor more information.",
-							"placement": "above"
-						}
-					],
 					"isPointerReceiver": false,
 					"receiver": "fmt.ScanState",
 					"structure": "func()"
@@ -7830,12 +7340,6 @@
 					"named": true,
 					"distance": 5,
 					"package": "fmt",
-					"comments": [
-						{
-							"text": "Token skips space in the input if skipSpace is true, then returns the\nrun of Unicode code points c satisfying f(c).  If f is nil,\n!unicode.IsSpace(c) is used; that is, the token will hold non-space\ncharacters. Newlines are treated appropriately for the operation being\nperformed; see the package documentation for more information.\nThe returned slice points to shared data that may be overwritten\nby the next call to Token, a call to a Scan function using the ScanState\nas input, or when the calling Scan method returns.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "skipSpace",
@@ -7848,8 +7352,8 @@
 						{
 							"name": "f",
 							"type": {
-								"id": "__unnamed_function__26__",
-								"name": "__unnamed_function__26__",
+								"id": "__unnamed_function__29__",
+								"name": "__unnamed_function__29__",
 								"kind": "function",
 								"package": "fmt",
 								"parameters": [
@@ -7878,8 +7382,8 @@
 						{
 							"name": "token",
 							"type": {
-								"id": "__unnamed_slice__200__",
-								"name": "__unnamed_slice__200__",
+								"id": "__unnamed_slice__205__",
+								"name": "__unnamed_slice__205__",
 								"kind": "slice",
 								"package": "fmt",
 								"element": {
@@ -7911,12 +7415,6 @@
 					"named": true,
 					"distance": 5,
 					"package": "fmt",
-					"comments": [
-						{
-							"text": "UnreadRune causes the next call to ReadRune to return the same rune.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -7937,12 +7435,6 @@
 					"named": true,
 					"distance": 5,
 					"package": "fmt",
-					"comments": [
-						{
-							"text": "Width returns the value of the width option and whether it has been set.\nThe unit is Unicode code points.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"name": "wid",
@@ -7992,12 +7484,6 @@
 					"named": true,
 					"distance": 5,
 					"package": "fmt",
-					"comments": [
-						{
-							"text": "Flag reports whether the flag c, a character, has been set.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "c",
@@ -8028,12 +7514,6 @@
 					"named": true,
 					"distance": 5,
 					"package": "fmt",
-					"comments": [
-						{
-							"text": "Precision returns the value of the precision option and whether it has been set.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"name": "prec",
@@ -8063,12 +7543,6 @@
 					"named": true,
 					"distance": 5,
 					"package": "fmt",
-					"comments": [
-						{
-							"text": "Width returns the value of the width option and whether it has been set.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"name": "wid",
@@ -8098,18 +7572,12 @@
 					"named": true,
 					"distance": 5,
 					"package": "fmt",
-					"comments": [
-						{
-							"text": "Write is the function to call to emit formatted output to be printed.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__199__",
-								"name": "__unnamed_slice__199__",
+								"id": "__unnamed_slice__206__",
+								"name": "__unnamed_slice__206__",
 								"kind": "slice",
 								"package": "fmt",
 								"element": {
@@ -9046,12 +8514,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "hash",
-					"comments": [
-						{
-							"text": "BlockSize returns the hash's underlying block size.\nThe Write method must be able to accept any amount\nof data, but it may operate more efficiently if all writes\nare a multiple of the block size.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -9072,12 +8534,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "hash",
-					"comments": [
-						{
-							"text": "Reset resets the Hash to its initial state.",
-							"placement": "above"
-						}
-					],
 					"isPointerReceiver": false,
 					"receiver": "hash.Hash",
 					"structure": "func()"
@@ -9089,12 +8545,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "hash",
-					"comments": [
-						{
-							"text": "Size returns the number of bytes Sum will return.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -9115,12 +8565,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "hash",
-					"comments": [
-						{
-							"text": "Sum appends the current hash to b and returns the resulting slice.\nIt does not change the underlying hash state.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "b",
@@ -9484,8 +8928,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__36__",
-								"name": "__unnamed_slice__36__",
+								"id": "__unnamed_slice__35__",
+								"name": "__unnamed_slice__35__",
 								"kind": "slice",
 								"package": "io",
 								"element": {
@@ -9572,8 +9016,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__68__",
-								"name": "__unnamed_slice__68__",
+								"id": "__unnamed_slice__76__",
+								"name": "__unnamed_slice__76__",
 								"kind": "slice",
 								"package": "io",
 								"element": {
@@ -9639,8 +9083,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__70__",
-								"name": "__unnamed_slice__70__",
+								"id": "__unnamed_slice__75__",
+								"name": "__unnamed_slice__75__",
 								"kind": "slice",
 								"package": "io",
 								"element": {
@@ -9779,8 +9223,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__28__",
-								"name": "__unnamed_slice__28__",
+								"id": "__unnamed_slice__44__",
+								"name": "__unnamed_slice__44__",
 								"kind": "slice",
 								"package": "io",
 								"element": {
@@ -9859,12 +9303,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "math/big",
-					"comments": [
-						{
-							"text": "sign",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -9879,12 +9317,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "math/big",
-					"comments": [
-						{
-							"text": "absolute value of the integer",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "math/big.nat",
 						"kind": "slice"
@@ -9933,8 +9365,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__96__",
-								"name": "__unnamed_pointer__96__",
+								"id": "__unnamed_pointer__98__",
+								"name": "__unnamed_pointer__98__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -9970,8 +9402,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__97__",
-								"name": "__unnamed_pointer__97__",
+								"id": "__unnamed_pointer__99__",
+								"name": "__unnamed_pointer__99__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -9998,8 +9430,8 @@
 						{
 							"name": "x",
 							"type": {
-								"id": "__unnamed_pointer__99__",
-								"name": "__unnamed_pointer__99__",
+								"id": "__unnamed_pointer__100__",
+								"name": "__unnamed_pointer__100__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10014,8 +9446,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__100__",
-								"name": "__unnamed_pointer__100__",
+								"id": "__unnamed_pointer__101__",
+								"name": "__unnamed_pointer__101__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10041,8 +9473,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__142__",
-								"name": "__unnamed_slice__142__",
+								"id": "__unnamed_slice__172__",
+								"name": "__unnamed_slice__172__",
 								"kind": "slice",
 								"package": "math/big",
 								"element": {
@@ -10069,8 +9501,8 @@
 						{
 							"name": "abs",
 							"type": {
-								"id": "__unnamed_slice__143__",
-								"name": "__unnamed_slice__143__",
+								"id": "__unnamed_slice__173__",
+								"name": "__unnamed_slice__173__",
 								"kind": "slice",
 								"package": "math/big",
 								"element": {
@@ -10085,8 +9517,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__102__",
-								"name": "__unnamed_pointer__102__",
+								"id": "__unnamed_pointer__107__",
+								"name": "__unnamed_pointer__107__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10112,109 +9544,6 @@
 					"parameters": [
 						{
 							"name": "x",
-							"type": {
-								"id": "__unnamed_pointer__103__",
-								"name": "__unnamed_pointer__103__",
-								"kind": "pointer",
-								"package": "math/big",
-								"element": {
-									"id": "math/big.Int",
-									"kind": "struct"
-								},
-								"depth": 1,
-								"structure": "*math/big.Int"
-							}
-						}
-					],
-					"results": [
-						{
-							"type": {
-								"id": "__unnamed_pointer__104__",
-								"name": "__unnamed_pointer__104__",
-								"kind": "pointer",
-								"package": "math/big",
-								"element": {
-									"id": "math/big.Int",
-									"kind": "struct"
-								},
-								"depth": 1,
-								"structure": "*math/big.Int"
-							}
-						}
-					],
-					"isPointerReceiver": true,
-					"receiver": "math/big.Int",
-					"structure": "func(x *math/big.Int) *math/big.Int"
-				},
-				{
-					"id": "math/big.Int#Neg",
-					"name": "Neg",
-					"kind": "method",
-					"named": true,
-					"distance": 4,
-					"package": "math/big",
-					"parameters": [
-						{
-							"name": "x",
-							"type": {
-								"id": "__unnamed_pointer__105__",
-								"name": "__unnamed_pointer__105__",
-								"kind": "pointer",
-								"package": "math/big",
-								"element": {
-									"id": "math/big.Int",
-									"kind": "struct"
-								},
-								"depth": 1,
-								"structure": "*math/big.Int"
-							}
-						}
-					],
-					"results": [
-						{
-							"type": {
-								"id": "__unnamed_pointer__106__",
-								"name": "__unnamed_pointer__106__",
-								"kind": "pointer",
-								"package": "math/big",
-								"element": {
-									"id": "math/big.Int",
-									"kind": "struct"
-								},
-								"depth": 1,
-								"structure": "*math/big.Int"
-							}
-						}
-					],
-					"isPointerReceiver": true,
-					"receiver": "math/big.Int",
-					"structure": "func(x *math/big.Int) *math/big.Int"
-				},
-				{
-					"id": "math/big.Int#Add",
-					"name": "Add",
-					"kind": "method",
-					"named": true,
-					"distance": 4,
-					"package": "math/big",
-					"parameters": [
-						{
-							"name": "x",
-							"type": {
-								"id": "__unnamed_pointer__107__",
-								"name": "__unnamed_pointer__107__",
-								"kind": "pointer",
-								"package": "math/big",
-								"element": {
-									"id": "math/big.Int",
-									"kind": "struct"
-								},
-								"depth": 1,
-								"structure": "*math/big.Int"
-							}
-						},
-						{
-							"name": "y",
 							"type": {
 								"id": "__unnamed_pointer__108__",
 								"name": "__unnamed_pointer__108__",
@@ -10247,11 +9576,11 @@
 					],
 					"isPointerReceiver": true,
 					"receiver": "math/big.Int",
-					"structure": "func(x *math/big.Int, y *math/big.Int) *math/big.Int"
+					"structure": "func(x *math/big.Int) *math/big.Int"
 				},
 				{
-					"id": "math/big.Int#Sub",
-					"name": "Sub",
+					"id": "math/big.Int#Neg",
+					"name": "Neg",
 					"kind": "method",
 					"named": true,
 					"distance": 4,
@@ -10271,9 +9600,10 @@
 								"depth": 1,
 								"structure": "*math/big.Int"
 							}
-						},
+						}
+					],
+					"results": [
 						{
-							"name": "y",
 							"type": {
 								"id": "__unnamed_pointer__111__",
 								"name": "__unnamed_pointer__111__",
@@ -10288,11 +9618,54 @@
 							}
 						}
 					],
-					"results": [
+					"isPointerReceiver": true,
+					"receiver": "math/big.Int",
+					"structure": "func(x *math/big.Int) *math/big.Int"
+				},
+				{
+					"id": "math/big.Int#Add",
+					"name": "Add",
+					"kind": "method",
+					"named": true,
+					"distance": 4,
+					"package": "math/big",
+					"parameters": [
 						{
+							"name": "x",
 							"type": {
 								"id": "__unnamed_pointer__112__",
 								"name": "__unnamed_pointer__112__",
+								"kind": "pointer",
+								"package": "math/big",
+								"element": {
+									"id": "math/big.Int",
+									"kind": "struct"
+								},
+								"depth": 1,
+								"structure": "*math/big.Int"
+							}
+						},
+						{
+							"name": "y",
+							"type": {
+								"id": "__unnamed_pointer__113__",
+								"name": "__unnamed_pointer__113__",
+								"kind": "pointer",
+								"package": "math/big",
+								"element": {
+									"id": "math/big.Int",
+									"kind": "struct"
+								},
+								"depth": 1,
+								"structure": "*math/big.Int"
+							}
+						}
+					],
+					"results": [
+						{
+							"type": {
+								"id": "__unnamed_pointer__114__",
+								"name": "__unnamed_pointer__114__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10309,8 +9682,8 @@
 					"structure": "func(x *math/big.Int, y *math/big.Int) *math/big.Int"
 				},
 				{
-					"id": "math/big.Int#Mul",
-					"name": "Mul",
+					"id": "math/big.Int#Sub",
+					"name": "Sub",
 					"kind": "method",
 					"named": true,
 					"distance": 4,
@@ -10319,8 +9692,8 @@
 						{
 							"name": "x",
 							"type": {
-								"id": "__unnamed_pointer__114__",
-								"name": "__unnamed_pointer__114__",
+								"id": "__unnamed_pointer__115__",
+								"name": "__unnamed_pointer__115__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10368,33 +9741,18 @@
 					"structure": "func(x *math/big.Int, y *math/big.Int) *math/big.Int"
 				},
 				{
-					"id": "math/big.Int#mul",
-					"name": "mul",
+					"id": "math/big.Int#Mul",
+					"name": "Mul",
 					"kind": "method",
 					"named": true,
 					"distance": 4,
 					"package": "math/big",
 					"parameters": [
 						{
-							"name": "stk",
-							"type": {
-								"id": "__unnamed_pointer__120__",
-								"name": "__unnamed_pointer__120__",
-								"kind": "pointer",
-								"package": "math/big",
-								"element": {
-									"id": "math/big.stack",
-									"kind": "struct"
-								},
-								"depth": 1,
-								"structure": "*math/big.stack"
-							}
-						},
-						{
 							"name": "x",
 							"type": {
-								"id": "__unnamed_pointer__121__",
-								"name": "__unnamed_pointer__121__",
+								"id": "__unnamed_pointer__118__",
+								"name": "__unnamed_pointer__118__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10408,8 +9766,82 @@
 						{
 							"name": "y",
 							"type": {
+								"id": "__unnamed_pointer__119__",
+								"name": "__unnamed_pointer__119__",
+								"kind": "pointer",
+								"package": "math/big",
+								"element": {
+									"id": "math/big.Int",
+									"kind": "struct"
+								},
+								"depth": 1,
+								"structure": "*math/big.Int"
+							}
+						}
+					],
+					"results": [
+						{
+							"type": {
+								"id": "__unnamed_pointer__120__",
+								"name": "__unnamed_pointer__120__",
+								"kind": "pointer",
+								"package": "math/big",
+								"element": {
+									"id": "math/big.Int",
+									"kind": "struct"
+								},
+								"depth": 1,
+								"structure": "*math/big.Int"
+							}
+						}
+					],
+					"isPointerReceiver": true,
+					"receiver": "math/big.Int",
+					"structure": "func(x *math/big.Int, y *math/big.Int) *math/big.Int"
+				},
+				{
+					"id": "math/big.Int#mul",
+					"name": "mul",
+					"kind": "method",
+					"named": true,
+					"distance": 4,
+					"package": "math/big",
+					"parameters": [
+						{
+							"name": "stk",
+							"type": {
+								"id": "__unnamed_pointer__121__",
+								"name": "__unnamed_pointer__121__",
+								"kind": "pointer",
+								"package": "math/big",
+								"element": {
+									"id": "math/big.stack",
+									"kind": "struct"
+								},
+								"depth": 1,
+								"structure": "*math/big.stack"
+							}
+						},
+						{
+							"name": "x",
+							"type": {
 								"id": "__unnamed_pointer__122__",
 								"name": "__unnamed_pointer__122__",
+								"kind": "pointer",
+								"package": "math/big",
+								"element": {
+									"id": "math/big.Int",
+									"kind": "struct"
+								},
+								"depth": 1,
+								"structure": "*math/big.Int"
+							}
+						},
+						{
+							"name": "y",
+							"type": {
+								"id": "__unnamed_pointer__123__",
+								"name": "__unnamed_pointer__123__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10453,8 +9885,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__123__",
-								"name": "__unnamed_pointer__123__",
+								"id": "__unnamed_pointer__124__",
+								"name": "__unnamed_pointer__124__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10498,8 +9930,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__124__",
-								"name": "__unnamed_pointer__124__",
+								"id": "__unnamed_pointer__125__",
+								"name": "__unnamed_pointer__125__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10526,8 +9958,8 @@
 						{
 							"name": "x",
 							"type": {
-								"id": "__unnamed_pointer__125__",
-								"name": "__unnamed_pointer__125__",
+								"id": "__unnamed_pointer__126__",
+								"name": "__unnamed_pointer__126__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10541,8 +9973,8 @@
 						{
 							"name": "y",
 							"type": {
-								"id": "__unnamed_pointer__126__",
-								"name": "__unnamed_pointer__126__",
+								"id": "__unnamed_pointer__127__",
+								"name": "__unnamed_pointer__127__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10557,8 +9989,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__127__",
-								"name": "__unnamed_pointer__127__",
+								"id": "__unnamed_pointer__128__",
+								"name": "__unnamed_pointer__128__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10585,8 +10017,8 @@
 						{
 							"name": "x",
 							"type": {
-								"id": "__unnamed_pointer__128__",
-								"name": "__unnamed_pointer__128__",
+								"id": "__unnamed_pointer__129__",
+								"name": "__unnamed_pointer__129__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -13270,12 +12702,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "math/big",
-					"comments": [
-						{
-							"text": "divisor",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "math/big.nat",
 						"kind": "slice"
@@ -13289,12 +12715,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "math/big",
-					"comments": [
-						{
-							"text": "bit length of divisor (discounting leading zeros) ~= log2(bbb)",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -13309,12 +12729,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "math/big",
-					"comments": [
-						{
-							"text": "digit length of divisor in terms of output base digits",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -13372,8 +12786,8 @@
 					"distance": 4,
 					"package": "math/big",
 					"type": {
-						"id": "__unnamed_slice__201__",
-						"name": "__unnamed_slice__201__",
+						"id": "__unnamed_slice__213__",
+						"name": "__unnamed_slice__213__",
 						"kind": "slice",
 						"package": "math/big",
 						"element": {
@@ -13508,12 +12922,6 @@
 					"named": true,
 					"distance": 5,
 					"package": "math/rand",
-					"comments": [
-						{
-							"text": "non-nil if src is source64",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "math/rand.Source64",
 						"kind": "interface"
@@ -13527,12 +12935,6 @@
 					"named": true,
 					"distance": 5,
 					"package": "math/rand",
-					"comments": [
-						{
-							"text": "readVal contains remainder of 63-bit integer used for bytes\ngeneration during most recent Read call.\nIt is saved so next Read call can start where the previous\none finished.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "int64",
 						"name": "int64",
@@ -13547,12 +12949,6 @@
 					"named": true,
 					"distance": 5,
 					"package": "math/rand",
-					"comments": [
-						{
-							"text": "readPos indicates the number of low-order bytes of readVal\nthat are still valid.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "int8",
 						"name": "int8",
@@ -13903,8 +13299,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__211__",
-								"name": "__unnamed_slice__211__",
+								"id": "__unnamed_slice__214__",
+								"name": "__unnamed_slice__214__",
 								"kind": "slice",
 								"package": "math/rand",
 								"element": {
@@ -13940,8 +13336,8 @@
 						{
 							"name": "swap",
 							"type": {
-								"id": "__unnamed_function__29__",
-								"name": "__unnamed_function__29__",
+								"id": "__unnamed_function__30__",
+								"name": "__unnamed_function__30__",
 								"kind": "function",
 								"package": "math/rand",
 								"parameters": [
@@ -13980,8 +13376,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__212__",
-								"name": "__unnamed_slice__212__",
+								"id": "__unnamed_slice__215__",
+								"name": "__unnamed_slice__215__",
 								"kind": "slice",
 								"package": "math/rand",
 								"element": {
@@ -14212,8 +13608,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__29__",
-								"name": "__unnamed_slice__29__",
+								"id": "__unnamed_slice__36__",
+								"name": "__unnamed_slice__36__",
 								"kind": "slice",
 								"package": "mime/multipart",
 								"element": {
@@ -14259,8 +13655,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__30__",
-								"name": "__unnamed_slice__30__",
+								"id": "__unnamed_slice__37__",
+								"name": "__unnamed_slice__37__",
 								"kind": "slice",
 								"package": "mime/multipart",
 								"element": {
@@ -14438,8 +13834,8 @@
 					"distance": 2,
 					"package": "mime/multipart",
 					"type": {
-						"id": "__unnamed_slice__39__",
-						"name": "__unnamed_slice__39__",
+						"id": "__unnamed_slice__47__",
+						"name": "__unnamed_slice__47__",
 						"kind": "slice",
 						"package": "mime/multipart",
 						"element": {
@@ -14560,8 +13956,8 @@
 							"kind": "basic"
 						},
 						"value": {
-							"id": "__unnamed_slice__31__",
-							"name": "__unnamed_slice__31__",
+							"id": "__unnamed_slice__28__",
+							"name": "__unnamed_slice__28__",
 							"kind": "slice",
 							"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 							"element": {
@@ -14594,8 +13990,8 @@
 							"kind": "basic"
 						},
 						"value": {
-							"id": "__unnamed_slice__32__",
-							"name": "__unnamed_slice__32__",
+							"id": "__unnamed_slice__29__",
+							"name": "__unnamed_slice__29__",
 							"kind": "slice",
 							"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 							"element": {
@@ -14666,12 +14062,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "mime/multipart",
-					"comments": [
-						{
-							"text": "The headers of the body, if any, with the keys canonicalized\nin the same fashion that the Go http.Request headers are.\nFor example, \"foo-bar\" changes case to \"Foo-Bar\"",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "net/textproto.MIMEHeader",
 						"kind": "map"
@@ -14747,12 +14137,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "mime/multipart",
-					"comments": [
-						{
-							"text": "r is either a reader directly reading from mr, or it's a\nwrapper around such a reader, decoding the\nContent-Transfer-Encoding",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "io.Reader",
 						"kind": "interface"
@@ -14766,12 +14150,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "mime/multipart",
-					"comments": [
-						{
-							"text": "known data bytes waiting in mr.bufReader",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -14786,12 +14164,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "mime/multipart",
-					"comments": [
-						{
-							"text": "total data bytes read already",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int64",
 						"name": "int64",
@@ -14806,12 +14178,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "mime/multipart",
-					"comments": [
-						{
-							"text": "error to return when n == 0",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "error",
 						"name": "error",
@@ -14826,12 +14192,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "mime/multipart",
-					"comments": [
-						{
-							"text": "read error observed from mr.bufReader",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "error",
 						"name": "error",
@@ -14941,8 +14301,8 @@
 						{
 							"name": "d",
 							"type": {
-								"id": "__unnamed_slice__72__",
-								"name": "__unnamed_slice__72__",
+								"id": "__unnamed_slice__78__",
+								"name": "__unnamed_slice__78__",
 								"kind": "slice",
 								"package": "mime/multipart",
 								"element": {
@@ -15046,12 +14406,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "mime/multipart",
-					"comments": [
-						{
-							"text": "used in tests",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -15102,15 +14456,9 @@
 					"named": true,
 					"distance": 2,
 					"package": "mime/multipart",
-					"comments": [
-						{
-							"text": "\"\\r\\n\" or \"\\n\" (set after seeing first boundary line)",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__40__",
-						"name": "__unnamed_slice__40__",
+						"id": "__unnamed_slice__38__",
+						"name": "__unnamed_slice__38__",
 						"kind": "slice",
 						"package": "mime/multipart",
 						"element": {
@@ -15130,15 +14478,9 @@
 					"named": true,
 					"distance": 2,
 					"package": "mime/multipart",
-					"comments": [
-						{
-							"text": "nl + \"--boundary\"",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__42__",
-						"name": "__unnamed_slice__42__",
+						"id": "__unnamed_slice__39__",
+						"name": "__unnamed_slice__39__",
 						"kind": "slice",
 						"package": "mime/multipart",
 						"element": {
@@ -15158,15 +14500,9 @@
 					"named": true,
 					"distance": 2,
 					"package": "mime/multipart",
-					"comments": [
-						{
-							"text": "\"--boundary--\"",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__43__",
-						"name": "__unnamed_slice__43__",
+						"id": "__unnamed_slice__40__",
+						"name": "__unnamed_slice__40__",
 						"kind": "slice",
 						"package": "mime/multipart",
 						"element": {
@@ -15186,15 +14522,9 @@
 					"named": true,
 					"distance": 2,
 					"package": "mime/multipart",
-					"comments": [
-						{
-							"text": "\"--boundary\"",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__44__",
-						"name": "__unnamed_slice__44__",
+						"id": "__unnamed_slice__41__",
+						"name": "__unnamed_slice__41__",
 						"kind": "slice",
 						"package": "mime/multipart",
 						"element": {
@@ -15438,8 +14768,8 @@
 						{
 							"name": "line",
 							"type": {
-								"id": "__unnamed_slice__45__",
-								"name": "__unnamed_slice__45__",
+								"id": "__unnamed_slice__42__",
+								"name": "__unnamed_slice__42__",
 								"kind": "slice",
 								"package": "mime/multipart",
 								"element": {
@@ -15476,8 +14806,8 @@
 						{
 							"name": "line",
 							"type": {
-								"id": "__unnamed_slice__46__",
-								"name": "__unnamed_slice__46__",
+								"id": "__unnamed_slice__43__",
+								"name": "__unnamed_slice__43__",
 								"kind": "slice",
 								"package": "mime/multipart",
 								"element": {
@@ -15531,12 +14861,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "name of the network (for example, \"tcp\", \"udp\")",
-							"placement": "inline"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -15557,12 +14881,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "string form of address (for example, \"192.0.2.1:25\", \"[2001:db8::1]:80\")",
-							"placement": "inline"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -15603,12 +14921,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "Close closes the connection.\nAny blocked Read or Write operations will be unblocked and return errors.\nClose may or may not block until any buffered data is sent;\nfor TCP connections see [*TCPConn.SetLinger].",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -15629,12 +14941,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "LocalAddr returns the local network address, if known.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -15654,18 +14960,12 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "Read reads data from the connection.\nRead can be made to time out and return an error after a fixed\ntime limit; see SetDeadline and SetReadDeadline.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__203__",
-								"name": "__unnamed_slice__203__",
+								"id": "__unnamed_slice__216__",
+								"name": "__unnamed_slice__216__",
 								"kind": "slice",
 								"package": "net",
 								"element": {
@@ -15707,12 +15007,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "RemoteAddr returns the remote network address, if known.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -15732,12 +15026,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "SetDeadline sets the read and write deadlines associated\nwith the connection. It is equivalent to calling both\nSetReadDeadline and SetWriteDeadline.\n\nA deadline is an absolute time after which I/O operations\nfail instead of blocking. The deadline applies to all future\nand pending I/O, not just the immediately following call to\nRead or Write. After a deadline has been exceeded, the\nconnection can be refreshed by setting a deadline in the future.\n\nIf the deadline is exceeded a call to Read or Write or to other\nI/O methods will return an error that wraps os.ErrDeadlineExceeded.\nThis can be tested using errors.Is(err, os.ErrDeadlineExceeded).\nThe error's Timeout method will return true, but note that there\nare other possible errors for which the Timeout method will\nreturn true even if the deadline has not been exceeded.\n\nAn idle timeout can be implemented by repeatedly extending\nthe deadline after successful Read or Write calls.\n\nA zero value for t means I/O operations will not time out.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "t",
@@ -15767,12 +15055,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "SetReadDeadline sets the deadline for future Read calls\nand any currently-blocked Read call.\nA zero value for t means Read will not time out.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "t",
@@ -15802,12 +15084,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "SetWriteDeadline sets the deadline for future Write calls\nand any currently-blocked Write call.\nEven if write times out, it may return n \u003e 0, indicating that\nsome of the data was successfully written.\nA zero value for t means Write will not time out.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "t",
@@ -15837,18 +15113,12 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "Write writes data to the connection.\nWrite can be made to time out and return an error after a fixed\ntime limit; see SetDeadline and SetWriteDeadline.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__204__",
-								"name": "__unnamed_slice__204__",
+								"id": "__unnamed_slice__217__",
+								"name": "__unnamed_slice__217__",
 								"kind": "slice",
 								"package": "net",
 								"element": {
@@ -15948,12 +15218,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "IPv6 scoped addressing zone",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -15970,12 +15234,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "Network returns the address's network name, \"ip\".",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -16185,12 +15443,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "network number",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "net.IP",
 						"kind": "slice"
@@ -16204,12 +15456,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "network mask",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "net.IPMask",
 						"kind": "slice"
@@ -16225,12 +15471,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "Contains reports whether the network includes ip.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "ip",
@@ -16260,12 +15500,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "Network returns the address's network name, \"ip+net\".",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -16286,12 +15520,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "String returns the CIDR notation of n like \"192.0.2.0/24\"\nor \"2001:db8::/48\" as defined in RFC 4632 and RFC 4291.\nIf the mask is not in the canonical form, it returns the\nstring which consists of an IP address, followed by a slash\ncharacter and a mask expressed as hexadecimal form with no\npunctuation like \"198.51.100.0/c000ff00\".",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -16377,12 +15605,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "family returns the platform-dependent address family\nidentifier.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -16403,12 +15625,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "isWildcard reports whether the address is a wildcard\naddress.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -16429,12 +15645,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "sockaddr returns the address converted into a syscall\nsockaddr type that implements syscall.Sockaddr\ninterface. It returns a nil interface when the address is\nnil.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "family",
@@ -16471,12 +15681,6 @@
 					"named": true,
 					"distance": 4,
 					"package": "net",
-					"comments": [
-						{
-							"text": "toLocal maps the zero address to a local system address (127.0.0.1 or ::1)",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "net",
@@ -16554,12 +15758,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "indicates whether the Value was originally quoted",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -16574,12 +15772,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "optional",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -16594,12 +15786,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "optional",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -16614,12 +15800,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "optional",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "time.Time",
 						"kind": "struct"
@@ -16633,12 +15813,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "for reading cookies only",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -16653,12 +15827,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "MaxAge=0 means no 'Max-Age' attribute specified.\nMaxAge\u003c0 means delete cookie now, equivalently 'Max-Age: 0'\nMaxAge\u003e0 means Max-Age attribute present and given in seconds",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -16742,15 +15910,9 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Raw text of unparsed attribute-value pairs",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__47__",
-						"name": "__unnamed_slice__47__",
+						"id": "__unnamed_slice__45__",
+						"name": "__unnamed_slice__45__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -16918,12 +16080,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Method specifies the HTTP method (GET, POST, PUT, etc.).\nFor client requests, an empty string means GET.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -16938,12 +16094,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "URL specifies either the URI being requested (for server\nrequests) or the URL to access (for client requests).\n\nFor server requests, the URL is parsed from the URI\nsupplied on the Request-Line as stored in RequestURI.  For\nmost requests, fields other than Path and RawQuery will be\nempty. (See RFC 7230, Section 5.3)\n\nFor client requests, the URL's Host specifies the server to\nconnect to, while the Request's Host field optionally\nspecifies the Host header value to send in the HTTP\nrequest.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_pointer__12__",
 						"name": "__unnamed_pointer__12__",
@@ -16966,16 +16116,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "The protocol version for incoming server requests.\n\nFor client requests, these fields are ignored. The HTTP\nclient code always uses either HTTP/1.1 or HTTP/2.\nSee the docs on Transport for details.",
-							"placement": "above"
-						},
-						{
-							"text": "\"HTTP/1.0\"",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -16990,12 +16130,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "1",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -17010,12 +16144,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "0",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -17030,12 +16158,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Header contains the request header fields either received\nby the server or to be sent by the client.\n\nIf a server received a request with header lines,\n\n\tHost: example.com\n\taccept-encoding: gzip, deflate\n\tAccept-Language: en-us\n\tfOO: Bar\n\tfoo: two\n\nthen\n\n\tHeader = map[string][]string{\n\t\t\"Accept-Encoding\": {\"gzip, deflate\"},\n\t\t\"Accept-Language\": {\"en-us\"},\n\t\t\"Foo\": {\"Bar\", \"two\"},\n\t}\n\nFor incoming requests, the Host header is promoted to the\nRequest.Host field and removed from the Header map.\n\nHTTP defines that header names are case-insensitive. The\nrequest parser implements this by using CanonicalHeaderKey,\nmaking the first character and any characters following a\nhyphen uppercase and the rest lowercase.\n\nFor client requests, certain headers such as Content-Length\nand Connection are automatically written when needed and\nvalues in Header may be ignored. See the documentation\nfor the Request.Write method.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "net/http.Header",
 						"kind": "map"
@@ -17049,12 +16171,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Body is the request's body.\n\nFor client requests, a nil body means the request has no\nbody, such as a GET request. The HTTP Client's Transport\nis responsible for calling the Close method.\n\nFor server requests, the Request Body is always non-nil\nbut will return EOF immediately when no body is present.\nThe Server will close the request body. The ServeHTTP\nHandler does not need to.\n\nBody must allow Read to be called concurrently with Close.\nIn particular, calling Close should unblock a Read waiting\nfor input.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "io.ReadCloser",
 						"kind": "interface"
@@ -17068,15 +16184,9 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "GetBody defines an optional func to return a new copy of\nBody. It is used for client requests when a redirect requires\nreading the body more than once. Use of GetBody still\nrequires setting Body.\n\nFor server requests, it is unused.",
-							"placement": "above"
-						}
-					],
 					"type": {
-						"id": "__unnamed_function__4__",
-						"name": "__unnamed_function__4__",
+						"id": "__unnamed_function__3__",
+						"name": "__unnamed_function__3__",
 						"kind": "function",
 						"package": "net/http",
 						"results": [
@@ -17104,12 +16214,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "ContentLength records the length of the associated content.\nThe value -1 indicates that the length is unknown.\nValues \u003e= 0 indicate that the given number of bytes may\nbe read from Body.\n\nFor client requests, a value of 0 with a non-nil Body is\nalso treated as unknown.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "int64",
 						"name": "int64",
@@ -17124,12 +16228,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "TransferEncoding lists the transfer encodings from outermost to\ninnermost. An empty list denotes the \"identity\" encoding.\nTransferEncoding can usually be ignored; chunked encoding is\nautomatically added and removed as necessary when sending and\nreceiving requests.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__24__",
 						"name": "__unnamed_slice__24__",
@@ -17152,12 +16250,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Close indicates whether to close the connection after\nreplying to this request (for servers) or after sending this\nrequest and reading its response (for clients).\n\nFor server requests, the HTTP server handles this automatically\nand this field is not needed by Handlers.\n\nFor client requests, setting this field prevents re-use of\nTCP connections between requests to the same hosts, as if\nTransport.DisableKeepAlives were set.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -17172,12 +16264,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "For server requests, Host specifies the host on which the\nURL is sought. For HTTP/1 (per RFC 7230, section 5.4), this\nis either the value of the \"Host\" header or the host name\ngiven in the URL itself. For HTTP/2, it is the value of the\n\":authority\" pseudo-header field.\nIt may be of the form \"host:port\". For international domain\nnames, Host may be in Punycode or Unicode form. Use\ngolang.org/x/net/idna to convert it to either format if\nneeded.\nTo prevent DNS rebinding attacks, server Handlers should\nvalidate that the Host header has a value for which the\nHandler considers itself authoritative. The included\nServeMux supports patterns registered to particular host\nnames and thus protects its registered Handlers.\n\nFor client requests, Host optionally overrides the Host\nheader to send. If empty, the Request.Write method uses\nthe value of URL.Host. Host may contain an international\ndomain name.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -17192,12 +16278,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Form contains the parsed form data, including both the URL\nfield's query parameters and the PATCH, POST, or PUT form data.\nThis field is only available after ParseForm is called.\nThe HTTP client ignores Form and uses Body instead.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "net/url.Values",
 						"kind": "map"
@@ -17211,12 +16291,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "PostForm contains the parsed form data from PATCH, POST\nor PUT body parameters.\n\nThis field is only available after ParseForm is called.\nThe HTTP client ignores PostForm and uses Body instead.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "net/url.Values",
 						"kind": "map"
@@ -17230,12 +16304,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "MultipartForm is the parsed multipart form, including file uploads.\nThis field is only available after ParseMultipartForm is called.\nThe HTTP client ignores MultipartForm and uses Body instead.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_pointer__43__",
 						"name": "__unnamed_pointer__43__",
@@ -17258,12 +16326,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Trailer specifies additional headers that are sent after the request\nbody.\n\nFor server requests, the Trailer map initially contains only the\ntrailer keys, with nil values. (The client declares which trailers it\nwill later send.)  While the handler is reading from Body, it must\nnot reference Trailer. After reading from Body returns EOF, Trailer\ncan be read again and will contain non-nil values, if they were sent\nby the client.\n\nFor client requests, Trailer must be initialized to a map containing\nthe trailer keys to later send. The values may be nil or their final\nvalues. The ContentLength must be 0 or -1, to send a chunked request.\nAfter the HTTP request is sent the map values can be updated while\nthe request body is read. Once the body returns EOF, the caller must\nnot mutate Trailer.\n\nFew HTTP clients, servers, or proxies support HTTP trailers.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "net/http.Header",
 						"kind": "map"
@@ -17277,12 +16339,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "RemoteAddr allows HTTP servers and other software to record\nthe network address that sent the request, usually for\nlogging. This field is not filled in by ReadRequest and\nhas no defined format. The HTTP server in this package\nsets RemoteAddr to an \"IP:port\" address before invoking a\nhandler.\nThis field is ignored by the HTTP client.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -17297,12 +16353,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "RequestURI is the unmodified request-target of the\nRequest-Line (RFC 7230, Section 3.1.1) as sent by the client\nto a server. Usually the URL field should be used instead.\nIt is an error to set this field in an HTTP client request.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -17317,12 +16367,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "TLS allows HTTP servers and other software to record\ninformation about the TLS connection on which the request\nwas received. This field is not filled in by ReadRequest.\nThe HTTP server in this package sets the field for\nTLS-enabled connections before invoking a handler;\notherwise it leaves the field nil.\nThis field is ignored by the HTTP client.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_pointer__44__",
 						"name": "__unnamed_pointer__44__",
@@ -17345,12 +16389,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Cancel is an optional channel whose closure indicates that the client\nrequest should be regarded as canceled. Not all implementations of\nRoundTripper may support Cancel.\n\nFor server requests, this field is not applicable.\n\nDeprecated: Set the Request's context with NewRequestWithContext\ninstead. If a Request's Cancel field and context are both\nset, it is undefined whether Cancel is respected.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_chan__1__",
 						"name": "__unnamed_chan__1__",
@@ -17374,12 +16412,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Response is the redirect response which caused this request\nto be created. This field is only populated during client\nredirects.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_pointer__45__",
 						"name": "__unnamed_pointer__45__",
@@ -17402,12 +16434,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Pattern is the [ServeMux] pattern that matched the request.\nIt is empty if the request was not matched against a pattern.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -17422,12 +16448,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "ctx is either the client or server context. It should only\nbe modified via copying the whole Request using Clone or WithContext.\nIt is unexported to prevent people from using Context wrong\nand mutating the contexts held by callers of the same request.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "context.Context",
 						"kind": "interface"
@@ -17441,16 +16461,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "The following fields are for requests matched by ServeMux.",
-							"placement": "above"
-						},
-						{
-							"text": "the pattern that matched",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "__unnamed_pointer__46__",
 						"name": "__unnamed_pointer__46__",
@@ -17473,12 +16483,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "values for the matching wildcards in pat",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "__unnamed_slice__25__",
 						"name": "__unnamed_slice__25__",
@@ -17501,12 +16505,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "for calls to SetPathValue that don't match a wildcard",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "__unnamed_map__5__",
 						"name": "__unnamed_map__5__",
@@ -18550,12 +17548,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "e.g. \"200 OK\"",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -18570,12 +17562,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "e.g. 200",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -18590,12 +17576,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "e.g. \"HTTP/1.0\"",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -18610,12 +17590,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "e.g. 1",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -18630,12 +17604,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "e.g. 0",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -18650,12 +17618,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Header maps header keys to values. If the response had multiple\nheaders with the same key, they may be concatenated, with comma\ndelimiters.  (RFC 7230, section 3.2.2 requires that multiple headers\nbe semantically equivalent to a comma-delimited sequence.) When\nHeader values are duplicated by other fields in this struct (e.g.,\nContentLength, TransferEncoding, Trailer), the field values are\nauthoritative.\n\nKeys in the map are canonicalized (see CanonicalHeaderKey).",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "net/http.Header",
 						"kind": "map"
@@ -18669,12 +17631,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Body represents the response body.\n\nThe response body is streamed on demand as the Body field\nis read. If the network connection fails or the server\nterminates the response, Body.Read calls return an error.\n\nThe http Client and Transport guarantee that Body is always\nnon-nil, even on responses without a body or responses with\na zero-length body. It is the caller's responsibility to\nclose Body. The default HTTP client's Transport may not\nreuse HTTP/1.x \"keep-alive\" TCP connections if the Body is\nnot read to completion and closed.\n\nThe Body is automatically dechunked if the server replied\nwith a \"chunked\" Transfer-Encoding.\n\nAs of Go 1.12, the Body will also implement io.Writer\non a successful \"101 Switching Protocols\" response,\nas used by WebSockets and HTTP/2's \"h2c\" mode.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "io.ReadCloser",
 						"kind": "interface"
@@ -18688,12 +17644,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "ContentLength records the length of the associated content. The\nvalue -1 indicates that the length is unknown. Unless Request.Method\nis \"HEAD\", values \u003e= 0 indicate that the given number of bytes may\nbe read from Body.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "int64",
 						"name": "int64",
@@ -18708,15 +17658,9 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Contains transfer encodings from outer-most to inner-most. Value is\nnil, means that \"identity\" encoding is used.",
-							"placement": "above"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__33__",
-						"name": "__unnamed_slice__33__",
+						"id": "__unnamed_slice__31__",
+						"name": "__unnamed_slice__31__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -18736,12 +17680,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Close records whether the header directed that the connection be\nclosed after reading Body. The value is advice for clients: neither\nReadResponse nor Response.Write ever closes a connection.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -18756,12 +17694,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Uncompressed reports whether the response was sent compressed but\nwas decompressed by the http package. When true, reading from\nBody yields the uncompressed content instead of the compressed\ncontent actually set from the server, ContentLength is set to -1,\nand the \"Content-Length\" and \"Content-Encoding\" fields are deleted\nfrom the responseHeader. To get the original response from\nthe server, set Transport.DisableCompression to true.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -18776,12 +17708,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Trailer maps trailer keys to values in the same\nformat as Header.\n\nThe Trailer initially contains only nil values, one for\neach key specified in the server's \"Trailer\" header\nvalue. Those values are not added to Header.\n\nTrailer must not be accessed concurrently with Read calls\non the Body.\n\nAfter Body.Read has returned io.EOF, Trailer will contain\nany trailer values sent by the server.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "net/http.Header",
 						"kind": "map"
@@ -18795,12 +17721,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Request is the request that was sent to obtain this Response.\nRequest's Body is nil (having already been consumed).\nThis is only populated for Client requests.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_pointer__57__",
 						"name": "__unnamed_pointer__57__",
@@ -18823,12 +17743,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "TLS contains information about the TLS connection on which the\nresponse was received. It is nil for unencrypted responses.\nThe pointer is shared between responses and should not be\nmodified.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_pointer__58__",
 						"name": "__unnamed_pointer__58__",
@@ -18856,8 +17770,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__35__",
-								"name": "__unnamed_slice__35__",
+								"id": "__unnamed_slice__32__",
+								"name": "__unnamed_slice__32__",
 								"kind": "slice",
 								"package": "net/http",
 								"element": {
@@ -19060,12 +17974,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Header returns the header map that will be sent by\n[ResponseWriter.WriteHeader]. The [Header] map also is the mechanism with which\n[Handler] implementations can set HTTP trailers.\n\nChanging the header map after a call to [ResponseWriter.WriteHeader] (or\n[ResponseWriter.Write]) has no effect unless the HTTP status code was of the\n1xx class or the modified headers are trailers.\n\nThere are two ways to set Trailers. The preferred way is to\npredeclare in the headers which trailers you will later\nsend by setting the \"Trailer\" header to the names of the\ntrailer keys which will come later. In this case, those\nkeys of the Header map are treated as if they were\ntrailers. See the example. The second way, for trailer\nkeys not known to the [Handler] until after the first [ResponseWriter.Write],\nis to prefix the [Header] map keys with the [TrailerPrefix]\nconstant value.\n\nTo suppress automatic response headers (such as \"Date\"), set\ntheir value to nil.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -19085,12 +17993,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "Write writes the data to the connection as part of an HTTP reply.\n\nIf [ResponseWriter.WriteHeader] has not yet been called, Write calls\nWriteHeader(http.StatusOK) before writing the data. If the Header\ndoes not contain a Content-Type line, Write adds a Content-Type set\nto the result of passing the initial 512 bytes of written data to\n[DetectContentType]. Additionally, if the total size of all written\ndata is under a few KB and there are no Flush calls, the\nContent-Length header is added automatically.\n\nDepending on the HTTP protocol version and the client, calling\nWrite or WriteHeader may prevent future reads on the\nRequest.Body. For HTTP/1.x requests, handlers should read any\nneeded request body data before writing the response. Once the\nheaders have been flushed (due to either an explicit Flusher.Flush\ncall or writing enough data to trigger a flush), the request body\nmay be unavailable. For HTTP/2 requests, the Go HTTP server permits\nhandlers to continue to read the request body while concurrently\nwriting the response. However, such behavior may not be supported\nby all HTTP/2 clients. Handlers should read before writing if\npossible to maximize compatibility.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "",
@@ -19136,12 +18038,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "WriteHeader sends an HTTP response header with the provided\nstatus code.\n\nIf WriteHeader is not called explicitly, the first call to Write\nwill trigger an implicit WriteHeader(http.StatusOK).\nThus explicit calls to WriteHeader are mainly used to\nsend error codes or 1xx informational responses.\n\nThe provided code must be a valid HTTP 1xx-5xx status code.\nAny number of 1xx headers may be written, followed by at most\none 2xx-5xx header. 1xx headers are sent immediately, but 2xx-5xx\nheaders may be buffered. Use the Flusher interface to send\nbuffered data. The header map is cleared when 2xx-5xx headers are\nsent, but not with 1xx headers.\n\nThe server will automatically send a 100 (Continue) header\non the first read from the request body if the request has\nan \"Expect: 100-continue\" header.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "statusCode",
@@ -19239,12 +18135,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "used only when GODEBUG=httpmuxgo121=1",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "net/http.serveMux121",
 						"kind": "struct"
@@ -19850,8 +18740,8 @@
 					"distance": 1,
 					"package": "net/http",
 					"type": {
-						"id": "__unnamed_slice__59__",
-						"name": "__unnamed_slice__59__",
+						"id": "__unnamed_slice__79__",
+						"name": "__unnamed_slice__79__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -19898,8 +18788,8 @@
 					"distance": 1,
 					"package": "net/http",
 					"type": {
-						"id": "__unnamed_slice__60__",
-						"name": "__unnamed_slice__60__",
+						"id": "__unnamed_slice__77__",
+						"name": "__unnamed_slice__77__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -19938,15 +18828,9 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "for few pairs",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__41__",
-						"name": "__unnamed_slice__41__",
+						"id": "__unnamed_slice__33__",
+						"name": "__unnamed_slice__33__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -20015,15 +18899,9 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "for many pairs",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_map__11__",
-						"name": "__unnamed_map__11__",
+						"id": "__unnamed_map__9__",
+						"name": "__unnamed_map__9__",
 						"kind": "map",
 						"package": "net/http",
 						"key": {
@@ -20190,15 +19068,9 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "for few pairs",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__41__",
-						"name": "__unnamed_slice__41__",
+						"id": "__unnamed_slice__33__",
+						"name": "__unnamed_slice__33__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -20267,15 +19139,9 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "for many pairs",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_map__11__",
-						"name": "__unnamed_map__11__",
+						"id": "__unnamed_map__9__",
+						"name": "__unnamed_map__9__",
 						"kind": "map",
 						"package": "net/http",
 						"key": {
@@ -20424,8 +19290,8 @@
 					"index": 1,
 					"param": "V",
 					"type": {
-						"id": "__unnamed_pointer__23__",
-						"name": "__unnamed_pointer__23__",
+						"id": "__unnamed_pointer__22__",
+						"name": "__unnamed_pointer__22__",
 						"kind": "pointer",
 						"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 						"element": {
@@ -20502,12 +19368,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "original string",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -20550,15 +19410,9 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "The representation of a path differs from the surface syntax, which\nsimplifies most algorithms.\n\nPaths ending in '/' are represented with an anonymous \"...\" wildcard.\nFor example, the path \"a/\" is represented as a literal segment \"a\" followed\nby a segment with multi==true.\n\nPaths ending in \"{$}\" are represented with the literal segment \"/\".\nFor example, the path \"a/{$}\" is represented as a literal segment \"a\" followed\nby a literal segment \"/\".",
-							"placement": "above"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__10__",
-						"name": "__unnamed_slice__10__",
+						"id": "__unnamed_slice__9__",
+						"name": "__unnamed_slice__9__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -20577,12 +19431,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "source location of registering call, for helpful messages",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -20642,8 +19490,8 @@
 						{
 							"name": "p2",
 							"type": {
-								"id": "__unnamed_pointer__16__",
-								"name": "__unnamed_pointer__16__",
+								"id": "__unnamed_pointer__13__",
+								"name": "__unnamed_pointer__13__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -20679,8 +19527,8 @@
 						{
 							"name": "p2",
 							"type": {
-								"id": "__unnamed_pointer__18__",
-								"name": "__unnamed_pointer__18__",
+								"id": "__unnamed_pointer__14__",
+								"name": "__unnamed_pointer__14__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -20715,8 +19563,8 @@
 						{
 							"name": "p2",
 							"type": {
-								"id": "__unnamed_pointer__21__",
-								"name": "__unnamed_pointer__21__",
+								"id": "__unnamed_pointer__16__",
+								"name": "__unnamed_pointer__16__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -20751,8 +19599,8 @@
 						{
 							"name": "p2",
 							"type": {
-								"id": "__unnamed_pointer__22__",
-								"name": "__unnamed_pointer__22__",
+								"id": "__unnamed_pointer__17__",
+								"name": "__unnamed_pointer__17__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -20818,12 +19666,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "map from a particular segment position and value to all registered patterns\nwith that value in that position.\nFor example, the key {1, \"b\"} would hold the patterns \"/a/b\" and \"/a/b/c\"\nbut not \"/a\", \"b/a\", \"/a/c\" or \"/a/{x}\".",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_map__1__",
 						"name": "__unnamed_map__1__",
@@ -20834,13 +19676,13 @@
 							"kind": "struct"
 						},
 						"value": {
-							"id": "__unnamed_slice__9__",
-							"name": "__unnamed_slice__9__",
+							"id": "__unnamed_slice__10__",
+							"name": "__unnamed_slice__10__",
 							"kind": "slice",
 							"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 							"element": {
-								"id": "__unnamed_pointer__13__",
-								"name": "__unnamed_pointer__13__",
+								"id": "__unnamed_pointer__18__",
+								"name": "__unnamed_pointer__18__",
 								"kind": "pointer",
 								"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 								"element": {
@@ -20864,20 +19706,14 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "All patterns that end in a multi wildcard (including trailing slash).\nWe do not try to be clever about indexing multi patterns, because there\nare unlikely to be many of them.",
-							"placement": "above"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__11__",
-						"name": "__unnamed_slice__11__",
+						"id": "__unnamed_slice__12__",
+						"name": "__unnamed_slice__12__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
-							"id": "__unnamed_pointer__15__",
-							"name": "__unnamed_pointer__15__",
+							"id": "__unnamed_pointer__19__",
+							"name": "__unnamed_pointer__19__",
 							"kind": "pointer",
 							"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 							"element": {
@@ -20905,8 +19741,8 @@
 						{
 							"name": "pat",
 							"type": {
-								"id": "__unnamed_pointer__17__",
-								"name": "__unnamed_pointer__17__",
+								"id": "__unnamed_pointer__20__",
+								"name": "__unnamed_pointer__20__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -20933,8 +19769,8 @@
 						{
 							"name": "pat",
 							"type": {
-								"id": "__unnamed_pointer__19__",
-								"name": "__unnamed_pointer__19__",
+								"id": "__unnamed_pointer__21__",
+								"name": "__unnamed_pointer__21__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -20948,16 +19784,16 @@
 						{
 							"name": "f",
 							"type": {
-								"id": "__unnamed_function__2__",
-								"name": "__unnamed_function__2__",
+								"id": "__unnamed_function__4__",
+								"name": "__unnamed_function__4__",
 								"kind": "function",
 								"package": "net/http",
 								"parameters": [
 									{
 										"name": "",
 										"type": {
-											"id": "__unnamed_pointer__20__",
-											"name": "__unnamed_pointer__20__",
+											"id": "__unnamed_pointer__42__",
+											"name": "__unnamed_pointer__42__",
 											"kind": "pointer",
 											"package": "net/http",
 											"element": {
@@ -21015,12 +19851,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "0-based segment position",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -21035,12 +19865,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "literal, or empty for wildcard",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -21074,15 +19898,9 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "A leaf node holds a single pattern and the Handler it was registered\nwith.",
-							"placement": "above"
-						}
-					],
 					"type": {
-						"id": "__unnamed_pointer__14__",
-						"name": "__unnamed_pointer__14__",
+						"id": "__unnamed_pointer__15__",
+						"name": "__unnamed_pointer__15__",
 						"kind": "pointer",
 						"distance": 1,
 						"package": "net/http",
@@ -21115,12 +19933,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "An interior node maps parts of the incoming request to child nodes.\nspecial children keys:\n    \"/\"\ttrailing slash (resulting from {$})\n\t   \"\"   single wildcard",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"fields": [
 							{
@@ -21130,15 +19942,9 @@
 								"named": true,
 								"distance": 1,
 								"package": "net/http",
-								"comments": [
-									{
-										"text": "for few pairs",
-										"placement": "inline"
-									}
-								],
 								"type": {
-									"id": "__unnamed_slice__41__",
-									"name": "__unnamed_slice__41__",
+									"id": "__unnamed_slice__33__",
+									"name": "__unnamed_slice__33__",
 									"kind": "slice",
 									"package": "net/http",
 									"element": {
@@ -21207,15 +20013,9 @@
 								"named": true,
 								"distance": 1,
 								"package": "net/http",
-								"comments": [
-									{
-										"text": "for many pairs",
-										"placement": "inline"
-									}
-								],
 								"type": {
-									"id": "__unnamed_map__11__",
-									"name": "__unnamed_map__11__",
+									"id": "__unnamed_map__9__",
+									"name": "__unnamed_map__9__",
 									"kind": "map",
 									"package": "net/http",
 									"key": {
@@ -21364,8 +20164,8 @@
 								"index": 1,
 								"param": "V",
 								"type": {
-									"id": "__unnamed_pointer__23__",
-									"name": "__unnamed_pointer__23__",
+									"id": "__unnamed_pointer__22__",
+									"name": "__unnamed_pointer__22__",
 									"kind": "pointer",
 									"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 									"element": {
@@ -21387,15 +20187,9 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "child with multi wildcard",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_pointer__27__",
-						"name": "__unnamed_pointer__27__",
+						"id": "__unnamed_pointer__23__",
+						"name": "__unnamed_pointer__23__",
 						"kind": "pointer",
 						"distance": 1,
 						"package": "net/http",
@@ -21415,15 +20209,9 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "optimization: child with key \"\"",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_pointer__28__",
-						"name": "__unnamed_pointer__28__",
+						"id": "__unnamed_pointer__24__",
+						"name": "__unnamed_pointer__24__",
 						"kind": "pointer",
 						"distance": 1,
 						"package": "net/http",
@@ -21449,8 +20237,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_pointer__29__",
-								"name": "__unnamed_pointer__29__",
+								"id": "__unnamed_pointer__25__",
+								"name": "__unnamed_pointer__25__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -21499,8 +20287,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_pointer__33__",
-								"name": "__unnamed_pointer__33__",
+								"id": "__unnamed_pointer__26__",
+								"name": "__unnamed_pointer__26__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -21534,8 +20322,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_pointer__36__",
-								"name": "__unnamed_pointer__36__",
+								"id": "__unnamed_pointer__27__",
+								"name": "__unnamed_pointer__27__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -21578,8 +20366,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__37__",
-								"name": "__unnamed_pointer__37__",
+								"id": "__unnamed_pointer__28__",
+								"name": "__unnamed_pointer__28__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -21615,8 +20403,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__38__",
-								"name": "__unnamed_pointer__38__",
+								"id": "__unnamed_pointer__29__",
+								"name": "__unnamed_pointer__29__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -21668,8 +20456,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__39__",
-								"name": "__unnamed_pointer__39__",
+								"id": "__unnamed_pointer__30__",
+								"name": "__unnamed_pointer__30__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -21682,8 +20470,8 @@
 						},
 						{
 							"type": {
-								"id": "__unnamed_slice__16__",
-								"name": "__unnamed_slice__16__",
+								"id": "__unnamed_slice__14__",
+								"name": "__unnamed_slice__14__",
 								"kind": "slice",
 								"package": "net/http",
 								"element": {
@@ -21728,8 +20516,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__40__",
-								"name": "__unnamed_pointer__40__",
+								"id": "__unnamed_pointer__31__",
+								"name": "__unnamed_pointer__31__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -21742,8 +20530,8 @@
 						},
 						{
 							"type": {
-								"id": "__unnamed_slice__19__",
-								"name": "__unnamed_slice__19__",
+								"id": "__unnamed_slice__15__",
+								"name": "__unnamed_slice__15__",
 								"kind": "slice",
 								"package": "net/http",
 								"element": {
@@ -21779,8 +20567,8 @@
 						{
 							"name": "matches",
 							"type": {
-								"id": "__unnamed_slice__21__",
-								"name": "__unnamed_slice__21__",
+								"id": "__unnamed_slice__16__",
+								"name": "__unnamed_slice__16__",
 								"kind": "slice",
 								"package": "net/http",
 								"element": {
@@ -21796,8 +20584,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__41__",
-								"name": "__unnamed_pointer__41__",
+								"id": "__unnamed_pointer__32__",
+								"name": "__unnamed_pointer__32__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -21810,8 +20598,8 @@
 						},
 						{
 							"type": {
-								"id": "__unnamed_slice__22__",
-								"name": "__unnamed_slice__22__",
+								"id": "__unnamed_slice__17__",
+								"name": "__unnamed_slice__17__",
 								"kind": "slice",
 								"package": "net/http",
 								"element": {
@@ -21944,12 +20732,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "literal or wildcard name or \"/\" for \"/{$}\".",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -21978,12 +20760,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "\"...\" wildcard",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -22055,15 +20831,9 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "slice of entries sorted from longest to shortest.",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__12__",
-						"name": "__unnamed_slice__12__",
+						"id": "__unnamed_slice__11__",
+						"name": "__unnamed_slice__11__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -22082,12 +20852,6 @@
 					"named": true,
 					"distance": 1,
 					"package": "net/http",
-					"comments": [
-						{
-							"text": "whether any patterns contain hostnames",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -22144,8 +20908,8 @@
 						{
 							"name": "handler",
 							"type": {
-								"id": "__unnamed_function__3__",
-								"name": "__unnamed_function__3__",
+								"id": "__unnamed_function__2__",
+								"name": "__unnamed_function__2__",
 								"kind": "function",
 								"package": "net/http",
 								"parameters": [
@@ -22159,8 +20923,8 @@
 									{
 										"name": "",
 										"type": {
-											"id": "__unnamed_pointer__25__",
-											"name": "__unnamed_pointer__25__",
+											"id": "__unnamed_pointer__34__",
+											"name": "__unnamed_pointer__34__",
 											"kind": "pointer",
 											"package": "net/http",
 											"element": {
@@ -22190,8 +20954,8 @@
 						{
 							"name": "r",
 							"type": {
-								"id": "__unnamed_pointer__26__",
-								"name": "__unnamed_pointer__26__",
+								"id": "__unnamed_pointer__35__",
+								"name": "__unnamed_pointer__35__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -22335,8 +21099,8 @@
 						{
 							"name": "u",
 							"type": {
-								"id": "__unnamed_pointer__34__",
-								"name": "__unnamed_pointer__34__",
+								"id": "__unnamed_pointer__36__",
+								"name": "__unnamed_pointer__36__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -22351,8 +21115,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__35__",
-								"name": "__unnamed_pointer__35__",
+								"id": "__unnamed_pointer__37__",
+								"name": "__unnamed_pointer__37__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -22440,12 +21204,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "GetConn is called before a connection is created or\nretrieved from an idle pool. The hostPort is the\n\"host:port\" of the target or proxy. GetConn is called even\nif there's already an idle cached connection available.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__8__",
 						"name": "__unnamed_function__8__",
@@ -22471,12 +21229,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "GotConn is called after a successful connection is\nobtained. There is no hook for failure to obtain a\nconnection; instead, use the error from\nTransport.RoundTrip.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__9__",
 						"name": "__unnamed_function__9__",
@@ -22501,12 +21253,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "PutIdleConn is called when the connection is returned to\nthe idle pool. If err is nil, the connection was\nsuccessfully returned to the idle pool. If err is non-nil,\nit describes why not. PutIdleConn is not called if\nconnection reuse is disabled via Transport.DisableKeepAlives.\nPutIdleConn is called before the caller's Response.Body.Close\ncall returns.\nFor HTTP/2, this hook is not currently used.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__10__",
 						"name": "__unnamed_function__10__",
@@ -22532,12 +21278,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "GotFirstResponseByte is called when the first byte of the response\nheaders is available.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__11__",
 						"name": "__unnamed_function__11__",
@@ -22553,12 +21293,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "Got100Continue is called if the server replies with a \"100\nContinue\" response.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__12__",
 						"name": "__unnamed_function__12__",
@@ -22574,12 +21308,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "Got1xxResponse is called for each 1xx informational response header\nreturned before the final non-1xx response. Got1xxResponse is called\nfor \"100 Continue\" responses, even if Got100Continue is also defined.\nIf it returns an error, the client request is aborted with that error value.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__13__",
 						"name": "__unnamed_function__13__",
@@ -22621,12 +21349,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "DNSStart is called when a DNS lookup begins.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__14__",
 						"name": "__unnamed_function__14__",
@@ -22651,12 +21373,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "DNSDone is called when a DNS lookup ends.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__15__",
 						"name": "__unnamed_function__15__",
@@ -22681,12 +21397,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "ConnectStart is called when a new connection's Dial begins.\nIf net.Dialer.DualStack (IPv6 \"Happy Eyeballs\") support is\nenabled, this may be called multiple times.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__16__",
 						"name": "__unnamed_function__16__",
@@ -22720,12 +21430,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "ConnectDone is called when a new connection's Dial\ncompletes. The provided err indicates whether the\nconnection completed successfully.\nIf net.Dialer.DualStack (\"Happy Eyeballs\") support is\nenabled, this may be called multiple times.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__17__",
 						"name": "__unnamed_function__17__",
@@ -22767,12 +21471,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "TLSHandshakeStart is called when the TLS handshake is started. When\nconnecting to an HTTPS site via an HTTP proxy, the handshake happens\nafter the CONNECT request is processed by the proxy.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__18__",
 						"name": "__unnamed_function__18__",
@@ -22788,12 +21486,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "TLSHandshakeDone is called after the TLS handshake with either the\nsuccessful handshake's connection state, or a non-nil error on handshake\nfailure.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__19__",
 						"name": "__unnamed_function__19__",
@@ -22826,12 +21518,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "WroteHeaderField is called after the Transport has written\neach request header. At the time of this call the values\nmight be buffered and not yet written to the network.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__20__",
 						"name": "__unnamed_function__20__",
@@ -22849,8 +21535,8 @@
 							{
 								"name": "value",
 								"type": {
-									"id": "__unnamed_slice__103__",
-									"name": "__unnamed_slice__103__",
+									"id": "__unnamed_slice__89__",
+									"name": "__unnamed_slice__89__",
 									"kind": "slice",
 									"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 									"element": {
@@ -22873,12 +21559,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "WroteHeaders is called after the Transport has written\nall request headers.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__21__",
 						"name": "__unnamed_function__21__",
@@ -22894,12 +21574,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "Wait100Continue is called if the Request specified\n\"Expect: 100-continue\" and the Transport has written the\nrequest headers but is waiting for \"100 Continue\" from the\nserver before writing the request body.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__22__",
 						"name": "__unnamed_function__22__",
@@ -22915,12 +21589,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "WroteRequest is called with the result of writing the\nrequest and any body. It may be called multiple times\nin the case of retried requests.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_function__23__",
 						"name": "__unnamed_function__23__",
@@ -22951,8 +21619,8 @@
 						{
 							"name": "old",
 							"type": {
-								"id": "__unnamed_pointer__78__",
-								"name": "__unnamed_pointer__78__",
+								"id": "__unnamed_pointer__76__",
+								"name": "__unnamed_pointer__76__",
 								"kind": "pointer",
 								"package": "net/http/httptrace",
 								"element": {
@@ -23015,15 +21683,9 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "Addrs are the IPv4 and/or IPv6 addresses found in the DNS\nlookup. The contents of the slice should not be mutated.",
-							"placement": "above"
-						}
-					],
 					"type": {
-						"id": "__unnamed_slice__173__",
-						"name": "__unnamed_slice__173__",
+						"id": "__unnamed_slice__171__",
+						"name": "__unnamed_slice__171__",
 						"kind": "slice",
 						"package": "net/http/httptrace",
 						"element": {
@@ -23042,12 +21704,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "Err is any error that occurred during the DNS lookup.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "error",
 						"name": "error",
@@ -23062,12 +21718,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "Coalesced is whether the Addrs were shared with another\ncaller who was doing the same DNS lookup concurrently.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -23136,12 +21786,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "Conn is the connection that was obtained. It is owned by\nthe http.Transport and should not be read, written or\nclosed by users of ClientTrace.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "net.Conn",
 						"kind": "interface"
@@ -23155,12 +21799,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "Reused is whether this connection has been previously\nused for another HTTP request.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -23175,12 +21813,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "WasIdle is whether this connection was obtained from an\nidle pool.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -23195,12 +21827,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "IdleTime reports how long the connection was previously\nidle, if WasIdle is true.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "time.Duration",
 						"kind": "basic"
@@ -23234,12 +21860,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/http/httptrace",
-					"comments": [
-						{
-							"text": "Err is any error encountered while writing the Request.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "error",
 						"name": "error",
@@ -23266,8 +21886,8 @@
 				"kind": "basic"
 			},
 			"value": {
-				"id": "__unnamed_slice__37__",
-				"name": "__unnamed_slice__37__",
+				"id": "__unnamed_slice__46__",
+				"name": "__unnamed_slice__46__",
 				"kind": "slice",
 				"package": "net/textproto",
 				"element": {
@@ -23319,12 +21939,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/url",
-					"comments": [
-						{
-							"text": "encoded opaque data",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -23339,15 +21953,9 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/url",
-					"comments": [
-						{
-							"text": "username and password information",
-							"placement": "inline"
-						}
-					],
 					"type": {
-						"id": "__unnamed_pointer__24__",
-						"name": "__unnamed_pointer__24__",
+						"id": "__unnamed_pointer__33__",
+						"name": "__unnamed_pointer__33__",
 						"kind": "pointer",
 						"distance": 2,
 						"package": "net/url",
@@ -23367,12 +21975,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/url",
-					"comments": [
-						{
-							"text": "host or host:port (see Hostname and Port methods)",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -23387,12 +21989,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/url",
-					"comments": [
-						{
-							"text": "path (relative paths may omit leading slash)",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -23407,12 +22003,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/url",
-					"comments": [
-						{
-							"text": "encoded path hint (see EscapedPath method)",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -23427,12 +22017,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/url",
-					"comments": [
-						{
-							"text": "do not emit empty host (authority)",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -23447,12 +22031,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/url",
-					"comments": [
-						{
-							"text": "append a query ('?') even if RawQuery is empty",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -23467,12 +22045,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/url",
-					"comments": [
-						{
-							"text": "encoded query values, without '?'",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -23487,12 +22059,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/url",
-					"comments": [
-						{
-							"text": "fragment for references, without '#'",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -23507,12 +22073,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "net/url",
-					"comments": [
-						{
-							"text": "encoded fragment hint (see EscapedFragment method)",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -23702,8 +22262,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__30__",
-								"name": "__unnamed_pointer__30__",
+								"id": "__unnamed_pointer__38__",
+								"name": "__unnamed_pointer__38__",
 								"kind": "pointer",
 								"package": "net/url",
 								"element": {
@@ -23737,8 +22297,8 @@
 						{
 							"name": "ref",
 							"type": {
-								"id": "__unnamed_pointer__31__",
-								"name": "__unnamed_pointer__31__",
+								"id": "__unnamed_pointer__39__",
+								"name": "__unnamed_pointer__39__",
 								"kind": "pointer",
 								"package": "net/url",
 								"element": {
@@ -23753,8 +22313,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__32__",
-								"name": "__unnamed_pointer__32__",
+								"id": "__unnamed_pointer__40__",
+								"name": "__unnamed_pointer__40__",
 								"kind": "pointer",
 								"package": "net/url",
 								"element": {
@@ -23860,8 +22420,8 @@
 						{
 							"name": "text",
 							"type": {
-								"id": "__unnamed_slice__15__",
-								"name": "__unnamed_slice__15__",
+								"id": "__unnamed_slice__19__",
+								"name": "__unnamed_slice__19__",
 								"kind": "slice",
 								"package": "net/url",
 								"element": {
@@ -23897,8 +22457,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__17__",
-								"name": "__unnamed_slice__17__",
+								"id": "__unnamed_slice__20__",
+								"name": "__unnamed_slice__20__",
 								"kind": "slice",
 								"package": "net/url",
 								"element": {
@@ -23914,8 +22474,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__18__",
-								"name": "__unnamed_slice__18__",
+								"id": "__unnamed_slice__21__",
+								"name": "__unnamed_slice__21__",
 								"kind": "slice",
 								"package": "net/url",
 								"element": {
@@ -23950,8 +22510,8 @@
 						{
 							"name": "text",
 							"type": {
-								"id": "__unnamed_slice__20__",
-								"name": "__unnamed_slice__20__",
+								"id": "__unnamed_slice__22__",
+								"name": "__unnamed_slice__22__",
 								"kind": "slice",
 								"package": "net/url",
 								"element": {
@@ -24006,8 +22566,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__42__",
-								"name": "__unnamed_pointer__42__",
+								"id": "__unnamed_pointer__41__",
+								"name": "__unnamed_pointer__41__",
 								"kind": "pointer",
 								"package": "net/url",
 								"element": {
@@ -24174,8 +22734,8 @@
 				"kind": "basic"
 			},
 			"value": {
-				"id": "__unnamed_slice__14__",
-				"name": "__unnamed_slice__14__",
+				"id": "__unnamed_slice__18__",
+				"name": "__unnamed_slice__18__",
 				"kind": "slice",
 				"package": "net/url",
 				"element": {
@@ -24345,12 +22905,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "sync",
-					"comments": [
-						{
-							"text": "held if there are pending writers",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "sync.Mutex",
 						"kind": "struct"
@@ -24364,12 +22918,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "sync",
-					"comments": [
-						{
-							"text": "semaphore for writers to wait for completing readers",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "uint32",
 						"name": "uint32",
@@ -24384,12 +22932,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "sync",
-					"comments": [
-						{
-							"text": "semaphore for readers to wait for completing writers",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "uint32",
 						"name": "uint32",
@@ -24404,12 +22946,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "sync",
-					"comments": [
-						{
-							"text": "number of pending readers",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "sync/atomic.Int32",
 						"kind": "struct"
@@ -24423,12 +22959,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "sync",
-					"comments": [
-						{
-							"text": "number of departing readers",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "sync/atomic.Int32",
 						"kind": "struct"
@@ -24917,12 +23447,6 @@
 					"named": true,
 					"distance": 5,
 					"package": "syscall",
-					"comments": [
-						{
-							"text": "lowercase; only we can define Sockaddrs",
-							"placement": "inline"
-						}
-					],
 					"results": [
 						{
 							"name": "ptr",
@@ -25027,8 +23551,8 @@
 					"distance": 2,
 					"package": "time",
 					"type": {
-						"id": "__unnamed_slice__148__",
-						"name": "__unnamed_slice__148__",
+						"id": "__unnamed_slice__156__",
+						"name": "__unnamed_slice__156__",
 						"kind": "slice",
 						"package": "time",
 						"element": {
@@ -25048,8 +23572,8 @@
 					"distance": 2,
 					"package": "time",
 					"type": {
-						"id": "__unnamed_slice__155__",
-						"name": "__unnamed_slice__155__",
+						"id": "__unnamed_slice__160__",
+						"name": "__unnamed_slice__160__",
 						"kind": "slice",
 						"package": "time",
 						"element": {
@@ -25068,12 +23592,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "The tzdata information can be followed by a string that describes\nhow to handle DST transitions not recorded in zoneTrans.\nThe format is the TZ environment variable without a colon; see\nhttps://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html.\nExample string, for America/Los_Angeles: PST8PDT,M3.2.0,M11.1.0",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -25088,12 +23606,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Most lookups will be for the current time.\nTo avoid the binary search through tx, keep a\nstatic one-element cache that gives the correct\nzone for the time when the Location was created.\nif cacheStart \u003c= t \u003c cacheEnd,\nlookup can return cacheZone.\nThe units for cacheStart and cacheEnd are seconds\nsince January 1, 1970 UTC, to match the argument\nto lookup.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "int64",
 						"name": "int64",
@@ -25123,8 +23635,8 @@
 					"distance": 2,
 					"package": "time",
 					"type": {
-						"id": "__unnamed_pointer__118__",
-						"name": "__unnamed_pointer__118__",
+						"id": "__unnamed_pointer__103__",
+						"name": "__unnamed_pointer__103__",
 						"kind": "pointer",
 						"distance": 2,
 						"package": "time",
@@ -25149,8 +23661,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__119__",
-								"name": "__unnamed_pointer__119__",
+								"id": "__unnamed_pointer__104__",
+								"name": "__unnamed_pointer__104__",
 								"kind": "pointer",
 								"package": "time",
 								"element": {
@@ -25276,12 +23788,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "firstZoneUsed reports whether the first zone is used by some\ntransition.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -25302,12 +23808,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "lookupName returns information about the time zone with\nthe given name (such as \"EST\") at the given pseudo-Unix time\n(what the given time of day would be in UTC).",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "name",
@@ -25392,12 +23892,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "wall and ext encode the wall time seconds, wall time nanoseconds,\nand optional monotonic clock reading in nanoseconds.\n\nFrom high to low bit position, wall encodes a 1-bit flag (hasMonotonic),\na 33-bit seconds field, and a 30-bit wall time nanoseconds field.\nThe nanoseconds field is in the range [0, 999999999].\nIf the hasMonotonic bit is 0, then the 33-bit field must be zero\nand the full signed 64-bit wall seconds since Jan 1 year 1 is stored in ext.\nIf the hasMonotonic bit is 1, then the 33-bit field holds a 33-bit\nunsigned wall seconds since Jan 1 year 1885, and ext holds a\nsigned 64-bit monotonic clock reading, nanoseconds since process start.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "uint64",
 						"name": "uint64",
@@ -25426,12 +23920,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "loc specifies the Location that should be used to\ndetermine the minute, hour, month, day, and year\nthat correspond to this Time.\nThe nil location means UTC.\nAll UTC times are represented with loc==nil, never loc==\u0026utcLoc.",
-							"placement": "above"
-						}
-					],
 					"type": {
 						"id": "__unnamed_pointer__74__",
 						"name": "__unnamed_pointer__74__",
@@ -25456,12 +23944,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "String returns the time formatted using the format string\n\n\t\"2006-01-02 15:04:05.999999999 -0700 MST\"\n\nIf the time has a monotonic clock reading, the returned string\nincludes a final field \"m=±\u003cvalue\u003e\", where value is the monotonic\nclock reading formatted as a decimal number of seconds.\n\nThe returned string is meant for debugging; for a stable serialized\nrepresentation, use t.MarshalText, t.MarshalBinary, or t.Format\nwith an explicit format string.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -25482,12 +23964,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "GoString implements [fmt.GoStringer] and formats t to be printed in Go source\ncode.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -25508,12 +23984,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Format returns a textual representation of the time value formatted according\nto the layout defined by the argument. See the documentation for the\nconstant called [Layout] to see how to represent the layout format.\n\nThe executable example for [Time.Format] demonstrates the working\nof the layout string in detail and is a good reference.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "layout",
@@ -25544,18 +24014,12 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "AppendFormat is like [Time.Format] but appends the textual\nrepresentation to b and returns the extended buffer.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__73__",
-								"name": "__unnamed_slice__73__",
+								"id": "__unnamed_slice__81__",
+								"name": "__unnamed_slice__81__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -25579,8 +24043,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__75__",
-								"name": "__unnamed_slice__75__",
+								"id": "__unnamed_slice__82__",
+								"name": "__unnamed_slice__82__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -25608,8 +24072,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__76__",
-								"name": "__unnamed_slice__76__",
+								"id": "__unnamed_slice__83__",
+								"name": "__unnamed_slice__83__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -25633,8 +24097,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__79__",
-								"name": "__unnamed_slice__79__",
+								"id": "__unnamed_slice__84__",
+								"name": "__unnamed_slice__84__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -25662,8 +24126,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__81__",
-								"name": "__unnamed_slice__81__",
+								"id": "__unnamed_slice__85__",
+								"name": "__unnamed_slice__85__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -25687,8 +24151,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__82__",
-								"name": "__unnamed_slice__82__",
+								"id": "__unnamed_slice__86__",
+								"name": "__unnamed_slice__86__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -25716,8 +24180,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__83__",
-								"name": "__unnamed_slice__83__",
+								"id": "__unnamed_slice__87__",
+								"name": "__unnamed_slice__87__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -25733,8 +24197,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__84__",
-								"name": "__unnamed_slice__84__",
+								"id": "__unnamed_slice__88__",
+								"name": "__unnamed_slice__88__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -25765,12 +24229,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "nsec returns the time's nanoseconds.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -25791,12 +24249,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "sec returns the time's seconds since Jan 1 year 1.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -25817,12 +24269,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "unixSec returns the time's seconds since Jan 1 1970 (Unix time).",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -25843,12 +24289,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "addSec adds d seconds to the time.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "d",
@@ -25870,12 +24310,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "setLoc sets the location associated with the time.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "loc",
@@ -25904,12 +24338,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "stripMono strips the monotonic clock reading in t.",
-							"placement": "above"
-						}
-					],
 					"isPointerReceiver": true,
 					"receiver": "time.Time",
 					"structure": "func()"
@@ -25921,12 +24349,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "setMono sets the monotonic clock reading in t.\nIf t cannot hold a monotonic clock reading,\nbecause its wall time is too large,\nsetMono is a no-op.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "m",
@@ -25948,12 +24370,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "mono returns t's monotonic clock reading.\nIt returns 0 for a missing reading.\nThis function is used only for testing,\nso it's OK that technically 0 is a valid\nmonotonic clock reading as well.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -25974,12 +24390,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "IsZero reports whether t represents the zero time instant,\nJanuary 1, year 1, 00:00:00 UTC.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26000,12 +24410,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "After reports whether the time instant t is after u.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "u",
@@ -26035,12 +24439,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Before reports whether the time instant t is before u.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "u",
@@ -26070,12 +24468,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Compare compares the time instant t with u. If t is before u, it returns -1;\nif t is after u, it returns +1; if they're the same, it returns 0.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "u",
@@ -26105,12 +24497,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Equal reports whether t and u represent the same time instant.\nTwo times can be equal even if they are in different locations.\nFor example, 6:00 +0200 and 4:00 UTC are Equal.\nSee the documentation on the Time type for the pitfalls of using == with\nTime values; most code should use Equal instead.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "u",
@@ -26140,12 +24526,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "absSec returns the time t as an absolute seconds, adjusted by the zone offset.\nIt is called when computing a presentation property like Month or Hour.\nWe'd rather call it abs, but there are linknames to abs that make that problematic.\nSee timeAbs below.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26165,12 +24545,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "locabs is a combination of the Zone and abs methods,\nextracting both return values from a single zone lookup.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"name": "name",
@@ -26207,12 +24581,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Date returns the year, month, and day in which t occurs.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"name": "year",
@@ -26249,12 +24617,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Year returns the year in which t occurs.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26275,12 +24637,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Month returns the month of the year specified by t.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26300,12 +24656,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Day returns the day of the month specified by t.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26326,12 +24676,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Weekday returns the day of the week specified by t.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26351,12 +24695,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "ISOWeek returns the ISO 8601 year and week number in which t occurs.\nWeek ranges from 1 to 53. Jan 01 to Jan 03 of year n might belong to\nweek 52 or 53 of year n-1, and Dec 29 to Dec 31 might belong to week 1\nof year n+1.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"name": "year",
@@ -26386,12 +24724,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Clock returns the hour, minute, and second within the day specified by t.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"name": "hour",
@@ -26429,12 +24761,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Hour returns the hour within the day specified by t, in the range [0, 23].",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26455,12 +24781,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Minute returns the minute offset within the hour specified by t, in the range [0, 59].",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26481,12 +24801,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Second returns the second offset within the minute specified by t, in the range [0, 59].",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26507,12 +24821,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Nanosecond returns the nanosecond offset within the second specified by t,\nin the range [0, 999999999].",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26533,12 +24841,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "YearDay returns the day of the year specified by t, in the range [1,365] for non-leap years,\nand [1,366] in leap years.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26559,12 +24861,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Add returns the time t+d.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "d",
@@ -26593,12 +24889,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Sub returns the duration t-u. If the result exceeds the maximum (or minimum)\nvalue that can be stored in a [Duration], the maximum (or minimum) duration\nwill be returned.\nTo compute t-d for a duration d, use t.Add(-d).",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "u",
@@ -26627,12 +24917,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "AddDate returns the time corresponding to adding the\ngiven number of years, months, and days to t.\nFor example, AddDate(-1, 2, 3) applied to January 1, 2011\nreturns March 4, 2010.\n\nNote that dates are fundamentally coupled to timezones, and calendrical\nperiods like days don't have fixed durations. AddDate uses the Location of\nthe Time value to determine these durations. That means that the same\nAddDate arguments can produce a different shift in absolute time depending on\nthe base Time value and its Location. For example, AddDate(0, 0, 1) applied\nto 12:00 on March 27 always returns 12:00 on March 28. At some locations and\nin some years this is a 24 hour shift. In others it's a 23 hour shift due to\ndaylight savings time transitions.\n\nAddDate normalizes its result in the same way that Date does,\nso, for example, adding one month to October 31 yields\nDecember 1, the normalized form for November 31.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "years",
@@ -26678,12 +24962,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "UTC returns t with the location set to UTC.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26703,12 +24981,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Local returns t with the location set to local time.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26728,18 +25000,12 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "In returns a copy of t representing the same time instant, but\nwith the copy's location information set to loc for display\npurposes.\n\nIn panics if loc is nil.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "loc",
 							"type": {
-								"id": "__unnamed_pointer__76__",
-								"name": "__unnamed_pointer__76__",
+								"id": "__unnamed_pointer__77__",
+								"name": "__unnamed_pointer__77__",
 								"kind": "pointer",
 								"package": "time",
 								"element": {
@@ -26770,17 +25036,11 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Location returns the time zone information associated with t.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__77__",
-								"name": "__unnamed_pointer__77__",
+								"id": "__unnamed_pointer__78__",
+								"name": "__unnamed_pointer__78__",
 								"kind": "pointer",
 								"package": "time",
 								"element": {
@@ -26803,12 +25063,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Zone computes the time zone in effect at time t, returning the abbreviated\nname of the zone (such as \"CET\") and its offset in seconds east of UTC.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"name": "name",
@@ -26838,12 +25092,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "ZoneBounds returns the bounds of the time zone in effect at time t.\nThe zone begins at start and the next zone begins at end.\nIf the zone begins at the beginning of time, start will be returned as a zero Time.\nIf the zone goes on forever, end will be returned as a zero Time.\nThe Location of the returned times will be the same as t.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"name": "start",
@@ -26871,12 +25119,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Unix returns t as a Unix time, the number of seconds elapsed\nsince January 1, 1970 UTC. The result does not depend on the\nlocation associated with t.\nUnix-like operating systems often record time as a 32-bit\ncount of seconds, but since the method here returns a 64-bit\nvalue it is valid for billions of years into the past or future.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26897,12 +25139,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "UnixMilli returns t as a Unix time, the number of milliseconds elapsed since\nJanuary 1, 1970 UTC. The result is undefined if the Unix time in\nmilliseconds cannot be represented by an int64 (a date more than 292 million\nyears before or after 1970). The result does not depend on the\nlocation associated with t.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26923,12 +25159,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "UnixMicro returns t as a Unix time, the number of microseconds elapsed since\nJanuary 1, 1970 UTC. The result is undefined if the Unix time in\nmicroseconds cannot be represented by an int64 (a date before year -290307 or\nafter year 294246). The result does not depend on the location associated\nwith t.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26949,12 +25179,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "UnixNano returns t as a Unix time, the number of nanoseconds elapsed\nsince January 1, 1970 UTC. The result is undefined if the Unix time\nin nanoseconds cannot be represented by an int64 (a date before the year\n1678 or after 2262). Note that this means the result of calling UnixNano\non the zero Time is undefined. The result does not depend on the\nlocation associated with t.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -26975,18 +25199,12 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "AppendBinary implements the [encoding.BinaryAppender] interface.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__89__",
-								"name": "__unnamed_slice__89__",
+								"id": "__unnamed_slice__90__",
+								"name": "__unnamed_slice__90__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27002,8 +25220,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__90__",
-								"name": "__unnamed_slice__90__",
+								"id": "__unnamed_slice__91__",
+								"name": "__unnamed_slice__91__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27034,17 +25252,11 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "MarshalBinary implements the [encoding.BinaryMarshaler] interface.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__91__",
-								"name": "__unnamed_slice__91__",
+								"id": "__unnamed_slice__92__",
+								"name": "__unnamed_slice__92__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27075,18 +25287,12 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "UnmarshalBinary implements the [encoding.BinaryUnmarshaler] interface.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "data",
 							"type": {
-								"id": "__unnamed_slice__92__",
-								"name": "__unnamed_slice__92__",
+								"id": "__unnamed_slice__93__",
+								"name": "__unnamed_slice__93__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27119,17 +25325,11 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "GobEncode implements the gob.GobEncoder interface.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__93__",
-								"name": "__unnamed_slice__93__",
+								"id": "__unnamed_slice__94__",
+								"name": "__unnamed_slice__94__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27160,18 +25360,12 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "GobDecode implements the gob.GobDecoder interface.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "data",
 							"type": {
-								"id": "__unnamed_slice__94__",
-								"name": "__unnamed_slice__94__",
+								"id": "__unnamed_slice__95__",
+								"name": "__unnamed_slice__95__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27204,17 +25398,11 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "MarshalJSON implements the [encoding/json.Marshaler] interface.\nThe time is a quoted string in the RFC 3339 format with sub-second precision.\nIf the timestamp cannot be represented as valid RFC 3339\n(e.g., the year is out of range), then an error is reported.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__95__",
-								"name": "__unnamed_slice__95__",
+								"id": "__unnamed_slice__96__",
+								"name": "__unnamed_slice__96__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27245,18 +25433,12 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "UnmarshalJSON implements the [encoding/json.Unmarshaler] interface.\nThe time must be a quoted string in the RFC 3339 format.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "data",
 							"type": {
-								"id": "__unnamed_slice__96__",
-								"name": "__unnamed_slice__96__",
+								"id": "__unnamed_slice__97__",
+								"name": "__unnamed_slice__97__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27293,8 +25475,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__97__",
-								"name": "__unnamed_slice__97__",
+								"id": "__unnamed_slice__98__",
+								"name": "__unnamed_slice__98__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27318,8 +25500,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__98__",
-								"name": "__unnamed_slice__98__",
+								"id": "__unnamed_slice__99__",
+								"name": "__unnamed_slice__99__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27350,18 +25532,12 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "AppendText implements the [encoding.TextAppender] interface.\nThe time is formatted in RFC 3339 format with sub-second precision.\nIf the timestamp cannot be represented as valid RFC 3339\n(e.g., the year is out of range), then an error is returned.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__99__",
-								"name": "__unnamed_slice__99__",
+								"id": "__unnamed_slice__100__",
+								"name": "__unnamed_slice__100__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27377,8 +25553,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__100__",
-								"name": "__unnamed_slice__100__",
+								"id": "__unnamed_slice__101__",
+								"name": "__unnamed_slice__101__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27409,17 +25585,11 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "MarshalText implements the [encoding.TextMarshaler] interface. The output\nmatches that of calling the [Time.AppendText] method.\n\nSee [Time.AppendText] for more information.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__101__",
-								"name": "__unnamed_slice__101__",
+								"id": "__unnamed_slice__102__",
+								"name": "__unnamed_slice__102__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27450,18 +25620,12 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "UnmarshalText implements the [encoding.TextUnmarshaler] interface.\nThe time must be in the RFC 3339 format.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "data",
 							"type": {
-								"id": "__unnamed_slice__102__",
-								"name": "__unnamed_slice__102__",
+								"id": "__unnamed_slice__103__",
+								"name": "__unnamed_slice__103__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27494,12 +25658,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "IsDST reports whether the time in the configured location is in Daylight Savings Time.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -27520,12 +25678,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Truncate returns the result of rounding t down to a multiple of d (since the zero time).\nIf d \u003c= 0, Truncate returns t stripped of any monotonic clock reading but otherwise unchanged.\n\nTruncate operates on the time as an absolute duration since the\nzero time; it does not operate on the presentation form of the\ntime. Thus, Truncate(Hour) may return a time with a non-zero\nminute, depending on the time's Location.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "d",
@@ -27554,12 +25706,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "Round returns the result of rounding t to the nearest multiple of d (since the zero time).\nThe rounding behavior for halfway values is to round up.\nIf d \u003c= 0, Round returns t stripped of any monotonic clock reading but otherwise unchanged.\n\nRound operates on the time as an absolute duration since the\nzero time; it does not operate on the presentation form of the\ntime. Thus, Round(Hour) may return a time with a non-zero\nminute, depending on the time's Location.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "d",
@@ -27752,12 +25898,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "abbreviated name, \"CET\"",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "string",
 						"name": "string",
@@ -27772,12 +25912,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "seconds east of UTC",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int",
 						"name": "int",
@@ -27792,12 +25926,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "is this zone Daylight Savings Time?",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -27831,12 +25959,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "transition time, in seconds since 1970 GMT",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "int64",
 						"name": "int64",
@@ -27851,12 +25973,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "the index of the zone that goes into effect at that time",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "uint8",
 						"name": "uint8",
@@ -27871,12 +25987,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "ignored - no idea what these mean",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
@@ -27891,12 +26001,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "ignored - no idea what these mean",
-							"placement": "inline"
-						}
-					],
 					"type": {
 						"id": "bool",
 						"name": "bool",
