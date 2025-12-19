@@ -13,13 +13,55 @@ import (
 
 // serializeTypeRef serializes a type as a reference (basic info only)
 func serializeTypeRef(t Type) any {
-	return &SerializedType{
-		ID:      t.Id(),
-		Name:    t.Name(),
-		Kind:    t.Kind(),
-		IsNamed: t.IsNamed(),
-		Package: getPackagePath(t),
+	// For InstantiatedGeneric, include full serialization with origin and typeArgs
+	if ig, ok := t.(*InstantiatedGeneric); ok {
+		return ig.Serialize()
 	}
+
+	// Simplified: just return the ID to reduce bloat
+	return t.Id()
+
+	// Full reference with all metadata (commented out for now)
+	// return &SerializedType{
+	// 	ID:      t.Id(),
+	// 	Name:    t.Name(),
+	// 	Kind:    t.Kind(),
+	// 	IsNamed: t.IsNamed(),
+	// 	Package: getPackagePath(t),
+	// }
+}
+
+// serializeTypeOrID returns either a full type object (for complex types like anonymous structs)
+// or a minimal reference with id and kind (for named types)
+func serializeTypeOrID(t Type) any {
+	if t == nil {
+		return nil
+	}
+
+	// For anonymous/complex types that need full serialization, return the full object
+	// Examples: anonymous structs, function types, etc.
+	switch t.Kind() {
+	case TypeKindStruct, TypeKindInterface, TypeKindFunction:
+		// Check if it's named - if not, serialize fully
+		if !t.IsNamed() {
+			return t.Serialize()
+		}
+	case TypeKindInstantiated:
+		// InstantiatedGeneric always gets full serialization
+		return t.Serialize()
+	}
+
+	// For everything else (named types, basic types, etc.), return minimal reference
+	return map[string]any{
+		"id":   t.Id(),
+		"kind": t.Kind(),
+	}
+
+	// Old: just ID string
+	// return t.Id()
+
+	// Old full reference (commented out)
+	// return serializeTypeRef(t)
 }
 
 func getPackagePath(t Type) string {
@@ -100,7 +142,7 @@ func NewPointer(id string, name string, elem Type, depth int) *Pointer {
 	}
 }
 
-func (p *Pointer) Element() Type {
+func (p *Pointer) Elem() Type {
 	return p.elem
 }
 
@@ -173,7 +215,7 @@ func NewArray(id string, name string, elem Type, length int64) *Slice {
 	}
 }
 
-func (s *Slice) Element() Type {
+func (s *Slice) Elem() Type {
 	return s.elem
 }
 
@@ -246,11 +288,11 @@ func NewChan(id string, name string, elem Type, dir ChannelDirection) *Chan {
 	}
 }
 
-func (c *Chan) Element() Type {
+func (c *Chan) Elem() Type {
 	return c.elem
 }
 
-func (c *Chan) Direction() ChannelDirection {
+func (c *Chan) Dir() ChannelDirection {
 	return c.dir
 }
 
@@ -483,16 +525,18 @@ type Function struct {
 	params     []*Parameter
 	results    []*Result
 	isVariadic bool
-	docFunc    *doc.Func // for package-level functions
-	structure  string    // full signature string
+	docFunc    *doc.Func        // for package-level functions
+	structure  string           // full signature string
+	typeParams []*TypeParameter // type parameters for generic functions
 }
 
 // NewFunction creates a new function type
 func NewFunction(id string, name string) *Function {
 	return &Function{
-		baseType: newBaseType(id, name, TypeKindFunction),
-		params:   []*Parameter{},
-		results:  []*Result{},
+		baseType:   newBaseType(id, name, TypeKindFunction),
+		params:     []*Parameter{},
+		results:    []*Result{},
+		typeParams: []*TypeParameter{},
 	}
 }
 
@@ -531,41 +575,56 @@ func (f *Function) SetStructure(structure string) {
 	f.structure = structure
 }
 
+func (f *Function) TypeParams() []*TypeParameter {
+	return f.typeParams
+}
+
+func (f *Function) AddTypeParam(tp *TypeParameter) {
+	f.typeParams = append(f.typeParams, tp)
+}
+
 func (f *Function) Serialize() any {
 	if err := f.Load(); err != nil && f.pkg != nil && f.pkg.logger != nil {
 		f.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", f.id, err))
 	}
 	params := make([]*SerializedParameter, len(f.params))
 	for i, p := range f.params {
-		var paramTypeSerialized any
-		if p.paramType != nil {
-			if p.paramType.IsNamed() {
-				paramTypeSerialized = serializeTypeRef(p.paramType)
-			} else {
-				paramTypeSerialized = p.paramType.Serialize()
-			}
-		}
 		params[i] = &SerializedParameter{
 			Name:       p.name,
-			Type:       paramTypeSerialized,
+			Type:       serializeTypeOrID(p.paramType),
 			IsVariadic: p.isVariadic,
 		}
+		// Old full serialization logic (commented out)
+		// var paramTypeSerialized any
+		// if p.paramType != nil {
+		// 	if p.paramType.IsNamed() {
+		// 		paramTypeSerialized = serializeTypeRef(p.paramType)
+		// 	} else {
+		// 		paramTypeSerialized = p.paramType.Serialize()
+		// 	}
+		// }
 	}
 
 	results := make([]*SerializedResult, len(f.results))
 	for i, r := range f.results {
-		var resultTypeSerialized any
-		if r.resultType != nil {
-			if r.resultType.IsNamed() {
-				resultTypeSerialized = serializeTypeRef(r.resultType)
-			} else {
-				resultTypeSerialized = r.resultType.Serialize()
-			}
-		}
 		results[i] = &SerializedResult{
 			Name: r.name,
-			Type: resultTypeSerialized,
+			Type: serializeTypeOrID(r.resultType),
 		}
+		// Old full serialization logic (commented out)
+		// var resultTypeSerialized any
+		// if r.resultType != nil {
+		// 	if r.resultType.IsNamed() {
+		// 		resultTypeSerialized = serializeTypeRef(r.resultType)
+		// 	} else {
+		// 		resultTypeSerialized = r.resultType.Serialize()
+		// 	}
+		// }
+	}
+
+	typeParams := make([]*SerializedTypeParameter, len(f.typeParams))
+	for i, tp := range f.typeParams {
+		typeParams[i] = tp.Serialize().(*SerializedTypeParameter)
 	}
 
 	return &SerializedFunction{
@@ -574,6 +633,7 @@ func (f *Function) Serialize() any {
 		Results:        results,
 		IsVariadic:     f.isVariadic,
 		Structure:      f.structure,
+		TypeParams:     typeParams,
 	}
 }
 
@@ -613,12 +673,15 @@ func (f *Function) Load() error {
 // Interface represents an interface type
 type Interface struct {
 	baseType
+	embeds     []Type           // embedded types
+	typeParams []*TypeParameter // type parameters for generic interfaces
 }
 
 // NewInterface creates a new interface type
 func NewInterface(id string, name string) *Interface {
 	return &Interface{
-		baseType: newBaseType(id, name, TypeKindInterface),
+		baseType:   newBaseType(id, name, TypeKindInterface),
+		typeParams: []*TypeParameter{},
 	}
 }
 
@@ -626,15 +689,44 @@ func (i *Interface) Serialize() any {
 	if err := i.Load(); err != nil && i.pkg != nil && i.pkg.logger != nil {
 		i.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", i.id, err))
 	}
+
+	embeds := make([]any, len(i.embeds))
+	for idx, e := range i.embeds {
+		embeds[idx] = serializeTypeRef(e)
+	}
+
 	methods := make([]*SerializedMethod, len(i.methods))
 	for idx, m := range i.methods {
 		methods[idx] = m.Serialize().(*SerializedMethod)
 	}
 
+	typeParams := make([]*SerializedTypeParameter, len(i.typeParams))
+	for idx, tp := range i.typeParams {
+		typeParams[idx] = tp.Serialize().(*SerializedTypeParameter)
+	}
+
 	return &SerializedInterface{
 		SerializedType: i.serializeBase(),
+		Embeds:         embeds,
 		Methods:        methods,
+		TypeParams:     typeParams,
 	}
+}
+
+func (i *Interface) AddEmbed(embed Type) {
+	i.embeds = append(i.embeds, embed)
+}
+
+func (i *Interface) Embeds() []Type {
+	return i.embeds
+}
+
+func (i *Interface) TypeParams() []*TypeParameter {
+	return i.typeParams
+}
+
+func (i *Interface) AddTypeParam(tp *TypeParameter) {
+	i.typeParams = append(i.typeParams, tp)
 }
 
 func (i *Interface) Load() error {
@@ -651,14 +743,17 @@ func (i *Interface) Load() error {
 // Struct represents a struct type
 type Struct struct {
 	baseType
-	fields []*Field
+	embeds     []Type // embedded types
+	fields     []*Field
+	typeParams []*TypeParameter // type parameters for generic structs
 }
 
 // NewStruct creates a new struct type
 func NewStruct(id string, name string) *Struct {
 	return &Struct{
-		baseType: newBaseType(id, name, TypeKindStruct),
-		fields:   []*Field{},
+		baseType:   newBaseType(id, name, TypeKindStruct),
+		fields:     []*Field{},
+		typeParams: []*TypeParameter{},
 	}
 }
 
@@ -672,10 +767,32 @@ func (s *Struct) AddField(field *Field) {
 	field.pkg = s.pkg
 }
 
+func (s *Struct) AddEmbed(embed Type) {
+	s.embeds = append(s.embeds, embed)
+}
+
+func (s *Struct) Embeds() []Type {
+	return s.embeds
+}
+
+func (s *Struct) TypeParams() []*TypeParameter {
+	return s.typeParams
+}
+
+func (s *Struct) AddTypeParam(tp *TypeParameter) {
+	s.typeParams = append(s.typeParams, tp)
+}
+
 func (s *Struct) Serialize() any {
 	if err := s.Load(); err != nil && s.pkg != nil && s.pkg.logger != nil {
 		s.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", s.id, err))
 	}
+
+	embeds := make([]any, len(s.embeds))
+	for i, e := range s.embeds {
+		embeds[i] = serializeTypeRef(e)
+	}
+
 	fields := make([]*SerializedField, len(s.fields))
 	for i, f := range s.fields {
 		fields[i] = f.Serialize().(*SerializedField)
@@ -686,10 +803,17 @@ func (s *Struct) Serialize() any {
 		methods[i] = m.Serialize().(*SerializedMethod)
 	}
 
+	typeParams := make([]*SerializedTypeParameter, len(s.typeParams))
+	for i, tp := range s.typeParams {
+		typeParams[i] = tp.Serialize().(*SerializedTypeParameter)
+	}
+
 	return &SerializedStruct{
 		SerializedType: s.serializeBase(),
+		Embeds:         embeds,
 		Fields:         fields,
 		Methods:        methods,
+		TypeParams:     typeParams,
 	}
 }
 
@@ -775,6 +899,491 @@ func (v *Value) Load() error {
 		// Load the value type
 		if err == nil && v.valueType != nil {
 			err = v.valueType.Load()
+		}
+	})
+	return err
+}
+
+// TypeParameter represents a generic type parameter (e.g., T in List[T])
+type TypeParameter struct {
+	baseType
+	index      int  // Position in type parameter list (0-based)
+	constraint Type // The constraint type (any, comparable, custom interface, or union)
+}
+
+// NewTypeParameter creates a new type parameter
+func NewTypeParameter(id string, name string, index int, constraint Type) *TypeParameter {
+	return &TypeParameter{
+		baseType:   newBaseType(id, name, TypeKindTypeParameter),
+		index:      index,
+		constraint: constraint,
+	}
+}
+
+func (tp *TypeParameter) Index() int {
+	return tp.index
+}
+
+func (tp *TypeParameter) Constraint() Type {
+	return tp.constraint
+}
+
+func (tp *TypeParameter) Serialize() any {
+	return &SerializedTypeParameter{
+		SerializedType: tp.serializeBase(),
+		Index:          tp.index,
+		Constraint:     serializeTypeOrID(tp.constraint),
+	}
+	// Old: full constraint serialization (commented out)
+	// var constraintSerialized any
+	// if tp.constraint != nil {
+	// 	// Always serialize the full constraint structure to show what it is
+	// 	constraintSerialized = tp.constraint.Serialize()
+	// }
+}
+
+func (tp *TypeParameter) Load() error {
+	var err error
+	tp.loadOnce.Do(func() {
+		tp.loadComments(false)
+		if tp.loader != nil {
+			err = tp.loader(tp)
+		}
+		if err == nil && tp.constraint != nil {
+			err = tp.constraint.Load()
+		}
+	})
+	return err
+}
+
+// UnionTerm represents a single term in a union constraint
+type UnionTerm struct {
+	typ           Type
+	approximation bool // true for ~T, false for T
+}
+
+func NewUnionTerm(typ Type, approximation bool) *UnionTerm {
+	return &UnionTerm{
+		typ:           typ,
+		approximation: approximation,
+	}
+}
+
+func (ut *UnionTerm) Type() Type {
+	return ut.typ
+}
+
+func (ut *UnionTerm) Approximation() bool {
+	return ut.approximation
+}
+
+// Union represents a union constraint (e.g., int | string | ~float64)
+type Union struct {
+	baseType
+	terms []*UnionTerm
+}
+
+// NewUnion creates a new union type
+func NewUnion(id string, name string, terms []*UnionTerm) *Union {
+	return &Union{
+		baseType: newBaseType(id, name, TypeKindUnion),
+		terms:    terms,
+	}
+}
+
+func (u *Union) Terms() []*UnionTerm {
+	return u.terms
+}
+
+func (u *Union) Serialize() any {
+	serializedTerms := make([]SerializedUnionTerm, len(u.terms))
+	for i, term := range u.terms {
+		serializedTerms[i] = SerializedUnionTerm{
+			Type:          serializeTypeOrID(term.typ),
+			Approximation: term.approximation,
+		}
+	}
+
+	return &SerializedUnion{
+		SerializedType: u.serializeBase(),
+		Terms:          serializedTerms,
+	}
+}
+
+func (u *Union) Load() error {
+	var err error
+	u.loadOnce.Do(func() {
+		u.loadComments(false)
+		if u.loader != nil {
+			err = u.loader(u)
+		}
+		// Load all term types
+		if err == nil {
+			for _, term := range u.terms {
+				if term.typ != nil {
+					if loadErr := term.typ.Load(); loadErr != nil {
+						err = loadErr
+						return
+					}
+				}
+			}
+		}
+	})
+	return err
+}
+
+// InstantiatedGeneric represents a generic type with concrete type arguments
+// (e.g., List[int] where List[T] is the generic definition)
+// TypeArgument represents a type argument for an instantiated generic
+type TypeArgument struct {
+	Param string // The type parameter name (e.g., "T", "K", "V")
+	Index int    // The position in the type parameter list
+	Type  Type   // The concrete type being substituted
+}
+
+type InstantiatedGeneric struct {
+	baseType
+	origin   Type           // The base generic type (e.g., List[T])
+	typeArgs []TypeArgument // The concrete type arguments with parameter info
+}
+
+// NewInstantiatedGeneric creates a new instantiated generic type
+func NewInstantiatedGeneric(id string, name string, origin Type, typeArgs []TypeArgument) *InstantiatedGeneric {
+	return &InstantiatedGeneric{
+		baseType: newBaseType(id, name, TypeKindInstantiated),
+		origin:   origin,
+		typeArgs: typeArgs,
+	}
+}
+
+func (ig *InstantiatedGeneric) Origin() Type {
+	return ig.origin
+}
+
+func (ig *InstantiatedGeneric) TypeArgs() []TypeArgument {
+	return ig.typeArgs
+}
+
+func (ig *InstantiatedGeneric) Serialize() any {
+	serializedArgs := make([]any, len(ig.typeArgs))
+	for i, arg := range ig.typeArgs {
+		serializedArgs[i] = map[string]any{
+			"param": arg.Param,
+			"index": arg.Index,
+			"type":  serializeTypeOrID(arg.Type),
+		}
+	}
+
+	// Build type parameter substitution map
+	typeSubstitutions := make(map[string]any)
+	for _, arg := range ig.typeArgs {
+		if arg.Type != nil {
+			typeSubstitutions[arg.Param] = serializeTypeOrID(arg.Type)
+		}
+	}
+
+	// Get origin ID
+	originID := ""
+	if ig.origin != nil {
+		originID = ig.origin.Id()
+	}
+
+	result := map[string]any{
+		"id":       ig.id,
+		"kind":     ig.kind,
+		"typeArgs": serializedArgs,
+		"origin":   originID,
+	}
+
+	// Include base serialization fields (name, package, etc.)
+	baseData := ig.serializeBase()
+	result["name"] = baseData.Name
+	result["named"] = baseData.IsNamed
+	if baseData.Package != "" {
+		result["package"] = baseData.Package
+	}
+	if len(baseData.Comments) > 0 {
+		result["comments"] = baseData.Comments
+	}
+
+	// Copy fields and methods from origin
+	if ig.origin != nil {
+		switch origin := ig.origin.(type) {
+		case *Struct:
+			if fields := origin.Fields(); len(fields) > 0 {
+				serializedFields := make([]any, len(fields))
+				for i, f := range fields {
+					fieldData := f.Serialize()
+					// Substitute type parameters in field
+					ig.substituteTypes(fieldData, typeSubstitutions)
+					serializedFields[i] = fieldData
+				}
+				result["fields"] = serializedFields
+			}
+			if embeds := origin.Embeds(); len(embeds) > 0 {
+				serializedEmbeds := make([]any, len(embeds))
+				for i, e := range embeds {
+					embedData := serializeTypeOrID(e)
+					// Substitute if embed is a type parameter
+					if embedMap, ok := embedData.(map[string]any); ok {
+						if embedMap["kind"] == "type_parameter" {
+							if embedID, ok := embedMap["id"].(string); ok {
+								if concrete, exists := typeSubstitutions[embedID]; exists {
+									embedData = concrete
+								}
+							}
+						}
+					}
+					serializedEmbeds[i] = embedData
+				}
+				result["embeds"] = serializedEmbeds
+			}
+			if methods := origin.Methods(); len(methods) > 0 {
+				serializedMethods := make([]any, len(methods))
+				for i, m := range methods {
+					methodData := m.Serialize()
+					// Substitute type parameters in method
+					ig.substituteTypes(methodData, typeSubstitutions)
+					serializedMethods[i] = methodData
+				}
+				result["methods"] = serializedMethods
+			}
+		case *Interface:
+			if methods := origin.Methods(); len(methods) > 0 {
+				serializedMethods := make([]any, len(methods))
+				for i, m := range methods {
+					methodData := m.Serialize()
+					// Substitute type parameters in method
+					ig.substituteTypes(methodData, typeSubstitutions)
+					serializedMethods[i] = methodData
+				}
+				result["methods"] = serializedMethods
+			}
+			if embeds := origin.Embeds(); len(embeds) > 0 {
+				serializedEmbeds := make([]any, len(embeds))
+				for i, e := range embeds {
+					embedData := serializeTypeOrID(e)
+					// Substitute if embed is a type parameter
+					if embedMap, ok := embedData.(map[string]any); ok {
+						if embedMap["kind"] == "type_parameter" {
+							if embedID, ok := embedMap["id"].(string); ok {
+								if concrete, exists := typeSubstitutions[embedID]; exists {
+									embedData = concrete
+								}
+							}
+						}
+					}
+					serializedEmbeds[i] = embedData
+				}
+				result["embeds"] = serializedEmbeds
+			}
+		case *Slice:
+			// Include element type with substitution
+			if elem := origin.Elem(); elem != nil {
+				elemData := serializeTypeOrID(elem)
+				// Substitute if element is a type parameter
+				if elemMap, ok := elemData.(map[string]any); ok {
+					if elemMap["kind"] == "type_parameter" {
+						if elemID, ok := elemMap["id"].(string); ok {
+							if concrete, exists := typeSubstitutions[elemID]; exists {
+								elemData = concrete
+							}
+						}
+					}
+				}
+				result["elem"] = elemData
+			}
+			// Include length for arrays
+			if origin.Len() > 0 {
+				result["len"] = origin.Len()
+			}
+			// Include methods
+			if methods := origin.Methods(); len(methods) > 0 {
+				serializedMethods := make([]any, len(methods))
+				for i, m := range methods {
+					methodData := m.Serialize()
+					ig.substituteTypes(methodData, typeSubstitutions)
+					serializedMethods[i] = methodData
+				}
+				result["methods"] = serializedMethods
+			}
+		case *Map:
+			// Include key and value types with substitution
+			if key := origin.Key(); key != nil {
+				keyData := serializeTypeOrID(key)
+				if keyMap, ok := keyData.(map[string]any); ok {
+					if keyMap["kind"] == "type_parameter" {
+						if keyID, ok := keyMap["id"].(string); ok {
+							if concrete, exists := typeSubstitutions[keyID]; exists {
+								keyData = concrete
+							}
+						}
+					}
+				}
+				result["key"] = keyData
+			}
+			if value := origin.Value(); value != nil {
+				valueData := serializeTypeOrID(value)
+				if valueMap, ok := valueData.(map[string]any); ok {
+					if valueMap["kind"] == "type_parameter" {
+						if valueID, ok := valueMap["id"].(string); ok {
+							if concrete, exists := typeSubstitutions[valueID]; exists {
+								valueData = concrete
+							}
+						}
+					}
+				}
+				result["value"] = valueData
+			}
+			// Include methods
+			if methods := origin.Methods(); len(methods) > 0 {
+				serializedMethods := make([]any, len(methods))
+				for i, m := range methods {
+					methodData := m.Serialize()
+					ig.substituteTypes(methodData, typeSubstitutions)
+					serializedMethods[i] = methodData
+				}
+				result["methods"] = serializedMethods
+			}
+		case *Chan:
+			// Include element type with substitution
+			if elem := origin.Elem(); elem != nil {
+				elemData := serializeTypeOrID(elem)
+				if elemMap, ok := elemData.(map[string]any); ok {
+					if elemMap["kind"] == "type_parameter" {
+						if elemID, ok := elemMap["id"].(string); ok {
+							if concrete, exists := typeSubstitutions[elemID]; exists {
+								elemData = concrete
+							}
+						}
+					}
+				}
+				result["elem"] = elemData
+			}
+			// Include direction
+			result["dir"] = origin.Dir()
+			// Include methods
+			if methods := origin.Methods(); len(methods) > 0 {
+				serializedMethods := make([]any, len(methods))
+				for i, m := range methods {
+					methodData := m.Serialize()
+					ig.substituteTypes(methodData, typeSubstitutions)
+					serializedMethods[i] = methodData
+				}
+				result["methods"] = serializedMethods
+			}
+		case *Basic:
+			// Include underlying type
+			if underlying := origin.Underlying(); underlying != nil {
+				result["underlying"] = serializeTypeOrID(underlying)
+			}
+			// Include methods
+			if methods := origin.Methods(); len(methods) > 0 {
+				serializedMethods := make([]any, len(methods))
+				for i, m := range methods {
+					methodData := m.Serialize()
+					ig.substituteTypes(methodData, typeSubstitutions)
+					serializedMethods[i] = methodData
+				}
+				result["methods"] = serializedMethods
+			}
+		case *Pointer:
+			// Include element type with substitution
+			if elem := origin.Elem(); elem != nil {
+				elemData := serializeTypeOrID(elem)
+				if elemMap, ok := elemData.(map[string]any); ok {
+					if elemMap["kind"] == "type_parameter" {
+						if elemID, ok := elemMap["id"].(string); ok {
+							if concrete, exists := typeSubstitutions[elemID]; exists {
+								elemData = concrete
+							}
+						}
+					}
+				}
+				result["elem"] = elemData
+			}
+			result["depth"] = origin.Depth()
+		case *Function:
+			// Include parameters and results with substitution
+			if params := origin.Parameters(); len(params) > 0 {
+				serializedParams := make([]any, len(params))
+				for i, p := range params {
+					paramData := map[string]any{
+						"name": p.Name(),
+						"type": serializeTypeOrID(p.Type()),
+					}
+					ig.substituteTypes(paramData, typeSubstitutions)
+					serializedParams[i] = paramData
+				}
+				result["parameters"] = serializedParams
+			}
+			if results := origin.Results(); len(results) > 0 {
+				serializedResults := make([]any, len(results))
+				for i, r := range results {
+					resultData := map[string]any{
+						"name": r.Name(),
+						"type": serializeTypeOrID(r.Type()),
+					}
+					ig.substituteTypes(resultData, typeSubstitutions)
+					serializedResults[i] = resultData
+				}
+				result["results"] = serializedResults
+			}
+		}
+	}
+
+	return result
+}
+
+// substituteTypes recursively replaces type parameters with concrete types in serialized data
+func (ig *InstantiatedGeneric) substituteTypes(data any, substitutions map[string]any) {
+	switch v := data.(type) {
+	case map[string]any:
+		// Check if this is a type parameter reference
+		if v["kind"] == "type_parameter" {
+			if typeID, ok := v["id"].(string); ok {
+				if concrete, exists := substitutions[typeID]; exists {
+					// Replace the entire type reference with the concrete type
+					if concreteMap, ok := concrete.(map[string]any); ok {
+						for k, val := range concreteMap {
+							v[k] = val
+						}
+					}
+					return
+				}
+			}
+		}
+		// Recursively process nested structures
+		for _, val := range v {
+			ig.substituteTypes(val, substitutions)
+		}
+	case []any:
+		for _, item := range v {
+			ig.substituteTypes(item, substitutions)
+		}
+	}
+}
+
+func (ig *InstantiatedGeneric) Load() error {
+	var err error
+	ig.loadOnce.Do(func() {
+		ig.loadComments(false)
+		if ig.loader != nil {
+			err = ig.loader(ig)
+		}
+		// Load origin and type args
+		if err == nil && ig.origin != nil {
+			err = ig.origin.Load()
+		}
+		if err == nil {
+			for _, arg := range ig.typeArgs {
+				if arg.Type != nil {
+					if loadErr := arg.Type.Load(); loadErr != nil {
+						err = loadErr
+						return
+					}
+				}
+			}
 		}
 	})
 	return err

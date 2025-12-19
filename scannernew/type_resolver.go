@@ -116,6 +116,15 @@ func (r *defaultTypeResolver) GetCanonicalName(t types.Type) string {
 		return basic.Name()
 	}
 
+	// For named types with type parameters, return just the base name without params
+	if named, ok := t.(*types.Named); ok && named.TypeParams() != nil && named.TypeParams().Len() > 0 {
+		obj := named.Obj()
+		if obj.Pkg() != nil {
+			return obj.Pkg().Path() + "." + obj.Name()
+		}
+		return obj.Name()
+	}
+
 	name := types.TypeString(t, r.qualifier)
 
 	return name
@@ -289,6 +298,21 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 		}
 	}
 
+	// Process type aliases (they don't appear in docPkg.Types)
+	if r.config.ScanMode.Has(ScanModeTypes) {
+		for _, name := range scope.Names() {
+			obj := scope.Lookup(name)
+			// Check if it's a type name (TypeName objects represent type declarations)
+			if typeName, ok := obj.(*types.TypeName); ok {
+				// Check if it's a type alias (not already processed via docPkg.Types)
+				if _, isAlias := typeName.Type().(*types.Alias); isAlias {
+					// Resolve the alias type
+					r.ResolveType(typeName.Type())
+				}
+			}
+		}
+	}
+
 	// Constants
 	if r.config.ScanMode.Has(ScanModeConsts) {
 		for _, value := range docPkg.Consts {
@@ -359,21 +383,30 @@ func isNilType(t typesnew.Type) bool {
 	return v.Kind() == reflect.Pointer && v.IsNil()
 }
 
-// ResolveType resolves a Go type to typesnew.Type
+// ResolveType handles Go type objects
 func (r *defaultTypeResolver) ResolveType(t types.Type) typesnew.Type {
 	if t == nil {
 		return nil
 	}
 
-	return r.resolveGoType(t)
-}
-
-// resolveGoType handles Go type objects
-func (r *defaultTypeResolver) resolveGoType(t types.Type) typesnew.Type {
-	if t == nil {
-		return nil
+	// Quick path: check caches first
+	if cached := r.checkCaches(t); cached != nil {
+		return cached
 	}
 
+	r.logger.Debugf("Resolving Go type: %v", r.GetCanonicalName(t))
+
+	// Handle special cases (aliases to generics, instantiated generics)
+	if special := r.handleSpecialCases(t); special != nil {
+		return special
+	}
+
+	// Unwrap and resolve the underlying type
+	return r.resolveUnderlyingType(t)
+}
+
+// checkCaches checks for cached types (normalized, predeclared, basic)
+func (r *defaultTypeResolver) checkCaches(t types.Type) typesnew.Type {
 	// Normalize untyped types
 	t = r.normalizeUntyped(t)
 	typeName := r.GetCanonicalName(t)
@@ -390,14 +423,47 @@ func (r *defaultTypeResolver) resolveGoType(t types.Type) typesnew.Type {
 		return basicType
 	}
 
-	r.logger.Debugf("Resolving Go type: %v", typeName)
+	return nil
+}
 
-	// Unwrap named types to get the underlying type
+// handleSpecialCases handles type aliases to generics and instantiated generics
+func (r *defaultTypeResolver) handleSpecialCases(t types.Type) typesnew.Type {
+	typeName := r.GetCanonicalName(t)
+
+	// Check if it's a type alias for an instantiated generic
+	// e.g., type A = List[int]
+	// Direct aliases to instantiated generics are detected here.
+	// Compound aliases (e.g., type A = *List[int], []List[int], etc.) are handled by
+	// makeAlias, which creates an Alias wrapper around the compound type.
+	if alias, ok := t.(*types.Alias); ok {
+		rhsType := alias.Rhs()
+		if named, ok := rhsType.(*types.Named); ok && named.TypeArgs() != nil && named.TypeArgs().Len() > 0 {
+			// The alias is for an instantiated generic
+			origin := r.ResolveType(named.Origin())
+			typeArgs := r.extractTypeArgumentsWithParams(named.Origin(), named.TypeArgs())
+			return r.makeInstantiatedGeneric(typeName, origin, typeArgs)
+		}
+	}
+
+	// Check if it's a named type with type arguments (instantiated generic)
+	if named, ok := t.(*types.Named); ok && named.TypeArgs() != nil && named.TypeArgs().Len() > 0 {
+		// This is an instantiated generic like List[int]
+		origin := r.ResolveType(named.Origin())
+		typeArgs := r.extractTypeArgumentsWithParams(named.Origin(), named.TypeArgs())
+		return r.makeInstantiatedGeneric(typeName, origin, typeArgs)
+	}
+
+	return nil
+}
+
+// resolveUnderlyingType unwraps named types and resolves the underlying type
+func (r *defaultTypeResolver) resolveUnderlyingType(t types.Type) typesnew.Type {
+	typeName := r.GetCanonicalName(t)
 	var namedType *types.Named
 	var obj types.Object
 	var docType *doc.Type
 
-	// check if it's a named type first
+	// Unwrap named types to get the underlying type
 	if named, ok := t.(*types.Named); ok {
 		namedType = named
 		obj = named.Obj()
@@ -412,14 +478,12 @@ func (r *defaultTypeResolver) resolveGoType(t types.Type) typesnew.Type {
 			}
 		}
 
-		t = named.Underlying()
-	}
-
-	// Check cache for named types
-	if namedType != nil {
+		// Check cache for named types
 		if ti, exists := r.types.Get(typeName); exists {
 			return ti
 		}
+
+		t = named.Underlying()
 	}
 
 	// Handle the underlying type
@@ -453,6 +517,12 @@ func (r *defaultTypeResolver) resolveGoType(t types.Type) typesnew.Type {
 	case *types.Map:
 		ti = r.makeMap(typeName, gt, namedType, obj, docType)
 
+	case *types.TypeParam:
+		ti = r.makeTypeParameter(typeName, gt)
+
+	case *types.Union:
+		ti = r.makeUnion(typeName, gt)
+
 	default:
 		r.logger.Warnf("Unsupported type: %s (%T)", t.String(), t)
 	}
@@ -470,8 +540,15 @@ func (r *defaultTypeResolver) resolveGoType(t types.Type) typesnew.Type {
 
 // cache stores a type in the resolver's cache
 func (r *defaultTypeResolver) cache(t typesnew.Type) {
-	if t == nil || t.Id() == "" || !t.IsNamed() {
+	if t == nil || t.Id() == "" {
 		return
+	}
+	// Cache named types and instantiated generics (even if they report IsNamed() as false)
+	if !t.IsNamed() {
+		// Allow InstantiatedGeneric to be cached even if it's not technically "named"
+		if _, ok := t.(*typesnew.InstantiatedGeneric); !ok {
+			return
+		}
 	}
 	r.types.Set(t.Id(), t)
 }
@@ -1102,18 +1179,28 @@ func (r *defaultTypeResolver) makeFunction(
 	forceKind typesnew.TypeKind,
 ) *typesnew.Function {
 	// Determine ID based on whether this is a named or unnamed function
-	var typeID string
+	var typeID, simpleName string
 	if obj != nil {
 		// Named function or package-level function: use provided id
 		typeID = id
+		simpleName = obj.Name()
 	} else {
 		// Unnamed/anonymous function: generate ID
 		typeID = r.generateUnnamedID("function")
+		simpleName = typeID
 	}
 
 	// Create function type
-	fn := typesnew.NewFunction(typeID, typeID)
+	fn := typesnew.NewFunction(typeID, simpleName)
 	r.setupCommonTypeFields(fn, obj, docType, sig)
+
+	// Extract type parameters if this is a generic function
+	if sig.TypeParams() != nil && sig.TypeParams().Len() > 0 {
+		typeParams := r.extractTypeParameters(sig.TypeParams(), typeID)
+		for _, tp := range typeParams {
+			fn.AddTypeParam(tp)
+		}
+	}
 
 	// Process signature using helper
 	parameters, results := r.processSignature(sig, r.currentPkg)
@@ -1199,18 +1286,28 @@ func (r *defaultTypeResolver) makeInterface(
 	// forceKind typesnew.TypeKind,
 ) *typesnew.Interface {
 	// Determine ID based on whether this is a named or unnamed interface
-	var typeID string
+	var typeID, simpleName string
 	if obj != nil {
 		// Named interface: use provided id
 		typeID = id
+		simpleName = obj.Name()
 	} else {
 		// Unnamed/anonymous interface: generate ID
 		typeID = r.generateUnnamedID("interface")
+		simpleName = typeID
 	}
 
 	// Create interface type
-	iface := typesnew.NewInterface(typeID, typeID)
+	iface := typesnew.NewInterface(typeID, simpleName)
 	r.setupCommonTypeFields(iface, obj, docType, interfaceType)
+
+	// Extract type parameters if this is a generic interface
+	if namedType != nil && namedType.TypeParams() != nil && namedType.TypeParams().Len() > 0 {
+		typeParams := r.extractTypeParameters(namedType.TypeParams(), typeID)
+		for _, tp := range typeParams {
+			iface.AddTypeParam(tp)
+		}
+	}
 
 	// Register in cache early to prevent infinite recursion on self-referencing types
 	r.cache(iface)
@@ -1232,44 +1329,97 @@ func (r *defaultTypeResolver) makeInterface(
 	}
 	// Set loader to extract methods lazily
 	iface.SetLoader(func(t typesnew.Type) error {
+		// Extract embedded interfaces
+		for i := 0; i < underlying.NumEmbeddeds(); i++ {
+			embeddedType := underlying.EmbeddedType(i)
+			embeddedResolved := r.ResolveType(embeddedType)
+			if embeddedResolved != nil {
+				iface.AddEmbed(embeddedResolved)
 
-		// Extract methods if needed
-		if r.config.ScanMode.Has(ScanModeMethods) {
-			methods := make([]*typesnew.Method, 0, underlying.NumMethods())
-			for method := range underlying.Methods() {
-
-				// Check if method should be exported
-				if !r.shouldExport(method) {
-					r.logger.Debugf("Skipping unexported interface method: %s.%s", typeID, method.Name())
-				} else {
-					// Get method signature
-					sig, ok := method.Type().(*types.Signature)
-					if !ok {
-						continue
-					}
-
-					// Create method directly - ID is interface#methodName
-					methodID := typeID + "#" + method.Name()
-					m := typesnew.NewMethod(methodID, method.Name(), iface, false)
-					m.SetPackage(r.getPackageInfo(method))
-					m.SetStructure(sig.String())
-
-					// Process signature using helper
-					parameters, results := r.processSignature(sig, iface.Package())
-					for _, p := range parameters {
-						m.AddParameter(p)
-					}
-					for _, r := range results {
-						m.AddResult(r)
-					}
-					// Set object and doc
-					m.SetObject(method)
-					methods = append(methods, m)
-
+				// Promote methods from embedded interface using Go types to get instantiated types
+				// For instantiated generics, unwrap to get the underlying interface
+				underlyingEmbedded := embeddedType
+				if namedEmbedded, ok := embeddedType.(*types.Named); ok {
+					underlyingEmbedded = namedEmbedded.Underlying()
 				}
-				iface.AddMethods(methods...)
+
+				if embeddedIfaceType, ok := underlyingEmbedded.(*types.Interface); ok {
+					for j := 0; j < embeddedIfaceType.NumMethods(); j++ {
+						embeddedMethod := embeddedIfaceType.Method(j)
+
+						// Check if method should be exported
+						if !r.shouldExport(embeddedMethod) {
+							continue
+						}
+
+						sig, ok := embeddedMethod.Type().(*types.Signature)
+						if !ok {
+							continue
+						}
+
+						// Create promoted method
+						promotedMethodID := typeID + "#" + embeddedMethod.Name()
+						promotedMethod := typesnew.NewMethod(
+							promotedMethodID,
+							embeddedMethod.Name(),
+							iface,
+							false,
+						)
+						promotedMethod.SetPackage(r.getPackageInfo(embeddedMethod))
+						promotedMethod.SetPromotedFrom(embeddedResolved)
+						promotedMethod.SetStructure(sig.String())
+
+						// Process signature
+						parameters, results := r.processSignature(sig, iface.Package())
+						for _, p := range parameters {
+							promotedMethod.AddParameter(p)
+						}
+						for _, res := range results {
+							promotedMethod.AddResult(res)
+						}
+
+						iface.AddMethods(promotedMethod)
+					}
+				}
 			}
 		}
+
+		// Extract explicit methods
+		var methods []*typesnew.Method
+		for i := 0; i < underlying.NumExplicitMethods(); i++ {
+			method := underlying.ExplicitMethod(i)
+
+			// Check if method should be exported
+			if !r.shouldExport(method) {
+				r.logger.Debugf("Skipping unexported interface method: %s.%s", typeID, method.Name())
+				continue
+			}
+
+			// Get method signature
+			sig, ok := method.Type().(*types.Signature)
+			if !ok {
+				continue
+			}
+
+			// Create method directly - ID is interface#methodName
+			methodID := typeID + "#" + method.Name()
+			m := typesnew.NewMethod(methodID, method.Name(), iface, false)
+			m.SetPackage(r.getPackageInfo(method))
+			m.SetStructure(sig.String())
+
+			// Process signature using helper
+			parameters, results := r.processSignature(sig, iface.Package())
+			for _, p := range parameters {
+				m.AddParameter(p)
+			}
+			for _, r := range results {
+				m.AddResult(r)
+			}
+			// Set object and doc
+			m.SetObject(method)
+			methods = append(methods, m)
+		}
+		iface.AddMethods(methods...)
 
 		return nil
 	})
@@ -1300,6 +1450,14 @@ func (r *defaultTypeResolver) makeStruct(
 	// Create struct type
 	strct := typesnew.NewStruct(typeID, name)
 	r.setupCommonTypeFields(strct, obj, docType, nil)
+
+	// Extract type parameters if this is a generic struct
+	if namedType != nil && namedType.TypeParams() != nil && namedType.TypeParams().Len() > 0 {
+		typeParams := r.extractTypeParameters(namedType.TypeParams(), typeID)
+		for _, tp := range typeParams {
+			strct.AddTypeParam(tp)
+		}
+	}
 
 	// Register in cache early to prevent infinite recursion on self-referencing types
 	r.cache(strct)
@@ -1348,29 +1506,106 @@ func (r *defaultTypeResolver) makeStruct(
 					ptrID := r.generateUnnamedID("pointer")
 					finalFieldType = typesnew.NewPointer(ptrID, ptrID, fieldTypeResolved, pointerDepth)
 					finalFieldType.SetGoType(types.NewPointer(fieldType))
-					// Set package to the struct's package for unnamed types
-					// Get the embedded struct's fields if it's a struct
-					if embeddedStruct, ok := fieldTypeResolved.(*typesnew.Struct); ok {
-						// Add each field from the embedded struct as a promoted field
-						for _, embeddedField := range embeddedStruct.Fields() {
-							fieldID := id + "#" + embeddedField.Name()
-							promotedField := typesnew.NewField(fieldID, embeddedField.Name(), embeddedField.Type(), embeddedField.Tag(), false, strct)
+				}
+
+				// If this is an embedded field, track it separately and promote fields/methods
+				if field.Embedded() {
+					// Add to embeds list instead of fields
+					strct.AddEmbed(finalFieldType)
+
+					// For embedded types, extract fields/methods from the Go type to get instantiated types
+					var embeddedGoType types.Type = fieldType
+
+					// Get the underlying struct type from Go
+					var embeddedStructType *types.Struct
+					if named, ok := embeddedGoType.(*types.Named); ok {
+						if st, ok := named.Underlying().(*types.Struct); ok {
+							embeddedStructType = st
+						}
+					} else if st, ok := embeddedGoType.(*types.Struct); ok {
+						embeddedStructType = st
+					}
+
+					if embeddedStructType != nil {
+						// Promote fields from the embedded struct using the Go type
+						for j := 0; j < embeddedStructType.NumFields(); j++ {
+							embeddedField := embeddedStructType.Field(j)
+
+							// Skip if this is itself an embedded field
+							if embeddedField.Embedded() {
+								continue
+							}
+
+							// Resolve the field type from Go
+							embeddedFieldType, embeddedPointerDepth := r.deferPtr(embeddedField.Type())
+							embeddedFieldTypeResolved := r.ResolveType(embeddedFieldType)
+							if embeddedFieldTypeResolved == nil {
+								continue
+							}
+
+							// Create pointer wrapper if needed
+							var finalEmbeddedFieldType typesnew.Type = embeddedFieldTypeResolved
+							if embeddedPointerDepth > 0 {
+								ptrID := r.generateUnnamedID("pointer")
+								finalEmbeddedFieldType = typesnew.NewPointer(ptrID, ptrID, embeddedFieldTypeResolved, embeddedPointerDepth)
+							}
+
+							promotedFieldID := id + "#" + embeddedField.Name()
+							promotedField := typesnew.NewField(promotedFieldID, embeddedField.Name(), finalEmbeddedFieldType, embeddedStructType.Tag(j), false, strct)
 							promotedField.SetPromotedFrom(finalFieldType)
 							strct.AddField(promotedField)
 						}
+
+						// Promote methods from the embedded type using Go types
+						if namedEmbedded, ok := embeddedGoType.(*types.Named); ok {
+							for k := 0; k < namedEmbedded.NumMethods(); k++ {
+								embeddedMethod := namedEmbedded.Method(k)
+
+								// Check if method should be exported
+								if !r.shouldExport(embeddedMethod) {
+									continue
+								}
+
+								sig, ok := embeddedMethod.Type().(*types.Signature)
+								if !ok {
+									continue
+								}
+
+								// Create promoted method
+								promotedMethodID := id + "#" + embeddedMethod.Name()
+								isPointerReceiver := false
+								if sig.Recv() != nil {
+									_, isPointerReceiver = sig.Recv().Type().(*types.Pointer)
+								}
+								promotedMethod := typesnew.NewMethod(
+									promotedMethodID,
+									embeddedMethod.Name(),
+									strct,
+									isPointerReceiver,
+								)
+								promotedMethod.SetPackage(r.getPackageInfo(embeddedMethod))
+
+								// Process signature
+								parameters, results := r.processSignature(sig, strct.Package())
+								for _, p := range parameters {
+									promotedMethod.AddParameter(p)
+								}
+								for _, res := range results {
+									promotedMethod.AddResult(res)
+								}
+
+								strct.AddMethods(promotedMethod)
+							}
+						}
 					}
-					// Don't add the embedded field itself, only its promoted fields
-					continue
+				} else {
+					// Regular field (not embedded)
+					fieldID := typeID + "#" + field.Name()
+					f := typesnew.NewField(fieldID, field.Name(), finalFieldType, underlying.Tag(i), false, strct)
+					f.SetPackage(strct.Package())
+					f.SetObject(field)
+					strct.AddField(f)
 				}
-
-				// Regular field (not embedded)
-				fieldID := typeID + "#" + field.Name()
-				f := typesnew.NewField(fieldID, field.Name(), finalFieldType, underlying.Tag(i), field.Embedded(), strct)
-				f.SetPackage(strct.Package())
-				// Set object and doc
-				f.SetObject(field)
-
-				strct.AddField(f)
 			}
 		}
 
@@ -1495,7 +1730,7 @@ func (r *defaultTypeResolver) parseValue(obj types.Object, docValue *doc.Value) 
 		}
 
 		r.values.Set(id, value)
-		
+
 		// Load the value to trigger comment loading
 		if err := value.Load(); err != nil {
 			r.logger.Warnf("Failed to load value %s: %v", id, err)
@@ -1503,6 +1738,116 @@ func (r *defaultTypeResolver) parseValue(obj types.Object, docValue *doc.Value) 
 	}
 
 	return value
+}
+
+// makeTypeParameter creates a TypeParameter type
+func (r *defaultTypeResolver) makeTypeParameter(id string, typeParam *types.TypeParam) *typesnew.TypeParameter {
+	// Get the constraint type
+	constraintType := typeParam.Constraint()
+
+	// For type constraints like `M map[string][]int` or `S struct{ Name string }`,
+	// Go wraps them in an unnamed interface. We need to extract the embedded type.
+	if iface, ok := constraintType.(*types.Interface); ok && iface.NumEmbeddeds() == 1 && iface.NumExplicitMethods() == 0 {
+		// This is an interface with a single embedded type and no methods
+		// Extract the embedded type as the actual constraint
+		embeddedType := iface.EmbeddedType(0)
+		constraintType = embeddedType
+	}
+
+	// Resolve the constraint - this will create the full structure
+	constraint := r.ResolveType(constraintType)
+
+	// Force load the constraint to ensure its structure is populated
+	if constraint != nil {
+		if err := constraint.Load(); err != nil {
+			r.logger.Warnf("Failed to load constraint for type parameter %s: %v", id, err)
+		}
+	}
+
+	tp := typesnew.NewTypeParameter(id, typeParam.Obj().Name(), typeParam.Index(), constraint)
+	tp.SetPackage(r.getPackageInfo(typeParam.Obj()))
+	tp.SetObject(typeParam.Obj())
+
+	// Type parameters are not cached globally, they're part of their parent type
+	return tp
+}
+
+// makeUnion creates a Union type
+func (r *defaultTypeResolver) makeUnion(id string, union *types.Union) *typesnew.Union {
+	terms := make([]*typesnew.UnionTerm, union.Len())
+
+	for i := 0; i < union.Len(); i++ {
+		term := union.Term(i)
+		termType := r.ResolveType(term.Type())
+		if termType == nil {
+			r.logger.Warnf("Failed to resolve union term type: %v", term.Type())
+			continue
+		}
+		terms[i] = typesnew.NewUnionTerm(termType, term.Tilde())
+	}
+
+	u := typesnew.NewUnion(id, id, terms)
+	u.SetPackage(r.currentPkg)
+
+	// Unions are not cached globally, they're part of constraints
+	return u
+}
+
+// makeInstantiatedGeneric creates an InstantiatedGeneric type
+func (r *defaultTypeResolver) makeInstantiatedGeneric(id string, origin typesnew.Type, typeArgs []typesnew.TypeArgument) *typesnew.InstantiatedGeneric {
+	// Extract simple name from id (last part after .)
+	name := id
+	if lastDot := strings.LastIndex(id, "."); lastDot >= 0 {
+		name = id[lastDot+1:]
+	}
+
+	ig := typesnew.NewInstantiatedGeneric(id, name, origin, typeArgs)
+	ig.SetPackage(origin.Package())
+
+	// Cache instantiated generics
+	r.cache(ig)
+	return ig
+}
+
+// extractTypeArgumentsWithParams extracts type arguments with parameter names and indices
+func (r *defaultTypeResolver) extractTypeArgumentsWithParams(originType *types.Named, typeList *types.TypeList) []typesnew.TypeArgument {
+	typeArgs := make([]typesnew.TypeArgument, typeList.Len())
+
+	// Get type parameters from the origin type
+	typeParams := originType.TypeParams()
+
+	for i := 0; i < typeList.Len(); i++ {
+		paramName := ""
+		if typeParams != nil && i < typeParams.Len() {
+			paramName = typeParams.At(i).Obj().Name()
+		}
+
+		typeArgs[i] = typesnew.TypeArgument{
+			Param: paramName,
+			Index: i,
+			Type:  r.ResolveType(typeList.At(i)),
+		}
+	}
+	return typeArgs
+}
+
+// extractTypeArgsFromInstantiation extracts type arguments from a named type that's based on a generic
+// For cases like: type MyList GenericList[string]
+// where namedType is MyList and originType is GenericList
+// extractTypeParameters extracts type parameters from a TypeParamList and adds them to a type
+func (r *defaultTypeResolver) extractTypeParameters(typeParamList *types.TypeParamList, parentID string) []*typesnew.TypeParameter {
+	if typeParamList == nil || typeParamList.Len() == 0 {
+		return nil
+	}
+
+	typeParams := make([]*typesnew.TypeParameter, typeParamList.Len())
+	for i := 0; i < typeParamList.Len(); i++ {
+		typeParam := typeParamList.At(i)
+		// Type parameter ID is scoped to parent: ParentType.T
+		tpID := parentID + "." + typeParam.Obj().Name()
+		typeParams[i] = r.makeTypeParameter(tpID, typeParam)
+	}
+	return typeParams
 }
 
 // handleGenerics is a placeholder for future generics handling

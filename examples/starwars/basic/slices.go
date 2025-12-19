@@ -192,18 +192,18 @@ package basic
 // 	AnonymousFunc func(x int) string
 // }
 
-// hello world
-type MyEnum int
+// // hello world
+// type MyEnum int
 
-const (
-	EnumValueA MyEnum = iota // EnumValueA represents the first value
-	EnumValueB               // EnumValueB represents the second value
-	EnumValueC               // EnumValueC represents the third value
-)
+// const (
+// 	EnumValueA MyEnum = iota // EnumValueA represents the first value
+// 	EnumValueB               // EnumValueB represents the second value
+// 	EnumValueC               // EnumValueC represents the third value
+// )
 
-const MY_CONSTANT string = "This is a constant value"
+// const MY_CONSTANT string = "This is a constant value"
 
-var MY_VARIABLE int = 42
+// var MY_VARIABLE int = 42
 
 // // this method gets a value from the map
 // func (ms *MyStruct) GetData(key string) (MyMap, bool) {

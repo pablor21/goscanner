@@ -29,13 +29,13 @@ var (
 // Logger is the interface for logging during generation
 type Logger interface {
 	Debug(msg string)
-	Debugf(format string, args ...interface{})
+	Debugf(format string, args ...any)
 	Info(msg string)
-	Infof(format string, args ...interface{})
+	Infof(format string, args ...any)
 	Warn(msg string)
-	Warnf(format string, args ...interface{})
+	Warnf(format string, args ...any)
 	Error(msg string)
-	Errorf(format string, args ...interface{})
+	Errorf(format string, args ...any)
 	SetLevel(level LogLevel)
 	SetTag(tag string)
 }
@@ -198,7 +198,11 @@ func (l *defaultLogger) Debug(msg string) {
 	l.logger.Debug(msg)
 }
 
-func (l *defaultLogger) Debugf(format string, args ...interface{}) {
+func (l *defaultLogger) Debugf(format string, args ...any) {
+	if len(args) == 0 {
+		l.logger.Debug(format)
+		return
+	}
 	l.logger.Debug(fmt.Sprintf(format, args...))
 }
 
@@ -206,7 +210,7 @@ func (l *defaultLogger) Info(msg string) {
 	l.logger.Info(msg)
 }
 
-func (l *defaultLogger) Infof(format string, args ...interface{}) {
+func (l *defaultLogger) Infof(format string, args ...any) {
 	l.logger.Info(fmt.Sprintf(format, args...))
 }
 
@@ -214,7 +218,7 @@ func (l *defaultLogger) Warn(msg string) {
 	l.logger.Warn(msg)
 }
 
-func (l *defaultLogger) Warnf(format string, args ...interface{}) {
+func (l *defaultLogger) Warnf(format string, args ...any) {
 	l.logger.Warn(fmt.Sprintf(format, args...))
 }
 
@@ -222,6 +226,6 @@ func (l *defaultLogger) Error(msg string) {
 	l.logger.Error(msg)
 }
 
-func (l *defaultLogger) Errorf(format string, args ...interface{}) {
+func (l *defaultLogger) Errorf(format string, args ...any) {
 	l.logger.Error(fmt.Sprintf(format, args...))
 }

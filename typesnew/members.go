@@ -66,23 +66,23 @@ func (f *Field) Serialize() any {
 		parentID = f.parent.Id()
 	}
 
-	var fieldTypeSerialized any
-	if f.fieldType != nil {
-		if f.fieldType.IsNamed() {
-			fieldTypeSerialized = serializeTypeRef(f.fieldType)
-		} else {
-			fieldTypeSerialized = f.fieldType.Serialize()
-		}
-	}
-
 	return &SerializedField{
 		SerializedType: f.serializeBase(),
-		Type:           fieldTypeSerialized,
+		Type:           serializeTypeOrID(f.fieldType),
 		Tag:            f.tag,
 		IsEmbedded:     f.embedded,
 		PromotedFrom:   promotedFromID,
 		Parent:         parentID,
 	}
+	// Old full serialization logic (commented out)
+	// var fieldTypeSerialized any
+	// if f.fieldType != nil {
+	// 	if f.fieldType.IsNamed() {
+	// 		fieldTypeSerialized = serializeTypeRef(f.fieldType)
+	// 	} else {
+	// 		fieldTypeSerialized = f.fieldType.Serialize()
+	// 	}
+	// }
 }
 
 func (f *Field) Load() error {
@@ -174,35 +174,37 @@ func (m *Method) Serialize() any {
 	}
 	params := make([]*SerializedParameter, len(m.params))
 	for i, p := range m.params {
-		var paramTypeSerialized any
-		if p.paramType != nil {
-			if p.paramType.IsNamed() {
-				paramTypeSerialized = serializeTypeRef(p.paramType)
-			} else {
-				paramTypeSerialized = p.paramType.Serialize()
-			}
-		}
 		params[i] = &SerializedParameter{
 			Name:       p.name,
-			Type:       paramTypeSerialized,
+			Type:       serializeTypeOrID(p.paramType),
 			IsVariadic: p.isVariadic,
 		}
+		// Old full serialization logic (commented out)
+		// var paramTypeSerialized any
+		// if p.paramType != nil {
+		// 	if p.paramType.IsNamed() {
+		// 		paramTypeSerialized = serializeTypeRef(p.paramType)
+		// 	} else {
+		// 		paramTypeSerialized = p.paramType.Serialize()
+		// 	}
+		// }
 	}
 
 	results := make([]*SerializedResult, len(m.results))
 	for i, r := range m.results {
-		var resultTypeSerialized any
-		if r.resultType != nil {
-			if r.resultType.IsNamed() {
-				resultTypeSerialized = serializeTypeRef(r.resultType)
-			} else {
-				resultTypeSerialized = r.resultType.Serialize()
-			}
-		}
 		results[i] = &SerializedResult{
 			Name: r.name,
-			Type: resultTypeSerialized,
+			Type: serializeTypeOrID(r.resultType),
 		}
+		// Old full serialization logic (commented out)
+		// var resultTypeSerialized any
+		// if r.resultType != nil {
+		// 	if r.resultType.IsNamed() {
+		// 		resultTypeSerialized = serializeTypeRef(r.resultType)
+		// 	} else {
+		// 		resultTypeSerialized = r.resultType.Serialize()
+		// 	}
+		// }
 	}
 
 	receiverID := ""

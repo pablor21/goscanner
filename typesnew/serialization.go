@@ -73,23 +73,24 @@ type SerializedAlias struct {
 // SerializedParameter represents a serialized parameter
 type SerializedParameter struct {
 	Name       string `json:"name"`
-	Type       any    `json:"type"`
+	Type       any    `json:"type"` // Type ID+kind or full type object for complex types
 	IsVariadic bool   `json:"is_variadic,omitempty"`
 }
 
 // SerializedResult represents a serialized result
 type SerializedResult struct {
 	Name string `json:"name,omitempty"`
-	Type any    `json:"type"`
+	Type any    `json:"type"` // Type ID+kind or full type object for complex types
 }
 
 // SerializedFunction represents a serialized function type
 type SerializedFunction struct {
 	SerializedType
-	Parameters []*SerializedParameter `json:"parameters,omitempty"`
-	Results    []*SerializedResult    `json:"results,omitempty"`
-	IsVariadic bool                   `json:"isVariadic,omitempty"`
-	Structure  string                 `json:"structure,omitempty"`
+	Parameters []*SerializedParameter     `json:"parameters,omitempty"`
+	Results    []*SerializedResult        `json:"results,omitempty"`
+	IsVariadic bool                       `json:"isVariadic,omitempty"`
+	Structure  string                     `json:"structure,omitempty"`
+	TypeParams []*SerializedTypeParameter `json:"typeParams,omitempty"`
 }
 
 // SerializedMethod represents a serialized method
@@ -107,7 +108,7 @@ type SerializedMethod struct {
 // SerializedField represents a serialized field
 type SerializedField struct {
 	SerializedType
-	Type         any    `json:"type"`
+	Type         any    `json:"type"` // Type ID+kind or full type object for complex types
 	Tag          string `json:"tag,omitempty"`
 	IsEmbedded   bool   `json:"isEmbedded,omitempty"`
 	PromotedFrom string `json:"promotedFrom,omitempty"`
@@ -117,14 +118,18 @@ type SerializedField struct {
 // SerializedInterface represents a serialized interface type
 type SerializedInterface struct {
 	SerializedType
-	Methods []*SerializedMethod `json:"methods,omitempty"`
+	Embeds     []any                      `json:"embeds,omitempty"`
+	Methods    []*SerializedMethod        `json:"methods,omitempty"`
+	TypeParams []*SerializedTypeParameter `json:"typeParams,omitempty"`
 }
 
 // SerializedStruct represents a serialized struct type
 type SerializedStruct struct {
 	SerializedType
-	Fields  []*SerializedField  `json:"fields,omitempty"`
-	Methods []*SerializedMethod `json:"methods,omitempty"`
+	Embeds     []any                      `json:"embeds,omitempty"`
+	Fields     []*SerializedField         `json:"fields,omitempty"`
+	Methods    []*SerializedMethod        `json:"methods,omitempty"`
+	TypeParams []*SerializedTypeParameter `json:"typeParams,omitempty"`
 }
 
 // SerializedValue represents a serialized constant or variable
@@ -133,6 +138,32 @@ type SerializedValue struct {
 	Value     any    `json:"value,omitempty"`
 	ValueType any    `json:"valueType"`
 	Parent    string `json:"parent,omitempty"` // ID of parent type (for enum values)
+}
+
+// SerializedTypeParameter represents a serialized type parameter
+type SerializedTypeParameter struct {
+	SerializedType
+	Index      int `json:"index"`
+	Constraint any `json:"constraint,omitempty"` // Reference to constraint type
+}
+
+// SerializedUnionTerm represents a single term in a union
+type SerializedUnionTerm struct {
+	Type          any  `json:"type"`          // Type ID+kind or full type object
+	Approximation bool `json:"approximation"` // true for ~T, false for T
+}
+
+// SerializedUnion represents a serialized union constraint
+type SerializedUnion struct {
+	SerializedType
+	Terms []SerializedUnionTerm `json:"terms"`
+}
+
+// SerializedInstantiatedGeneric represents a serialized instantiated generic
+type SerializedInstantiatedGeneric struct {
+	SerializedType
+	Origin   string `json:"origin"`   // ID of the base generic type
+	TypeArgs []any  `json:"typeArgs"` // Type arguments with param names
 }
 
 // SerializedEnum represents a serialized enum type

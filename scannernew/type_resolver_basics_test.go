@@ -209,10 +209,10 @@ func TestTypeResolver_resolvePointerTypes(t *testing.T) {
 				if ptr.Depth() != tt.wantDepth {
 					t.Errorf("Expected depth %d, got %d", tt.wantDepth, ptr.Depth())
 				}
-				if ptr.Element() == nil {
+				if ptr.Elem() == nil {
 					t.Error("Expected element type, got nil")
-				} else if ptr.Element().Id() != tt.wantElem {
-					t.Errorf("Expected element %s, got %s", tt.wantElem, ptr.Element().Id())
+				} else if ptr.Elem().Id() != tt.wantElem {
+					t.Errorf("Expected element %s, got %s", tt.wantElem, ptr.Elem().Id())
 				}
 			} else {
 				t.Errorf("Expected Pointer type, got %T", got)
@@ -278,10 +278,10 @@ func TestTypeResolver_resolveSliceTypes(t *testing.T) {
 				if slice.Len() != tt.wantLength {
 					t.Errorf("Expected length %d, got %d", tt.wantLength, slice.Len())
 				}
-				if slice.Element() == nil {
+				if slice.Elem() == nil {
 					t.Error("Expected element type, got nil")
-				} else if slice.Element().Id() != tt.wantElem {
-					t.Errorf("Expected element %s, got %s", tt.wantElem, slice.Element().Id())
+				} else if slice.Elem().Id() != tt.wantElem {
+					t.Errorf("Expected element %s, got %s", tt.wantElem, slice.Elem().Id())
 				}
 			} else {
 				t.Errorf("Expected Slice type, got %T", got)
@@ -421,14 +421,14 @@ func TestTypeResolver_resolveChanTypes(t *testing.T) {
 			}
 
 			if ch, ok := got.(*typesnew.Chan); ok {
-				if ch.Element() == nil {
+				if ch.Elem() == nil {
 					t.Error("Expected element type, got nil")
-				} else if ch.Element().Id() != tt.wantElem {
-					t.Errorf("Expected element %s, got %s", tt.wantElem, ch.Element().Id())
+				} else if ch.Elem().Id() != tt.wantElem {
+					t.Errorf("Expected element %s, got %s", tt.wantElem, ch.Elem().Id())
 				}
 
-				if ch.Direction() != tt.wantDir {
-					t.Errorf("Expected direction %v, got %v", tt.wantDir, ch.Direction())
+				if ch.Dir() != tt.wantDir {
+					t.Errorf("Expected direction %v, got %v", tt.wantDir, ch.Dir())
 				}
 			} else {
 				t.Errorf("Expected Chan type, got %T", got)
@@ -687,6 +687,11 @@ func TestTypeResolver_testMakeStruct(t *testing.T) {
 				t.Errorf("resolveType(%v) kind = %v, want %v", tt.name, got.Kind(), tt.wantKind)
 			}
 			if strct, ok := got.(*typesnew.Struct); ok {
+				// Load fields and methods
+				if err := strct.Load(); err != nil {
+					t.Fatalf("Failed to load struct: %v", err)
+				}
+
 				if len(strct.Fields()) != len(tt.wantFields) {
 					t.Errorf("Expected %d fields, got %d", len(tt.wantFields), len(strct.Fields()))
 				} else {
