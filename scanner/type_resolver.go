@@ -1431,7 +1431,7 @@ func (r *defaultTypeResolver) processSignature(sig *types.Signature, pkgContext 
 			}
 		}
 
-		var finalResultType gstypes.Type = resultTypeResolved
+		var finalResultType = resultTypeResolved
 		if pointerDepth > 0 {
 			ptrID := r.generateUnnamedID("pointer")
 			finalResultType = gstypes.NewPointer(ptrID, ptrID, resultTypeResolved, pointerDepth)
@@ -1793,7 +1793,7 @@ func (r *defaultTypeResolver) makeStruct(
 				}
 
 				// Create pointer wrapper if needed
-				var finalFieldType gstypes.Type = fieldTypeResolved
+				var finalFieldType = fieldTypeResolved
 				if pointerDepth > 0 {
 					ptrID := r.generateUnnamedID("pointer")
 					finalFieldType = gstypes.NewPointer(ptrID, ptrID, fieldTypeResolved, pointerDepth)
@@ -1808,7 +1808,7 @@ func (r *defaultTypeResolver) makeStruct(
 					strct.AddEmbed(finalFieldType)
 
 					// For embedded types, extract fields/methods from the Go type to get instantiated types
-					var embeddedGoType types.Type = fieldType
+					var embeddedGoType = fieldType
 
 					// Get the underlying struct type from Go
 					var embeddedStructType *types.Struct
