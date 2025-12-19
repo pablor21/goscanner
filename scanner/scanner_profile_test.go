@@ -18,7 +18,11 @@ func TestProfile_CPUParallelScan(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer f.Close()
+	defer func() {
+		if err := f.Close(); err != nil {
+			t.Logf("failed to close cpu_parallel.prof: %v", err)
+		}
+	}()
 
 	if err := pprof.StartCPUProfile(f); err != nil {
 		t.Fatal(err)
@@ -50,7 +54,11 @@ func TestProfile_CPUSequentialScan(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer f.Close()
+	defer func() {
+		if err := f.Close(); err != nil {
+			t.Logf("failed to close cpu_sequential.prof: %v", err)
+		}
+	}()
 
 	if err := pprof.StartCPUProfile(f); err != nil {
 		t.Fatal(err)
@@ -99,7 +107,11 @@ func TestProfile_MemoryParallelScan(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer f.Close()
+	defer func() {
+		if err := f.Close(); err != nil {
+			t.Logf("failed to close mem_parallel.prof: %v", err)
+		}
+	}()
 
 	if err := pprof.WriteHeapProfile(f); err != nil {
 		t.Fatal(err)
@@ -133,7 +145,11 @@ func TestProfile_MemorySequentialScan(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer f.Close()
+	defer func() {
+		if err := f.Close(); err != nil {
+			t.Logf("failed to close mem_sequential.prof: %v", err)
+		}
+	}()
 
 	if err := pprof.WriteHeapProfile(f); err != nil {
 		t.Fatal(err)
@@ -165,7 +181,11 @@ func TestProfile_Goroutines(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer f.Close()
+	defer func() {
+		if err := f.Close(); err != nil {
+			t.Logf("failed to close goroutine.prof: %v", err)
+		}
+	}()
 
 	if err := pprof.Lookup("goroutine").WriteTo(f, 0); err != nil {
 		t.Fatal(err)
@@ -187,7 +207,11 @@ func TestProfile_TypeResolutionHotPath(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer f.Close()
+	defer func() {
+		if err := f.Close(); err != nil {
+			t.Logf("failed to close cpu_typeresolution.prof: %v", err)
+		}
+	}()
 
 	if err := pprof.StartCPUProfile(f); err != nil {
 		t.Fatal(err)
@@ -246,7 +270,11 @@ func TestProfile_Mutex(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer f.Close()
+	defer func() {
+		if err := f.Close(); err != nil {
+			t.Logf("failed to close mutex.prof: %v", err)
+		}
+	}()
 
 	if err := pprof.Lookup("mutex").WriteTo(f, 0); err != nil {
 		t.Fatal(err)
@@ -281,7 +309,11 @@ func TestProfile_Block(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer f.Close()
+	defer func() {
+		if err := f.Close(); err != nil {
+			t.Logf("failed to close block.prof: %v", err)
+		}
+	}()
 
 	if err := pprof.Lookup("block").WriteTo(f, 0); err != nil {
 		t.Fatal(err)
