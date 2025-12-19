@@ -1,6 +1,7 @@
 package scanner
 
 import (
+	"context"
 	"fmt"
 	"runtime"
 	"sort"
@@ -47,7 +48,7 @@ func (s *DefaultScanner) ScanWithConfig(config *Config) (*ScanningResult, error)
 		return s.Scan()
 	}
 	// init the scanning context with the provided configuration
-	ctx := NewScanningContext(config)
+	ctx := NewScanningContext(context.Background(), config)
 	return s.ScanWithContext(ctx)
 }
 
