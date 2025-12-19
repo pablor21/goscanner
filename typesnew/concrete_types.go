@@ -13,22 +13,26 @@ import (
 
 // serializeTypeRef serializes a type as a reference (basic info only)
 func serializeTypeRef(t Type) any {
+	if t == nil {
+		return nil
+	}
+
+	// For unnamed types, we need full serialization since they won't appear in the global types registry
+	// Named types can be just a reference since they're in the cache
+	if !t.IsNamed() {
+		return t.Serialize()
+	}
+
 	// For InstantiatedGeneric, include full serialization with origin and typeArgs
 	if ig, ok := t.(*InstantiatedGeneric); ok {
 		return ig.Serialize()
 	}
 
-	// Simplified: just return the ID to reduce bloat
-	return t.Id()
-
-	// Full reference with all metadata (commented out for now)
-	// return &SerializedType{
-	// 	ID:      t.Id(),
-	// 	Name:    t.Name(),
-	// 	Kind:    t.Kind(),
-	// 	IsNamed: t.IsNamed(),
-	// 	Package: getPackagePath(t),
-	// }
+	// For named types, return minimal reference (they're in the global registry)
+	return map[string]any{
+		"id":   t.Id(),
+		"kind": t.Kind(),
+	}
 }
 
 // serializeTypeOrID returns either a full type object (for complex types like anonymous structs)
@@ -38,31 +42,15 @@ func serializeTypeOrID(t Type) any {
 		return nil
 	}
 
-	// For anonymous/complex types that need full serialization, return the full object
-	// Examples: anonymous structs, function types, etc.
-	switch t.Kind() {
-	case TypeKindStruct, TypeKindInterface, TypeKindFunction:
-		// Check if it's named - if not, serialize fully
-		if !t.IsNamed() {
-			return t.Serialize()
-		}
-	case TypeKindInstantiated:
-		// InstantiatedGeneric always gets full serialization
-		return t.Serialize()
-	}
-
-	// For everything else (named types, basic types, etc.), return minimal reference
-	return map[string]any{
-		"id":   t.Id(),
-		"kind": t.Kind(),
-	}
-
-	// Old: just ID string
-	// return t.Id()
-
-	// Old full reference (commented out)
-	// return serializeTypeRef(t)
+	// Use the same logic as serializeTypeRef
+	return serializeTypeRef(t)
 }
+
+// Old: just ID string
+// return t.Id()
+
+// Old full reference (commented out)
+// return serializeTypeRef(t)
 
 func getPackagePath(t Type) string {
 	if t.Package() != nil {

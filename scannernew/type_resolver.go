@@ -147,6 +147,38 @@ func (r *defaultTypeResolver) getPackageInfo(obj types.Object) *typesnew.Package
 	return r.currentPkg
 }
 
+// getPackageForObj returns the raw packages.Package for the given object
+func (r *defaultTypeResolver) getPackageForObj(obj types.Object) *packages.Package {
+	if obj != nil && obj.Pkg() != nil {
+		pkgPath := obj.Pkg().Path()
+		if pkg, exists := r.pkgs[pkgPath]; exists {
+			return pkg
+		}
+	}
+	return nil
+}
+
+// getModuleRelativePath converts an OS path to a module-relative path
+// e.g., /workspace/goscanner/examples/starwars/basic/aliases.go -> github.com/pablor21/goscanner/examples/starwars/basic/aliases.go
+func (r *defaultTypeResolver) getModuleRelativePath(osPath string, pkgPath string) string {
+	if osPath == "" || pkgPath == "" {
+		return osPath
+	}
+
+	// Extract filename from OS path
+	fileName := osPath
+	if idx := strings.LastIndex(osPath, "/"); idx >= 0 {
+		fileName = osPath[idx+1:]
+	}
+
+	// Combine package path + filename
+	var sb strings.Builder
+	sb.WriteString(pkgPath)
+	sb.WriteString("/")
+	sb.WriteString(fileName)
+	return sb.String()
+}
+
 // loadExternalPackageDoc loads documentation for an external package if not already loaded
 func (r *defaultTypeResolver) loadExternalPackageDoc(pkgPath string, obj types.Object) *doc.Type {
 	// Don't try to load if we don't have the object
@@ -553,11 +585,23 @@ func (r *defaultTypeResolver) cache(t typesnew.Type) {
 	r.types.Set(t.Id(), t)
 }
 
-// setupCommonTypeFields sets common fields on a type (package, object, doc, goType)
+// setupCommonTypeFields sets common fields on a type (package, object, doc, goType, files)
 func (r *defaultTypeResolver) setupCommonTypeFields(t typesnew.Type, obj types.Object, docType *doc.Type, goType types.Type) {
 	t.SetPackage(r.getPackageInfo(obj))
 	if obj != nil {
 		t.SetObject(obj)
+		// Set the file where this type is defined
+		if obj.Pos().IsValid() {
+			pkg := r.getPackageForObj(obj)
+			if pkg != nil {
+				pos := pkg.Fset.Position(obj.Pos())
+				if pos.Filename != "" {
+					// Convert OS path to module-relative path
+					modulePath := r.getModuleRelativePath(pos.Filename, obj.Pkg().Path())
+					t.SetFiles([]string{modulePath})
+				}
+			}
+		}
 	}
 	if docType != nil {
 		t.SetDoc(docType)
@@ -763,6 +807,15 @@ func (r *defaultTypeResolver) makeCollection(
 		return nil
 	}
 
+	// For unnamed element types, set package to parent's package (except basic types)
+	if !elem.IsNamed() {
+		if _, isBasic := elem.(*typesnew.Basic); !isBasic {
+			if namedType != nil && obj != nil {
+				elem.SetPackage(r.getPackageInfo(obj))
+			}
+		}
+	}
+
 	// Check if it's an array
 	var slice *typesnew.Slice
 	// Named types: id=canonical name, name=simple name
@@ -891,6 +944,22 @@ func (r *defaultTypeResolver) makeMap(
 		return nil
 	}
 
+	// For unnamed key/value types, set package to parent's package (except basic types)
+	if !key.IsNamed() {
+		if _, isBasic := key.(*typesnew.Basic); !isBasic {
+			if namedType != nil && obj != nil {
+				key.SetPackage(r.getPackageInfo(obj))
+			}
+		}
+	}
+	if !value.IsNamed() {
+		if _, isBasic := value.(*typesnew.Basic); !isBasic {
+			if namedType != nil && obj != nil {
+				value.SetPackage(r.getPackageInfo(obj))
+			}
+		}
+	}
+
 	// Create map type
 	// Named types: id=canonical name, name=simple name
 	// Unnamed types: id=generated ID, name=generated ID
@@ -988,6 +1057,16 @@ func (r *defaultTypeResolver) makeChannel(
 		return nil
 	}
 
+	// For unnamed element types, set package to parent's package (except basic types)
+	if !elem.IsNamed() {
+		if _, isBasic := elem.(*typesnew.Basic); !isBasic {
+			// Inherit package from parent if parent is named, otherwise use current
+			if namedType != nil && obj != nil {
+				elem.SetPackage(r.getPackageInfo(obj))
+			}
+		}
+	}
+
 	// Create channel type
 	// Named types: id=canonical name, name=simple name
 	// Unnamed types: id=generated ID, name=generated ID
@@ -1082,6 +1161,54 @@ func (r *defaultTypeResolver) extractMethods(
 
 }
 
+// setUnnamedTypePackages recursively sets the package for all unnamed types in a type tree
+func (r *defaultTypeResolver) setUnnamedTypePackages(t typesnew.Type, pkg *typesnew.Package) {
+	if t == nil || pkg == nil || t.IsNamed() {
+		return
+	}
+
+	// Skip basic types - they have no package
+	if _, isBasic := t.(*typesnew.Basic); isBasic {
+		return
+	}
+
+	// Set package on this unnamed type
+	t.SetPackage(pkg)
+
+	// Recursively fix nested types based on type kind
+	switch typed := t.(type) {
+	case *typesnew.Pointer:
+		r.setUnnamedTypePackages(typed.Elem(), pkg)
+	case *typesnew.Slice:
+		r.setUnnamedTypePackages(typed.Elem(), pkg)
+	case *typesnew.Chan:
+		r.setUnnamedTypePackages(typed.Elem(), pkg)
+	case *typesnew.Map:
+		r.setUnnamedTypePackages(typed.Key(), pkg)
+		r.setUnnamedTypePackages(typed.Value(), pkg)
+	case *typesnew.Struct:
+		for _, field := range typed.Fields() {
+			r.setUnnamedTypePackages(field.Type(), pkg)
+		}
+	case *typesnew.Interface:
+		for _, method := range typed.Methods() {
+			for _, param := range method.Parameters() {
+				r.setUnnamedTypePackages(param.Type(), pkg)
+			}
+			for _, result := range method.Results() {
+				r.setUnnamedTypePackages(result.Type(), pkg)
+			}
+		}
+	case *typesnew.Function:
+		for _, param := range typed.Parameters() {
+			r.setUnnamedTypePackages(param.Type(), pkg)
+		}
+		for _, result := range typed.Results() {
+			r.setUnnamedTypePackages(result.Type(), pkg)
+		}
+	}
+}
+
 // processSignature processes a function signature and returns parameters and results
 // This is a helper function used by both functions and methods to avoid code duplication
 // pkgContext is the package to assign to unnamed types (nil means use currentPkg)
@@ -1101,13 +1228,11 @@ func (r *defaultTypeResolver) processSignature(sig *types.Signature, pkgContext 
 
 		// For unnamed parameter types, set package to context package (except basic types)
 		if !paramTypeResolved.IsNamed() {
-			// Skip basic types - they are predeclared and have no package
-			if _, isBasic := paramTypeResolved.(*typesnew.Basic); !isBasic {
-				if pkgContext != nil {
-					paramTypeResolved.SetPackage(pkgContext)
-				} else {
-					paramTypeResolved.SetPackage(r.currentPkg)
-				}
+			// Recursively fix package for this type and all nested unnamed types
+			if pkgContext != nil {
+				r.setUnnamedTypePackages(paramTypeResolved, pkgContext)
+			} else {
+				r.setUnnamedTypePackages(paramTypeResolved, r.currentPkg)
 			}
 		}
 
@@ -1140,13 +1265,11 @@ func (r *defaultTypeResolver) processSignature(sig *types.Signature, pkgContext 
 
 		// For unnamed result types, set package to context package (except basic types)
 		if !resultTypeResolved.IsNamed() {
-			// Skip basic types - they are predeclared and have no package
-			if _, isBasic := resultTypeResolved.(*typesnew.Basic); !isBasic {
-				if pkgContext != nil {
-					resultTypeResolved.SetPackage(pkgContext)
-				} else {
-					resultTypeResolved.SetPackage(r.currentPkg)
-				}
+			// Recursively fix package for this type and all nested unnamed types
+			if pkgContext != nil {
+				r.setUnnamedTypePackages(resultTypeResolved, pkgContext)
+			} else {
+				r.setUnnamedTypePackages(resultTypeResolved, r.currentPkg)
 			}
 		}
 
@@ -1873,15 +1996,93 @@ func (r *defaultTypeResolver) shouldExport(obj types.Object) bool {
 }
 
 // extractComments extracts comments for all declarations from parsed AST files
+// extractCommentsBetweenPackageAndImports extracts comments between package declaration and first import/declaration
+func (r *defaultTypeResolver) extractCommentsBetweenPackageAndImports(file *ast.File, pkg *packages.Package) []string {
+	var results []string
+	pkgEnd := file.Package
+	var firstImportPos, firstDeclPos ast.Node
+
+	for _, decl := range file.Decls {
+		if gen, ok := decl.(*ast.GenDecl); ok && gen.Tok == 2 { // token.IMPORT = 2
+			firstImportPos = gen
+			break
+		}
+	}
+
+	if len(file.Decls) > 0 {
+		firstDeclPos = file.Decls[0]
+	}
+
+	// Use the earlier of firstImportPos or firstDeclPos
+	var stopPos ast.Node
+	if firstImportPos != nil && firstDeclPos != nil {
+		if firstImportPos.Pos() < firstDeclPos.Pos() {
+			stopPos = firstImportPos
+		} else {
+			stopPos = firstDeclPos
+		}
+	} else if firstImportPos != nil {
+		stopPos = firstImportPos
+	} else if firstDeclPos != nil {
+		stopPos = firstDeclPos
+	}
+
+	for _, cg := range file.Comments {
+		if cg.Pos() > pkgEnd && (stopPos == nil || cg.End() < stopPos.Pos()) {
+			// Check if comment is attached to first declaration
+			attached := false
+			if firstDeclPos != nil && pkg.Fset != nil {
+				commentEndLine := pkg.Fset.Position(cg.End()).Line
+				declLine := pkg.Fset.Position(firstDeclPos.Pos()).Line
+				if declLine == commentEndLine+1 {
+					attached = true
+				}
+			}
+			if !attached {
+				results = append(results, strings.TrimSpace(cg.Text()))
+			}
+		}
+	}
+	return results
+}
+
 func (r *defaultTypeResolver) extractComments(pkgInfo *typesnew.Package, pkg *packages.Package) error {
-	for _, file := range pkg.Syntax {
+	for i, file := range pkg.Syntax {
+		// Determine file path
+		var osPath string
+		if i < len(pkg.CompiledGoFiles) {
+			osPath = pkg.CompiledGoFiles[i]
+		}
+
+		// Extract filename from path
+		fileName := osPath
+		if idx := strings.LastIndex(osPath, "/"); idx >= 0 {
+			fileName = osPath[idx+1:]
+		}
+
+		// Convert to module-relative path
+		modulePath := r.getModuleRelativePath(osPath, pkg.PkgPath)
+
+		// Create File object
+		fileInfo := typesnew.NewFile(modulePath, fileName)
+
 		// Extract package-level comments
 		if file.Doc != nil {
 			pkgLevelComment := strings.TrimSpace(file.Doc.Text())
 			if pkgLevelComment != "" {
-				pkgInfo.AddComments("#PACKAGE_DOC", []typesnew.Comment{typesnew.NewComment(pkgLevelComment, typesnew.CommentPlacementPackage)})
+				pkgInfo.AddComments(typesnew.PackageCommentID, []typesnew.Comment{typesnew.NewComment(pkgLevelComment, typesnew.CommentPlacementPackage)})
+				fileInfo.SetComments([]typesnew.Comment{typesnew.NewComment(pkgLevelComment, typesnew.CommentPlacementPackage)})
 			}
 		}
+
+		// Extract file-level comments (between package and imports)
+		fileComments := r.extractCommentsBetweenPackageAndImports(file, pkg)
+		if len(fileComments) > 0 {
+			fileInfo.AddComments(typesnew.NewComment(strings.Join(fileComments, "\n"), typesnew.CommentPlacementFile))
+		}
+
+		// Add file to package
+		pkgInfo.AddFile(fileInfo)
 
 		// Extract declarations
 		for _, decl := range file.Decls {

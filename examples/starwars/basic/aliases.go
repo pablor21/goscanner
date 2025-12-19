@@ -1,5 +1,7 @@
 package basic
 
+import "net/http"
+
 // // Example type aliases
 // type StringAlias = string
 
@@ -67,21 +69,21 @@ package basic
 // }
 
 type GenericWithConstraints[T interface {
-	ConstraintMethod() bool
+	ConstraintMethod() http.ServeMux
 }] struct {
 	GenericField T
 }
 
-func (gwc *GenericWithConstraints[T]) CheckConstraint(x T) bool {
+func (gwc *GenericWithConstraints[T]) CheckConstraint(x T) http.ServeMux {
 	return gwc.GenericField.ConstraintMethod()
 }
 
 type ConstraintImpl struct {
 }
 
-func (ci ConstraintImpl) ConstraintMethod() bool {
+func (ci ConstraintImpl) ConstraintMethod() http.ServeMux {
 
-	return true
+	return http.ServeMux{}
 }
 
 type AliasForGenericWithConstraints GenericWithConstraints[ConstraintImpl]

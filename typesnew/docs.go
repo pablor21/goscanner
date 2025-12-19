@@ -198,17 +198,19 @@ func (p *Package) SetPackageComments(comments []Comment) {
 
 func (p *Package) Serialize() any {
 	return struct {
-		Path        string    `json:"path,omitempty"`
-		Name        string    `json:"name,omitempty"`
-		Files       any       `json:"files,omitempty"`
-		Types       any       `json:"types,omitempty"`
-		PkgComments []Comment `json:"package_comments,omitempty"`
+		Path  string `json:"path,omitempty"`
+		Name  string `json:"name,omitempty"`
+		Files any    `json:"files,omitempty"`
+		// Types       any                  `json:"types,omitempty"`
+		PkgComments []Comment `json:"comments,omitempty"`
+		// Comments    map[string][]Comment `json:"comments,omitempty"`
 	}{
-		Path:        p.path,
-		Name:        p.name,
-		Files:       p.files.Serialize(),
-		Types:       p.types.Serialize(),
+		Path:  p.path,
+		Name:  p.name,
+		Files: p.files.Serialize(),
+		// Types:       p.types.Serialize(),
 		PkgComments: p.pkgComments,
+		// Comments:    p.comments,
 	}
 }
 
@@ -254,6 +256,10 @@ func (f *File) Comments() []Comment {
 
 func (f *File) SetComments(comments []Comment) {
 	f.comments = comments
+}
+
+func (f *File) AddComments(comment Comment) {
+	f.comments = append(f.comments, comment)
 }
 
 func ExtractComments(doc string) string {

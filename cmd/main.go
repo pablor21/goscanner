@@ -28,19 +28,8 @@ func main() {
 
 	serializedret := ret.Serialize()
 
-	// // load details for each type
-	// for _, v := range ret.Types {
-	// 	err = v.Load()
-	// 	if err != nil {
-	// 		panic(err)
-	// 	}
-
-	// 	// Trigger comment extraction
-	// 	// v.GetComments()
-	// }
-
 	// convert the ret to a json
-	b, err := json.MarshalIndent(serializedret, "", "  ")
+	b, err := json.MarshalIndent(serializedret, "", "\t")
 	if err != nil {
 		panic(err)
 	}

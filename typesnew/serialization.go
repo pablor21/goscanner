@@ -7,6 +7,7 @@ type SerializedType struct {
 	Kind     TypeKind  `json:"kind"`
 	IsNamed  bool      `json:"named,omitempty"`
 	Package  string    `json:"package,omitempty"`
+	Files    []string  `json:"files,omitempty"`
 	Comments []Comment `json:"comments,omitempty"`
 }
 
@@ -22,6 +23,7 @@ func (b *baseType) serializeBase() SerializedType {
 		Kind:     b.kind,
 		IsNamed:  b.obj != nil,
 		Package:  pkgPath,
+		Files:    b.files,
 		Comments: b.comments,
 	}
 }

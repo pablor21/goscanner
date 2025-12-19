@@ -3,6 +3,7 @@ package types
 import (
 	"go/ast"
 
+	"github.com/pablor21/goscanner/typesnew"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -147,7 +148,7 @@ func (p *Package) AddFiles(f ...*File) {
 
 func (p *Package) AddComments(objID string, comments []Comment) {
 	p.namedComments[objID] = append(p.namedComments[objID], comments...)
-	if objID == "#PACKAGE_DOC" {
+	if objID == typesnew.PackageCommentID {
 		p.CommentsCol = append(p.CommentsCol, comments...)
 	}
 }

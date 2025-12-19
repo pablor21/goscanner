@@ -1,21 +1,30 @@
 {
     // List of packages or package patterns to scan (relative to the config file or executable)
     "packages": [
-        // "../examples/starwars/basic",
         "./...",
         "!../main"
     ],
+    // Scan modes: "basic", "default", "full", or a comma-separated list of:
+    // "types", "methods", "fields", "functions", "docs", "comments", "consts", "vars"
     "scan_mode": "full",
     // Visibility levels: "exported", "all", "none"
-    "field_visibility": "all",
-    // Visibility levels: "exported", "all", "none"
-    "method_visibility": "all",
-    // Visibility levels: "exported", "all", "none"
-    "function_visibility": "all",
-    // Visibility levels: "exported", "all", "none"
-    "type_visibility": "all",
-    // Visibility levels: "exported", "all", "none"
-    "enum_visibility": "all",
+    "visibility": "all",
     // Log levels: "debug", "info", "warn", "error"
-    "log_level": "info"
+    "log_level": "info",
+    "external_packages_options": {
+        // Scan modes: "basic", "default", "full", or a comma-separated list of:
+        // "types", "methods", "fields", "functions", "docs", "comments", "consts", "vars"
+        "scan_mode": "all",
+        // Whether to parse files for external packages to extract comments and docs
+        "parse_files": false,
+        // Visibility levels: "exported", "all", "none"
+        "visibility": "exported",
+        // list of packages or package patterns that are
+        // enabled for external scanning
+        "packages": [],
+        // Maximum distance for dependency scanning (how far to go in the dependency graph)
+        "max_distance": 3,
+        // How to handle out-of-scope packages
+        "out_of_scope": "ignore"  // "ignore", "warn", "error"
+    }
 }

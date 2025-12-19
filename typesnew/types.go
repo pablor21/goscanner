@@ -127,6 +127,12 @@ type Type interface {
 	// SetPackage sets the package for this type
 	SetPackage(pkg *Package)
 
+	// Files returns the files where this type is defined
+	Files() []string
+
+	// SetFiles sets the files where this type is defined
+	SetFiles(files []string)
+
 	// SetGoType sets the original go/types.Type (used for unnamed types)
 	SetGoType(t types.Type)
 
@@ -218,6 +224,7 @@ type baseType struct {
 	loadOnce       sync.Once
 	commentId      string
 	commentsLoaded bool
+	files          []string // Files where this type is defined
 }
 
 // newBaseType creates a new base type
@@ -279,6 +286,16 @@ func (b *baseType) SetPackage(pkg *Package) {
 	b.commentsLoaded = false
 	// clean previous comments
 	b.comments = []Comment{}
+}
+
+// Files returns the files where this type is defined
+func (b *baseType) Files() []string {
+	return b.files
+}
+
+// SetFiles sets the files where this type is defined
+func (b *baseType) SetFiles(files []string) {
+	b.files = files
 }
 
 // SetObject sets the go/types.Object
