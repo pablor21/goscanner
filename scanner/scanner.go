@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"runtime"
 	"sort"
+	"sync"
 	"time"
 
 	"golang.org/x/tools/go/packages"
@@ -115,13 +116,49 @@ func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (*ScanningResult,
 		registerDeps(pkg)
 	}
 
-	// process the packages and generate the scanning result
+	// Process packages in parallel using worker pool
+	// Number of workers = configured max_concurrency (0 means CPU cores)
+	numWorkers := ctx.Config.MaxConcurrency
+	if numWorkers <= 0 {
+		numWorkers = runtime.NumCPU()
+	}
+	if len(pkgs) < numWorkers {
+		numWorkers = len(pkgs)
+	}
+
+	var wg sync.WaitGroup
+	pkgChan := make(chan *packages.Package, len(pkgs))
+	errChan := make(chan error, len(pkgs))
+
+	// Start worker goroutines
+	for i := 0; i < numWorkers; i++ {
+		wg.Add(1)
+		go func(workerID int) {
+			defer wg.Done()
+			for pkg := range pkgChan {
+				// Each worker gets its own context copy with the package
+				workerCtx := ctx.WithPackage(nil) // Reset to clean state for this package
+				if err := s.TypeResolver.ProcessPackage(workerCtx, pkg); err != nil {
+					errChan <- fmt.Errorf("worker %d failed to process %s: %w", workerID, pkg.PkgPath, err)
+					return
+				}
+			}
+		}(i)
+	}
+
+	// Send packages to workers
 	for _, pkg := range pkgs {
-		// scan the package for types
-		err := s.ScanTypes(pkg)
-		if err != nil {
-			return nil, err
-		}
+		pkgChan <- pkg
+	}
+	close(pkgChan)
+
+	// Wait for all workers to complete
+	wg.Wait()
+	close(errChan)
+
+	// Check for errors
+	if len(errChan) > 0 {
+		return nil, <-errChan
 	}
 
 	totalPackages = len(pkgs)

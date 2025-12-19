@@ -11,6 +11,9 @@
     "visibility": "all",
     // Log levels: "debug", "info", "warn", "error"
     "log_level": "info",
+    // Maximum concurrency (0 means number of CPU cores or number of packages, whichever is smaller)
+    "max_concurrency": 0, 
+    // external packages scanning options
     "external_packages_options": {
         // Scan modes: "basic", "default", "full", or a comma-separated list of:
         // "types", "methods", "fields", "functions", "docs", "comments", "consts", "vars"

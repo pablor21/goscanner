@@ -2153,7 +2153,7 @@
 			"kind": "basic",
 			"named": true,
 			"exported": true,
-			"distance": 1,
+			"distance": 4,
 			"package": "crypto",
 			"files": [
 				"crypto/crypto.go"
@@ -8243,7 +8243,7 @@
 			"kind": "interface",
 			"named": true,
 			"exported": true,
-			"distance": 1,
+			"distance": 4,
 			"package": "hash",
 			"files": [
 				"hash/hash.go"
@@ -8265,7 +8265,7 @@
 					"id": "hash.Hash#Write",
 					"name": "Write",
 					"kind": "method",
-					"distance": 1,
+					"distance": 4,
 					"package": "io",
 					"parameters": [
 						{
@@ -8313,7 +8313,7 @@
 					"name": "BlockSize",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 4,
 					"package": "hash",
 					"comments": [
 						{
@@ -8339,7 +8339,7 @@
 					"name": "Reset",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 4,
 					"package": "hash",
 					"comments": [
 						{
@@ -8356,7 +8356,7 @@
 					"name": "Size",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 4,
 					"package": "hash",
 					"comments": [
 						{
@@ -8382,7 +8382,7 @@
 					"name": "Sum",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 4,
 					"package": "hash",
 					"comments": [
 						{
@@ -21666,7 +21666,7 @@
 			"kind": "struct",
 			"named": true,
 			"exported": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "net/http/httptrace",
 			"files": [
 				"net/http/httptrace/trace.go"
@@ -21683,7 +21683,7 @@
 					"name": "GetConn",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -21714,7 +21714,7 @@
 					"name": "GotConn",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -21744,7 +21744,7 @@
 					"name": "PutIdleConn",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -21775,7 +21775,7 @@
 					"name": "GotFirstResponseByte",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -21796,7 +21796,7 @@
 					"name": "Got100Continue",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -21817,7 +21817,7 @@
 					"name": "Got1xxResponse",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -21864,7 +21864,7 @@
 					"name": "DNSStart",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -21894,7 +21894,7 @@
 					"name": "DNSDone",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -21924,7 +21924,7 @@
 					"name": "ConnectStart",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -21963,7 +21963,7 @@
 					"name": "ConnectDone",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -22010,7 +22010,7 @@
 					"name": "TLSHandshakeStart",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -22031,7 +22031,7 @@
 					"name": "TLSHandshakeDone",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -22069,7 +22069,7 @@
 					"name": "WroteHeaderField",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -22116,7 +22116,7 @@
 					"name": "WroteHeaders",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -22137,7 +22137,7 @@
 					"name": "Wait100Continue",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -22158,7 +22158,7 @@
 					"name": "WroteRequest",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -22190,7 +22190,7 @@
 					"name": "compose",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"parameters": [
 						{
@@ -22218,7 +22218,7 @@
 					"name": "hasNetHooks",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"results": [
 						{
@@ -22241,7 +22241,7 @@
 			"kind": "struct",
 			"named": true,
 			"exported": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "net/http/httptrace",
 			"files": [
 				"net/http/httptrace/trace.go"
@@ -22258,7 +22258,7 @@
 					"name": "Addrs",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -22285,7 +22285,7 @@
 					"name": "Err",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -22305,7 +22305,7 @@
 					"name": "Coalesced",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -22328,7 +22328,7 @@
 			"kind": "struct",
 			"named": true,
 			"exported": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "net/http/httptrace",
 			"files": [
 				"net/http/httptrace/trace.go"
@@ -22345,7 +22345,7 @@
 					"name": "Host",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"type": {
 						"id": "string",
@@ -22362,7 +22362,7 @@
 			"kind": "struct",
 			"named": true,
 			"exported": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "net/http/httptrace",
 			"files": [
 				"net/http/httptrace/trace.go"
@@ -22379,7 +22379,7 @@
 					"name": "Conn",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -22398,7 +22398,7 @@
 					"name": "Reused",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -22418,7 +22418,7 @@
 					"name": "WasIdle",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -22438,7 +22438,7 @@
 					"name": "IdleTime",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -22460,7 +22460,7 @@
 			"kind": "struct",
 			"named": true,
 			"exported": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "net/http/httptrace",
 			"files": [
 				"net/http/httptrace/trace.go"
@@ -22477,7 +22477,7 @@
 					"name": "Err",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "net/http/httptrace",
 					"comments": [
 						{
@@ -24221,7 +24221,7 @@
 			"kind": "basic",
 			"named": true,
 			"exported": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "time",
 			"files": [
 				"time/time.go"
@@ -24238,7 +24238,7 @@
 			"kind": "struct",
 			"named": true,
 			"exported": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "time",
 			"files": [
 				"time/zoneinfo.go"
@@ -24255,7 +24255,7 @@
 					"name": "name",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"type": {
 						"id": "string",
@@ -24269,7 +24269,7 @@
 					"name": "zone",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"type": {
 						"id": "__unnamed_slice__186__",
@@ -24290,7 +24290,7 @@
 					"name": "tx",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"type": {
 						"id": "__unnamed_slice__187__",
@@ -24311,7 +24311,7 @@
 					"name": "extend",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"comments": [
 						{
@@ -24331,7 +24331,7 @@
 					"name": "cacheStart",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"comments": [
 						{
@@ -24351,7 +24351,7 @@
 					"name": "cacheEnd",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"type": {
 						"id": "int64",
@@ -24365,13 +24365,13 @@
 					"name": "cacheZone",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"type": {
 						"id": "__unnamed_pointer__214__",
 						"name": "__unnamed_pointer__214__",
 						"kind": "pointer",
-						"distance": 1,
+						"distance": 2,
 						"package": "time",
 						"element": {
 							"id": "time.zone",
@@ -24389,7 +24389,7 @@
 					"name": "get",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -24416,7 +24416,7 @@
 					"name": "String",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -24436,7 +24436,7 @@
 					"name": "lookup",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -24499,7 +24499,7 @@
 					"name": "lookupFirstZone",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -24519,7 +24519,7 @@
 					"name": "firstZoneUsed",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -24539,7 +24539,7 @@
 					"name": "lookupName",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -24589,7 +24589,7 @@
 			"kind": "basic",
 			"named": true,
 			"exported": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "time",
 			"files": [
 				"time/time.go"
@@ -24606,7 +24606,7 @@
 			"kind": "struct",
 			"named": true,
 			"exported": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "time",
 			"files": [
 				"time/time.go"
@@ -24623,7 +24623,7 @@
 					"name": "wall",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"comments": [
 						{
@@ -24643,7 +24643,7 @@
 					"name": "ext",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"type": {
 						"id": "int64",
@@ -24657,7 +24657,7 @@
 					"name": "loc",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"comments": [
 						{
@@ -24669,7 +24669,7 @@
 						"id": "__unnamed_pointer__90__",
 						"name": "__unnamed_pointer__90__",
 						"kind": "pointer",
-						"distance": 1,
+						"distance": 2,
 						"package": "time",
 						"element": {
 							"id": "time.Location",
@@ -24687,7 +24687,7 @@
 					"name": "String",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -24707,7 +24707,7 @@
 					"name": "GoString",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -24727,7 +24727,7 @@
 					"name": "Format",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -24757,7 +24757,7 @@
 					"name": "AppendFormat",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -24811,7 +24811,7 @@
 					"name": "appendFormat",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -24865,7 +24865,7 @@
 					"name": "appendFormatRFC3339",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -24919,7 +24919,7 @@
 					"name": "appendStrictRFC3339",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -24972,7 +24972,7 @@
 					"name": "nsec",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -24992,7 +24992,7 @@
 					"name": "sec",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25012,7 +25012,7 @@
 					"name": "unixSec",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25032,7 +25032,7 @@
 					"name": "addSec",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -25053,7 +25053,7 @@
 					"name": "setLoc",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -25081,7 +25081,7 @@
 					"name": "stripMono",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"isPointerReceiver": true,
 					"receiver": "time.Time",
@@ -25092,7 +25092,7 @@
 					"name": "setMono",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -25113,7 +25113,7 @@
 					"name": "mono",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25133,7 +25133,7 @@
 					"name": "IsZero",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25153,7 +25153,7 @@
 					"name": "After",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -25182,7 +25182,7 @@
 					"name": "Before",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -25211,7 +25211,7 @@
 					"name": "Compare",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -25240,7 +25240,7 @@
 					"name": "Equal",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -25269,7 +25269,7 @@
 					"name": "absSec",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25288,7 +25288,7 @@
 					"name": "locabs",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25324,7 +25324,7 @@
 					"name": "Date",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25360,7 +25360,7 @@
 					"name": "Year",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25380,7 +25380,7 @@
 					"name": "Month",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25399,7 +25399,7 @@
 					"name": "Day",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25419,7 +25419,7 @@
 					"name": "Weekday",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25438,7 +25438,7 @@
 					"name": "ISOWeek",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25467,7 +25467,7 @@
 					"name": "Clock",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25504,7 +25504,7 @@
 					"name": "Hour",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25524,7 +25524,7 @@
 					"name": "Minute",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25544,7 +25544,7 @@
 					"name": "Second",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25564,7 +25564,7 @@
 					"name": "Nanosecond",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25584,7 +25584,7 @@
 					"name": "YearDay",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25604,7 +25604,7 @@
 					"name": "Add",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -25632,7 +25632,7 @@
 					"name": "Sub",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -25660,7 +25660,7 @@
 					"name": "AddDate",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -25705,7 +25705,7 @@
 					"name": "UTC",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25724,7 +25724,7 @@
 					"name": "Local",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25743,7 +25743,7 @@
 					"name": "In",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -25779,7 +25779,7 @@
 					"name": "Location",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25806,7 +25806,7 @@
 					"name": "Zone",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25835,7 +25835,7 @@
 					"name": "ZoneBounds",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25862,7 +25862,7 @@
 					"name": "Unix",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25882,7 +25882,7 @@
 					"name": "UnixMilli",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25902,7 +25902,7 @@
 					"name": "UnixMicro",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25922,7 +25922,7 @@
 					"name": "UnixNano",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -25942,7 +25942,7 @@
 					"name": "AppendBinary",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -25995,7 +25995,7 @@
 					"name": "MarshalBinary",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -26030,7 +26030,7 @@
 					"name": "UnmarshalBinary",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -26068,7 +26068,7 @@
 					"name": "GobEncode",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -26103,7 +26103,7 @@
 					"name": "GobDecode",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -26141,7 +26141,7 @@
 					"name": "MarshalJSON",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -26176,7 +26176,7 @@
 					"name": "UnmarshalJSON",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -26214,7 +26214,7 @@
 					"name": "appendTo",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -26275,7 +26275,7 @@
 					"name": "AppendText",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -26328,7 +26328,7 @@
 					"name": "MarshalText",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -26363,7 +26363,7 @@
 					"name": "UnmarshalText",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -26401,7 +26401,7 @@
 					"name": "IsDST",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"results": [
 						{
@@ -26421,7 +26421,7 @@
 					"name": "Truncate",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -26449,7 +26449,7 @@
 					"name": "Round",
 					"kind": "method",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"parameters": [
 						{
@@ -26480,7 +26480,7 @@
 			"kind": "basic",
 			"named": true,
 			"exported": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "time",
 			"files": [
 				"time/time.go"
@@ -26496,7 +26496,7 @@
 			"name": "absCentury",
 			"kind": "basic",
 			"named": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "time",
 			"files": [
 				"time/time.go"
@@ -26512,7 +26512,7 @@
 			"name": "absCyear",
 			"kind": "basic",
 			"named": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "time",
 			"files": [
 				"time/time.go"
@@ -26528,7 +26528,7 @@
 			"name": "absDays",
 			"kind": "basic",
 			"named": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "time",
 			"files": [
 				"time/time.go"
@@ -26544,7 +26544,7 @@
 			"name": "absJanFeb",
 			"kind": "basic",
 			"named": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "time",
 			"files": [
 				"time/time.go"
@@ -26560,7 +26560,7 @@
 			"name": "absLeap",
 			"kind": "basic",
 			"named": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "time",
 			"files": [
 				"time/time.go"
@@ -26576,7 +26576,7 @@
 			"name": "absMonth",
 			"kind": "basic",
 			"named": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "time",
 			"files": [
 				"time/time.go"
@@ -26592,7 +26592,7 @@
 			"name": "absSeconds",
 			"kind": "basic",
 			"named": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "time",
 			"files": [
 				"time/time.go"
@@ -26608,7 +26608,7 @@
 			"name": "absYday",
 			"kind": "basic",
 			"named": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "time",
 			"files": [
 				"time/time.go"
@@ -26624,7 +26624,7 @@
 			"name": "zone",
 			"kind": "struct",
 			"named": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "time",
 			"files": [
 				"time/zoneinfo.go"
@@ -26641,7 +26641,7 @@
 					"name": "name",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"comments": [
 						{
@@ -26661,7 +26661,7 @@
 					"name": "offset",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"comments": [
 						{
@@ -26681,7 +26681,7 @@
 					"name": "isDST",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"comments": [
 						{
@@ -26703,7 +26703,7 @@
 			"name": "zoneTrans",
 			"kind": "struct",
 			"named": true,
-			"distance": 1,
+			"distance": 2,
 			"package": "time",
 			"files": [
 				"time/zoneinfo.go"
@@ -26720,7 +26720,7 @@
 					"name": "when",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"comments": [
 						{
@@ -26740,7 +26740,7 @@
 					"name": "index",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"comments": [
 						{
@@ -26760,7 +26760,7 @@
 					"name": "isstd",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"comments": [
 						{
@@ -26780,7 +26780,7 @@
 					"name": "isutc",
 					"kind": "field",
 					"named": true,
-					"distance": 1,
+					"distance": 2,
 					"package": "time",
 					"comments": [
 						{

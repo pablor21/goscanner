@@ -194,6 +194,7 @@ type Config struct {
 	Visibility              VisibilityLevel          `json:"visibility" yaml:"visibility"`
 	ExternalPackagesOptions *ExternalPackagesOptions `json:"external_packages_options,omitempty" yaml:"external_packages_options,omitempty"`
 	LogLevel                logger.LogLevel          `json:"log_level" yaml:"log_level"`
+	MaxConcurrency          int                      `json:"max_concurrency" yaml:"max_concurrency"`
 }
 
 func NewDefaultConfig() *Config {
