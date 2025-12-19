@@ -44,9 +44,9 @@ type defaultTypeResolver struct {
 	packageDistances *gstypes.SyncMap[string, int]               // Track distance for each package (thread-safe)
 	unnamedCounter   *gstypes.SyncCounter                        // Counter for unnamed types per kind (thread-safe)
 
-	ignoredTypes map[string]struct{}     // Types to ignore
-	basicTypes   map[string]gstypes.Type // Cache of basic types (read-only after init)
-	qualifier    types.Qualifier         // Cached qualifier function for GetCanonicalName
+	ignoredTypes map[string]struct{}                    // Types to ignore
+	basicTypes   *gstypes.SyncMap[string, gstypes.Type] // Cache of basic types (thread-safe)
+	qualifier    types.Qualifier                        // Cached qualifier function for GetCanonicalName
 	config       *Config
 	logger       logger.Logger
 }
@@ -69,7 +69,7 @@ func NewDefaultTypeResolver(config *Config, log logger.Logger) *defaultTypeResol
 		packageDistances: gstypes.NewSyncMap[string, int](),
 		unnamedCounter:   gstypes.NewSyncCounter(),
 		ignoredTypes:     make(map[string]struct{}),
-		basicTypes:       make(map[string]gstypes.Type),
+		basicTypes:       gstypes.NewSyncMap[string, gstypes.Type](),
 		qualifier: func(pkg *types.Package) string {
 			return pkg.Path()
 		},
@@ -89,7 +89,7 @@ func NewDefaultTypeResolver(config *Config, log logger.Logger) *defaultTypeResol
 func (r *defaultTypeResolver) initBasicTypes() {
 	for _, basicTypeName := range gstypes.BasicTypes {
 		basicType := gstypes.NewBasic(basicTypeName, basicTypeName)
-		r.basicTypes[basicTypeName] = basicType
+		r.basicTypes.Set(basicTypeName, basicType)
 	}
 }
 
@@ -549,13 +549,13 @@ func (r *defaultTypeResolver) checkCaches(t types.Type) gstypes.Type {
 
 	// Handle predeclared types (error, comparable) as basic types
 	if typeName == "error" || typeName == "comparable" {
-		if basicType, exists := r.basicTypes[typeName]; exists {
+		if basicType, exists := r.basicTypes.Get(typeName); exists {
 			return basicType
 		}
 	}
 
 	// Check if it's a basic type (only for unnamed basic types)
-	if basicType, exists := r.basicTypes[typeName]; exists {
+	if basicType, exists := r.basicTypes.Get(typeName); exists {
 		return basicType
 	}
 
@@ -765,23 +765,23 @@ func (r *defaultTypeResolver) makeBasic(ctx *ScanningContext,
 	if namedType == nil {
 		// Use the basic type name as the key
 		basicTypeName := basicType.String()
-		if cached, exists := r.basicTypes[basicTypeName]; exists {
+		if cached, exists := r.basicTypes.Get(basicTypeName); exists {
 			return cached.(*gstypes.Basic)
 		}
 		// Shouldn't happen, but create if missing
 		basic := gstypes.NewBasic(basicTypeName, basicTypeName)
-		r.basicTypes[basicTypeName] = basic
+		r.basicTypes.Set(basicTypeName, basic)
 		return basic
 	}
 
 	// Named basic type (like `type MyInt int`)
 	// Create a new Basic type with underlying pointing to cached basic type
 	basicTypeName := basicType.String()
-	cachedBasic, exists := r.basicTypes[basicTypeName]
+	cachedBasic, exists := r.basicTypes.Get(basicTypeName)
 	if !exists {
 		// Create cached basic if missing
 		cachedBasic = gstypes.NewBasic(basicTypeName, basicTypeName)
-		r.basicTypes[basicTypeName] = cachedBasic
+		r.basicTypes.Set(basicTypeName, cachedBasic)
 	}
 
 	// Create the named basic type
@@ -795,7 +795,7 @@ func (r *defaultTypeResolver) makeBasic(ctx *ScanningContext,
 	if obj != nil {
 		// Store obj via loader to avoid direct exposure
 		namedBasic.SetLoader(func(t gstypes.Type) error {
-loaderCtx := ctx
+			loaderCtx := ctx
 			// Load methods if needed
 			if r.config.ScanMode.Has(ScanModeMethods) {
 				m, err := r.extractMethods(loaderCtx, namedType, t)
@@ -966,7 +966,7 @@ func (r *defaultTypeResolver) makeCollection(ctx *ScanningContext,
 	// Set loader for named types
 	if namedType != nil && obj != nil {
 		slice.SetLoader(func(t gstypes.Type) error {
-loaderCtx := ctx
+			loaderCtx := ctx
 			// Load methods if needed
 			if r.config.ScanMode.Has(ScanModeMethods) {
 				m, err := r.extractMethods(loaderCtx, namedType, t)
@@ -1104,7 +1104,7 @@ func (r *defaultTypeResolver) makeMap(ctx *ScanningContext,
 	// Set loader for named types
 	if namedType != nil && obj != nil {
 		mapT.SetLoader(func(t gstypes.Type) error {
-loaderCtx := ctx
+			loaderCtx := ctx
 			// Load methods if needed
 			if r.config.ScanMode.Has(ScanModeMethods) {
 				m, err := r.extractMethods(loaderCtx, namedType, t)
@@ -1211,7 +1211,7 @@ func (r *defaultTypeResolver) makeChannel(ctx *ScanningContext,
 
 	// Set loader for named types
 	if namedType != nil && obj != nil {
-loaderCtx := ctx
+		loaderCtx := ctx
 		ch.SetLoader(func(t gstypes.Type) error {
 			// Load methods if needed
 			if r.config.ScanMode.Has(ScanModeMethods) {
@@ -1235,7 +1235,7 @@ loaderCtx := ctx
 }
 
 // extractMethods extracts methods from a named type and adds them to the TypeWithMethods
-func (r *defaultTypeResolver) extractMethods(ctx *ScanningContext, 
+func (r *defaultTypeResolver) extractMethods(ctx *ScanningContext,
 	namedType *types.Named,
 	parent gstypes.Type,
 ) ([]*gstypes.Method, error) {
@@ -1461,7 +1461,7 @@ func (r *defaultTypeResolver) makeFunction(ctx *ScanningContext,
 	}
 
 	// Set loader for named types
-loaderCtx := ctx
+	loaderCtx := ctx
 	if namedType != nil && obj != nil {
 		fn.SetLoader(func(t gstypes.Type) error {
 			// Load methods if needed
@@ -1579,7 +1579,7 @@ func (r *defaultTypeResolver) makeInterface(ctx *ScanningContext,
 	}
 	// Set loader to extract methods lazily
 	iface.SetLoader(func(t gstypes.Type) error {
-loaderCtx := ctx
+		loaderCtx := ctx
 		// Extract embedded interfaces
 		for i := 0; i < underlying.NumEmbeddeds(); i++ {
 			embeddedType := underlying.EmbeddedType(i)

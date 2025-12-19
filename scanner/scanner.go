@@ -169,16 +169,18 @@ func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (*ScanningResult,
 		Packages: s.TypeResolver.GetPackages(),
 	}
 
-	// Trigger lazy loading of all types
+	// Trigger lazy loading of all types in parallel
 	// Keep loading until no new types are discovered
 	// (Loading a type can trigger resolution of new types like field types)
-	// Sort IDs to ensure deterministic iteration order
-	loadedTypes := make(map[string]bool)
+	// Use worker pool to limit concurrency and handle dynamic type discovery
+	loadedTypes := sync.Map{} // Thread-safe map for tracking loaded types
+	maxRetries := 3
+
 	for {
-		// Get all type IDs and sort them for deterministic order
+		// Get all type IDs that haven't been loaded yet
 		var typeIDs []string
 		for _, t := range result.Types.Values() {
-			if !loadedTypes[t.Id()] {
+			if _, loaded := loadedTypes.Load(t.Id()); !loaded {
 				typeIDs = append(typeIDs, t.Id())
 			}
 		}
@@ -190,16 +192,66 @@ func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (*ScanningResult,
 		// Sort to ensure deterministic loading order
 		sort.Strings(typeIDs)
 
-		for _, id := range typeIDs {
-			t, exists := result.Types.Get(id)
-			if !exists {
-				continue
-			}
-			loadedTypes[id] = true
+		// Parallel type loading with worker pool
+		numWorkers := ctx.Config.MaxConcurrency
+		if numWorkers <= 0 {
+			numWorkers = runtime.NumCPU() * 2 // More workers for I/O-bound loading
+		}
+		if len(typeIDs) < numWorkers {
+			numWorkers = len(typeIDs)
+		}
 
-			if err := t.Load(); err != nil {
-				ctx.Logger.Error(fmt.Sprintf("Failed to load type %s: %v", t.Id(), err))
-			}
+		var wg sync.WaitGroup
+		typeChan := make(chan string, len(typeIDs))
+		errChan := make(chan error, len(typeIDs))
+
+		// Start worker goroutines for type loading
+		for i := 0; i < numWorkers; i++ {
+			wg.Add(1)
+			go func(workerID int) {
+				defer wg.Done()
+				for id := range typeChan {
+					// Retry mechanism for failed loads
+					var loadErr error
+					for attempt := 0; attempt < maxRetries; attempt++ {
+						t, exists := result.Types.Get(id)
+						if !exists {
+							break // Type disappeared, skip it
+						}
+
+						loadErr = t.Load()
+						if loadErr == nil {
+							loadedTypes.Store(id, true)
+							break // Success
+						}
+
+						// Log retry attempts
+						if attempt < maxRetries-1 {
+							ctx.Logger.Debug(fmt.Sprintf("Retry %d/%d loading type %s: %v", attempt+1, maxRetries, id, loadErr))
+						}
+					}
+
+					if loadErr != nil {
+						errChan <- fmt.Errorf("failed to load type %s after %d attempts: %w", id, maxRetries, loadErr)
+						ctx.Logger.Error(fmt.Sprintf("Failed to load type %s: %v", id, loadErr))
+					}
+				}
+			}(i)
+		}
+
+		// Send type IDs to workers
+		for _, id := range typeIDs {
+			typeChan <- id
+		}
+		close(typeChan)
+
+		// Wait for all workers to complete
+		wg.Wait()
+		close(errChan)
+
+		// Log any errors (non-fatal, continue processing)
+		for err := range errChan {
+			ctx.Logger.Debug(err.Error())
 		}
 	}
 

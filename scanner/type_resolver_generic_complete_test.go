@@ -12,9 +12,9 @@ import (
 	gstypes "github.com/pablor21/goscanner/types"
 )
 
-// TestTypeResolver_GenericAliasesComprehensive tests all 20 cases from generic_aliases.go
+// TestTypeResolver_GenericAliasesComplete tests all 20 cases from generic_aliases.go
 // and ensures fields and methods are correctly populated with type substitution
-func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
+func TestTypeResolver_GenericAliasesComplete(t *testing.T) {
 	src := `
 	package test
 

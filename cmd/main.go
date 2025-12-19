@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"os"
+	"strings"
 
 	"github.com/pablor21/goscanner/scanner"
 )
@@ -13,13 +14,13 @@ var output string
 
 func main() {
 	// get the package scanning to (flag)
-	flag.StringVar(&pkg, "pkg", "../examples/starwars/basic", "Package to scan")
+	flag.StringVar(&pkg, "pkg", "../examples/starwars/basic,../examples/starwars/functions", "Package to scan")
 	flag.StringVar(&output, "out", "output.json", "Output file")
 	flag.Parse()
 
 	cfg := scanner.NewDefaultConfig()
-	cfg.Packages = []string{pkg}
-	cfg.LogLevel = "debug"
+	cfg.Packages = strings.Split(pkg, ",")
+	cfg.LogLevel = "info"
 
 	ret, err := scanner.NewScanner().ScanWithConfig(cfg)
 	if err != nil {
