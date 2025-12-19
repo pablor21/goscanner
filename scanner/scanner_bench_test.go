@@ -185,6 +185,7 @@ func benchmarkFullScan(b *testing.B, maxConcurrency int) {
 	config := NewDefaultConfig()
 	config.MaxConcurrency = maxConcurrency
 	config.Packages = []string{"../examples/starwars/..."}
+	config.LogLevel = "error" // Suppress logs during benchmarking
 
 	b.ResetTimer()
 	b.ReportAllocs()

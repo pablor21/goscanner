@@ -1231,8 +1231,8 @@
 					"distance": 3,
 					"package": "bufio",
 					"type": {
-						"id": "__unnamed_slice__59__",
-						"name": "__unnamed_slice__59__",
+						"id": "__unnamed_slice__69__",
+						"name": "__unnamed_slice__69__",
 						"kind": "slice",
 						"package": "bufio",
 						"element": {
@@ -1411,8 +1411,8 @@
 						{
 							"name": "buf",
 							"type": {
-								"id": "__unnamed_slice__60__",
-								"name": "__unnamed_slice__60__",
+								"id": "__unnamed_slice__71__",
+								"name": "__unnamed_slice__71__",
 								"kind": "slice",
 								"package": "bufio",
 								"element": {
@@ -1487,8 +1487,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__61__",
-								"name": "__unnamed_slice__61__",
+								"id": "__unnamed_slice__74__",
+								"name": "__unnamed_slice__74__",
 								"kind": "slice",
 								"package": "bufio",
 								"element": {
@@ -1562,8 +1562,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__62__",
-								"name": "__unnamed_slice__62__",
+								"id": "__unnamed_slice__77__",
+								"name": "__unnamed_slice__77__",
 								"kind": "slice",
 								"package": "bufio",
 								"element": {
@@ -1743,8 +1743,8 @@
 						{
 							"name": "line",
 							"type": {
-								"id": "__unnamed_slice__63__",
-								"name": "__unnamed_slice__63__",
+								"id": "__unnamed_slice__78__",
+								"name": "__unnamed_slice__78__",
 								"kind": "slice",
 								"package": "bufio",
 								"element": {
@@ -1780,8 +1780,8 @@
 						{
 							"name": "line",
 							"type": {
-								"id": "__unnamed_slice__64__",
-								"name": "__unnamed_slice__64__",
+								"id": "__unnamed_slice__80__",
+								"name": "__unnamed_slice__80__",
 								"kind": "slice",
 								"package": "bufio",
 								"element": {
@@ -1835,13 +1835,13 @@
 						{
 							"name": "fullBuffers",
 							"type": {
-								"id": "__unnamed_slice__66__",
-								"name": "__unnamed_slice__66__",
+								"id": "__unnamed_slice__86__",
+								"name": "__unnamed_slice__86__",
 								"kind": "slice",
 								"package": "bufio",
 								"element": {
-									"id": "__unnamed_slice__65__",
-									"name": "__unnamed_slice__65__",
+									"id": "__unnamed_slice__85__",
+									"name": "__unnamed_slice__85__",
 									"kind": "slice",
 									"package": "bufio",
 									"element": {
@@ -1859,8 +1859,8 @@
 						{
 							"name": "finalFragment",
 							"type": {
-								"id": "__unnamed_slice__67__",
-								"name": "__unnamed_slice__67__",
+								"id": "__unnamed_slice__87__",
+								"name": "__unnamed_slice__87__",
 								"kind": "slice",
 								"package": "bufio",
 								"element": {
@@ -1913,8 +1913,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__68__",
-								"name": "__unnamed_slice__68__",
+								"id": "__unnamed_slice__88__",
+								"name": "__unnamed_slice__88__",
 								"kind": "slice",
 								"package": "bufio",
 								"element": {
@@ -2853,8 +2853,8 @@
 							"kind": "basic"
 						},
 						"value": {
-							"id": "__unnamed_slice__198__",
-							"name": "__unnamed_slice__198__",
+							"id": "__unnamed_slice__191__",
+							"name": "__unnamed_slice__191__",
 							"kind": "slice",
 							"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 							"element": {
@@ -2883,8 +2883,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__199__",
-						"name": "__unnamed_slice__199__",
+						"id": "__unnamed_slice__192__",
+						"name": "__unnamed_slice__192__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -2989,8 +2989,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__220__",
-								"name": "__unnamed_pointer__220__",
+								"id": "__unnamed_pointer__218__",
+								"name": "__unnamed_pointer__218__",
 								"kind": "pointer",
 								"package": "crypto/x509",
 								"element": {
@@ -3003,21 +3003,21 @@
 						},
 						{
 							"type": {
-								"id": "__unnamed_function__26__",
-								"name": "__unnamed_function__26__",
+								"id": "__unnamed_function__25__",
+								"name": "__unnamed_function__25__",
 								"kind": "function",
 								"package": "crypto/x509",
 								"parameters": [
 									{
 										"name": "",
 										"type": {
-											"id": "__unnamed_slice__200__",
-											"name": "__unnamed_slice__200__",
+											"id": "__unnamed_slice__197__",
+											"name": "__unnamed_slice__197__",
 											"kind": "slice",
 											"package": "crypto/x509",
 											"element": {
-												"id": "__unnamed_pointer__222__",
-												"name": "__unnamed_pointer__222__",
+												"id": "__unnamed_pointer__219__",
+												"name": "__unnamed_pointer__219__",
 												"kind": "pointer",
 												"package": "crypto/x509",
 												"element": {
@@ -3065,8 +3065,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__228__",
-								"name": "__unnamed_pointer__228__",
+								"id": "__unnamed_pointer__220__",
+								"name": "__unnamed_pointer__220__",
 								"kind": "pointer",
 								"package": "crypto/x509",
 								"element": {
@@ -3093,8 +3093,8 @@
 						{
 							"name": "cert",
 							"type": {
-								"id": "__unnamed_pointer__230__",
-								"name": "__unnamed_pointer__230__",
+								"id": "__unnamed_pointer__221__",
+								"name": "__unnamed_pointer__221__",
 								"kind": "pointer",
 								"package": "crypto/x509",
 								"element": {
@@ -3109,8 +3109,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__211__",
-								"name": "__unnamed_slice__211__",
+								"id": "__unnamed_slice__202__",
+								"name": "__unnamed_slice__202__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -3137,8 +3137,8 @@
 						{
 							"name": "cert",
 							"type": {
-								"id": "__unnamed_pointer__233__",
-								"name": "__unnamed_pointer__233__",
+								"id": "__unnamed_pointer__222__",
+								"name": "__unnamed_pointer__222__",
 								"kind": "pointer",
 								"package": "crypto/x509",
 								"element": {
@@ -3174,8 +3174,8 @@
 						{
 							"name": "cert",
 							"type": {
-								"id": "__unnamed_pointer__234__",
-								"name": "__unnamed_pointer__234__",
+								"id": "__unnamed_pointer__223__",
+								"name": "__unnamed_pointer__223__",
 								"kind": "pointer",
 								"package": "crypto/x509",
 								"element": {
@@ -3217,15 +3217,15 @@
 						{
 							"name": "getCert",
 							"type": {
-								"id": "__unnamed_function__28__",
-								"name": "__unnamed_function__28__",
+								"id": "__unnamed_function__27__",
+								"name": "__unnamed_function__27__",
 								"kind": "function",
 								"package": "crypto/x509",
 								"results": [
 									{
 										"type": {
-											"id": "__unnamed_pointer__237__",
-											"name": "__unnamed_pointer__237__",
+											"id": "__unnamed_pointer__224__",
+											"name": "__unnamed_pointer__224__",
 											"kind": "pointer",
 											"package": "crypto/x509",
 											"element": {
@@ -3249,8 +3249,8 @@
 						{
 							"name": "constraint",
 							"type": {
-								"id": "__unnamed_function__29__",
-								"name": "__unnamed_function__29__",
+								"id": "__unnamed_function__28__",
+								"name": "__unnamed_function__28__",
 								"kind": "function",
 								"package": "crypto/x509",
 								"parameters": [
@@ -3262,8 +3262,8 @@
 											"kind": "slice",
 											"package": "crypto/x509",
 											"element": {
-												"id": "__unnamed_pointer__241__",
-												"name": "__unnamed_pointer__241__",
+												"id": "__unnamed_pointer__244__",
+												"name": "__unnamed_pointer__244__",
 												"kind": "pointer",
 												"package": "crypto/x509",
 												"element": {
@@ -3511,8 +3511,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__69__",
-						"name": "__unnamed_slice__69__",
+						"id": "__unnamed_slice__61__",
+						"name": "__unnamed_slice__61__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -3539,8 +3539,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__70__",
-						"name": "__unnamed_slice__70__",
+						"id": "__unnamed_slice__62__",
+						"name": "__unnamed_slice__62__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -3567,8 +3567,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__71__",
-						"name": "__unnamed_slice__71__",
+						"id": "__unnamed_slice__63__",
+						"name": "__unnamed_slice__63__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -3595,8 +3595,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__72__",
-						"name": "__unnamed_slice__72__",
+						"id": "__unnamed_slice__64__",
+						"name": "__unnamed_slice__64__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -3623,8 +3623,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__73__",
-						"name": "__unnamed_slice__73__",
+						"id": "__unnamed_slice__65__",
+						"name": "__unnamed_slice__65__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -3645,8 +3645,8 @@
 					"distance": 3,
 					"package": "crypto/x509",
 					"type": {
-						"id": "__unnamed_slice__74__",
-						"name": "__unnamed_slice__74__",
+						"id": "__unnamed_slice__66__",
+						"name": "__unnamed_slice__66__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -5520,8 +5520,8 @@
 					"distance": 3,
 					"package": "crypto/x509",
 					"type": {
-						"id": "__unnamed_slice__150__",
-						"name": "__unnamed_slice__150__",
+						"id": "__unnamed_slice__147__",
+						"name": "__unnamed_slice__147__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -5547,8 +5547,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__154__",
-								"name": "__unnamed_slice__154__",
+								"id": "__unnamed_slice__156__",
+								"name": "__unnamed_slice__156__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -5564,8 +5564,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__155__",
-								"name": "__unnamed_slice__155__",
+								"id": "__unnamed_slice__157__",
+								"name": "__unnamed_slice__157__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -5599,8 +5599,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__156__",
-								"name": "__unnamed_slice__156__",
+								"id": "__unnamed_slice__158__",
+								"name": "__unnamed_slice__158__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -5635,8 +5635,8 @@
 						{
 							"name": "text",
 							"type": {
-								"id": "__unnamed_slice__160__",
-								"name": "__unnamed_slice__160__",
+								"id": "__unnamed_slice__159__",
+								"name": "__unnamed_slice__159__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -5703,8 +5703,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__163__",
-								"name": "__unnamed_slice__163__",
+								"id": "__unnamed_slice__162__",
+								"name": "__unnamed_slice__162__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -5720,8 +5720,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__165__",
-								"name": "__unnamed_slice__165__",
+								"id": "__unnamed_slice__164__",
+								"name": "__unnamed_slice__164__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -5755,8 +5755,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__167__",
-								"name": "__unnamed_slice__167__",
+								"id": "__unnamed_slice__165__",
+								"name": "__unnamed_slice__165__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -5791,8 +5791,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__169__",
-								"name": "__unnamed_slice__169__",
+								"id": "__unnamed_slice__166__",
+								"name": "__unnamed_slice__166__",
 								"kind": "slice",
 								"package": "crypto/x509",
 								"element": {
@@ -6068,8 +6068,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_pointer__104__",
-						"name": "__unnamed_pointer__104__",
+						"id": "__unnamed_pointer__98__",
+						"name": "__unnamed_pointer__98__",
 						"kind": "pointer",
 						"distance": 3,
 						"package": "crypto/x509",
@@ -6096,8 +6096,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_pointer__105__",
-						"name": "__unnamed_pointer__105__",
+						"id": "__unnamed_pointer__101__",
+						"name": "__unnamed_pointer__101__",
 						"kind": "pointer",
 						"distance": 3,
 						"package": "crypto/x509",
@@ -6143,8 +6143,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__164__",
-						"name": "__unnamed_slice__164__",
+						"id": "__unnamed_slice__145__",
+						"name": "__unnamed_slice__145__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -6190,8 +6190,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__166__",
-						"name": "__unnamed_slice__166__",
+						"id": "__unnamed_slice__160__",
+						"name": "__unnamed_slice__160__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -6296,8 +6296,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__220__",
-						"name": "__unnamed_slice__220__",
+						"id": "__unnamed_slice__218__",
+						"name": "__unnamed_slice__218__",
 						"kind": "slice",
 						"package": "crypto/x509",
 						"element": {
@@ -6332,8 +6332,8 @@
 							{
 								"name": "",
 								"type": {
-									"id": "__unnamed_slice__221__",
-									"name": "__unnamed_slice__221__",
+									"id": "__unnamed_slice__219__",
+									"name": "__unnamed_slice__219__",
 									"kind": "slice",
 									"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 									"element": {
@@ -6379,8 +6379,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_function__32__",
-						"name": "__unnamed_function__32__",
+						"id": "__unnamed_function__33__",
+						"name": "__unnamed_function__33__",
 						"kind": "function",
 						"package": "crypto/x509",
 						"results": [
@@ -6452,16 +6452,16 @@
 					"distance": 3,
 					"package": "crypto/x509",
 					"type": {
-						"id": "__unnamed_function__33__",
-						"name": "__unnamed_function__33__",
+						"id": "__unnamed_function__32__",
+						"name": "__unnamed_function__32__",
 						"kind": "function",
 						"package": "crypto/x509",
 						"parameters": [
 							{
 								"name": "",
 								"type": {
-									"id": "__unnamed_slice__223__",
-									"name": "__unnamed_slice__223__",
+									"id": "__unnamed_slice__222__",
+									"name": "__unnamed_slice__222__",
 									"kind": "slice",
 									"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 									"element": {
@@ -6751,8 +6751,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__170__",
-						"name": "__unnamed_slice__170__",
+						"id": "__unnamed_slice__144__",
+						"name": "__unnamed_slice__144__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -6793,8 +6793,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__147__",
-						"name": "__unnamed_slice__147__",
+						"id": "__unnamed_slice__149__",
+						"name": "__unnamed_slice__149__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -6815,8 +6815,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__148__",
-						"name": "__unnamed_slice__148__",
+						"id": "__unnamed_slice__150__",
+						"name": "__unnamed_slice__150__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -6837,8 +6837,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__149__",
-						"name": "__unnamed_slice__149__",
+						"id": "__unnamed_slice__151__",
+						"name": "__unnamed_slice__151__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -6859,8 +6859,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__151__",
-						"name": "__unnamed_slice__151__",
+						"id": "__unnamed_slice__153__",
+						"name": "__unnamed_slice__153__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -6881,8 +6881,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__152__",
-						"name": "__unnamed_slice__152__",
+						"id": "__unnamed_slice__154__",
+						"name": "__unnamed_slice__154__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -6903,8 +6903,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__153__",
-						"name": "__unnamed_slice__153__",
+						"id": "__unnamed_slice__161__",
+						"name": "__unnamed_slice__161__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -6925,8 +6925,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__157__",
-						"name": "__unnamed_slice__157__",
+						"id": "__unnamed_slice__163__",
+						"name": "__unnamed_slice__163__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -6981,8 +6981,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__158__",
-						"name": "__unnamed_slice__158__",
+						"id": "__unnamed_slice__174__",
+						"name": "__unnamed_slice__174__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -7008,8 +7008,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__161__",
-						"name": "__unnamed_slice__161__",
+						"id": "__unnamed_slice__175__",
+						"name": "__unnamed_slice__175__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -7034,8 +7034,8 @@
 						{
 							"name": "rdns",
 							"type": {
-								"id": "__unnamed_pointer__113__",
-								"name": "__unnamed_pointer__113__",
+								"id": "__unnamed_pointer__129__",
+								"name": "__unnamed_pointer__129__",
 								"kind": "pointer",
 								"package": "crypto/x509/pkix",
 								"element": {
@@ -7069,8 +7069,8 @@
 						{
 							"name": "values",
 							"type": {
-								"id": "__unnamed_slice__168__",
-								"name": "__unnamed_slice__168__",
+								"id": "__unnamed_slice__176__",
+								"name": "__unnamed_slice__176__",
 								"kind": "slice",
 								"package": "crypto/x509/pkix",
 								"element": {
@@ -7206,8 +7206,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_pointer__99__",
-						"name": "__unnamed_pointer__99__",
+						"id": "__unnamed_pointer__115__",
+						"name": "__unnamed_pointer__115__",
 						"kind": "pointer",
 						"distance": 4,
 						"package": "crypto/x509/pkix",
@@ -7241,8 +7241,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__146__",
-						"name": "__unnamed_slice__146__",
+						"id": "__unnamed_slice__152__",
+						"name": "__unnamed_slice__152__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -7386,8 +7386,8 @@
 					"distance": 4,
 					"package": "crypto/x509/pkix",
 					"type": {
-						"id": "__unnamed_slice__196__",
-						"name": "__unnamed_slice__196__",
+						"id": "__unnamed_slice__198__",
+						"name": "__unnamed_slice__198__",
 						"kind": "slice",
 						"package": "crypto/x509/pkix",
 						"element": {
@@ -7434,8 +7434,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__191__",
-						"name": "__unnamed_slice__191__",
+						"id": "__unnamed_slice__193__",
+						"name": "__unnamed_slice__193__",
 						"kind": "slice",
 						"package": "encoding/asn1",
 						"element": {
@@ -7510,8 +7510,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__192__",
-								"name": "__unnamed_slice__192__",
+								"id": "__unnamed_slice__196__",
+								"name": "__unnamed_slice__196__",
 								"kind": "slice",
 								"package": "encoding/asn1",
 								"element": {
@@ -7648,8 +7648,8 @@
 					"distance": 4,
 					"package": "encoding/asn1",
 					"type": {
-						"id": "__unnamed_slice__218__",
-						"name": "__unnamed_slice__218__",
+						"id": "__unnamed_slice__220__",
+						"name": "__unnamed_slice__220__",
 						"kind": "slice",
 						"package": "encoding/asn1",
 						"element": {
@@ -7676,8 +7676,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__219__",
-						"name": "__unnamed_slice__219__",
+						"id": "__unnamed_slice__221__",
+						"name": "__unnamed_slice__221__",
 						"kind": "slice",
 						"package": "encoding/asn1",
 						"element": {
@@ -7727,8 +7727,8 @@
 						{
 							"name": "buf",
 							"type": {
-								"id": "__unnamed_slice__193__",
-								"name": "__unnamed_slice__193__",
+								"id": "__unnamed_slice__194__",
+								"name": "__unnamed_slice__194__",
 								"kind": "slice",
 								"package": "fmt",
 								"element": {
@@ -7848,8 +7848,8 @@
 						{
 							"name": "f",
 							"type": {
-								"id": "__unnamed_function__25__",
-								"name": "__unnamed_function__25__",
+								"id": "__unnamed_function__26__",
+								"name": "__unnamed_function__26__",
 								"kind": "function",
 								"package": "fmt",
 								"parameters": [
@@ -7878,8 +7878,8 @@
 						{
 							"name": "token",
 							"type": {
-								"id": "__unnamed_slice__194__",
-								"name": "__unnamed_slice__194__",
+								"id": "__unnamed_slice__200__",
+								"name": "__unnamed_slice__200__",
 								"kind": "slice",
 								"package": "fmt",
 								"element": {
@@ -8108,8 +8108,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__197__",
-								"name": "__unnamed_slice__197__",
+								"id": "__unnamed_slice__199__",
+								"name": "__unnamed_slice__199__",
 								"kind": "slice",
 								"package": "fmt",
 								"element": {
@@ -9002,8 +9002,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__222__",
-								"name": "__unnamed_slice__222__",
+								"id": "__unnamed_slice__223__",
+								"name": "__unnamed_slice__223__",
 								"kind": "slice",
 								"package": "hash",
 								"element": {
@@ -9484,8 +9484,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__33__",
-								"name": "__unnamed_slice__33__",
+								"id": "__unnamed_slice__36__",
+								"name": "__unnamed_slice__36__",
 								"kind": "slice",
 								"package": "io",
 								"element": {
@@ -9572,8 +9572,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__75__",
-								"name": "__unnamed_slice__75__",
+								"id": "__unnamed_slice__68__",
+								"name": "__unnamed_slice__68__",
 								"kind": "slice",
 								"package": "io",
 								"element": {
@@ -9639,8 +9639,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__76__",
-								"name": "__unnamed_slice__76__",
+								"id": "__unnamed_slice__70__",
+								"name": "__unnamed_slice__70__",
 								"kind": "slice",
 								"package": "io",
 								"element": {
@@ -9779,8 +9779,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__38__",
-								"name": "__unnamed_slice__38__",
+								"id": "__unnamed_slice__28__",
+								"name": "__unnamed_slice__28__",
 								"kind": "slice",
 								"package": "io",
 								"element": {
@@ -9933,8 +9933,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__100__",
-								"name": "__unnamed_pointer__100__",
+								"id": "__unnamed_pointer__96__",
+								"name": "__unnamed_pointer__96__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -9970,8 +9970,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__101__",
-								"name": "__unnamed_pointer__101__",
+								"id": "__unnamed_pointer__97__",
+								"name": "__unnamed_pointer__97__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -9998,8 +9998,8 @@
 						{
 							"name": "x",
 							"type": {
-								"id": "__unnamed_pointer__102__",
-								"name": "__unnamed_pointer__102__",
+								"id": "__unnamed_pointer__99__",
+								"name": "__unnamed_pointer__99__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10014,8 +10014,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__103__",
-								"name": "__unnamed_pointer__103__",
+								"id": "__unnamed_pointer__100__",
+								"name": "__unnamed_pointer__100__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10041,8 +10041,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__159__",
-								"name": "__unnamed_slice__159__",
+								"id": "__unnamed_slice__142__",
+								"name": "__unnamed_slice__142__",
 								"kind": "slice",
 								"package": "math/big",
 								"element": {
@@ -10069,8 +10069,8 @@
 						{
 							"name": "abs",
 							"type": {
-								"id": "__unnamed_slice__162__",
-								"name": "__unnamed_slice__162__",
+								"id": "__unnamed_slice__143__",
+								"name": "__unnamed_slice__143__",
 								"kind": "slice",
 								"package": "math/big",
 								"element": {
@@ -10085,8 +10085,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__106__",
-								"name": "__unnamed_pointer__106__",
+								"id": "__unnamed_pointer__102__",
+								"name": "__unnamed_pointer__102__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10113,8 +10113,8 @@
 						{
 							"name": "x",
 							"type": {
-								"id": "__unnamed_pointer__107__",
-								"name": "__unnamed_pointer__107__",
+								"id": "__unnamed_pointer__103__",
+								"name": "__unnamed_pointer__103__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10129,8 +10129,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__108__",
-								"name": "__unnamed_pointer__108__",
+								"id": "__unnamed_pointer__104__",
+								"name": "__unnamed_pointer__104__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10157,8 +10157,8 @@
 						{
 							"name": "x",
 							"type": {
-								"id": "__unnamed_pointer__109__",
-								"name": "__unnamed_pointer__109__",
+								"id": "__unnamed_pointer__105__",
+								"name": "__unnamed_pointer__105__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10173,8 +10173,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__110__",
-								"name": "__unnamed_pointer__110__",
+								"id": "__unnamed_pointer__106__",
+								"name": "__unnamed_pointer__106__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10201,8 +10201,8 @@
 						{
 							"name": "x",
 							"type": {
-								"id": "__unnamed_pointer__111__",
-								"name": "__unnamed_pointer__111__",
+								"id": "__unnamed_pointer__107__",
+								"name": "__unnamed_pointer__107__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10216,8 +10216,8 @@
 						{
 							"name": "y",
 							"type": {
-								"id": "__unnamed_pointer__112__",
-								"name": "__unnamed_pointer__112__",
+								"id": "__unnamed_pointer__108__",
+								"name": "__unnamed_pointer__108__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10232,8 +10232,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__114__",
-								"name": "__unnamed_pointer__114__",
+								"id": "__unnamed_pointer__109__",
+								"name": "__unnamed_pointer__109__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10260,8 +10260,67 @@
 						{
 							"name": "x",
 							"type": {
-								"id": "__unnamed_pointer__115__",
-								"name": "__unnamed_pointer__115__",
+								"id": "__unnamed_pointer__110__",
+								"name": "__unnamed_pointer__110__",
+								"kind": "pointer",
+								"package": "math/big",
+								"element": {
+									"id": "math/big.Int",
+									"kind": "struct"
+								},
+								"depth": 1,
+								"structure": "*math/big.Int"
+							}
+						},
+						{
+							"name": "y",
+							"type": {
+								"id": "__unnamed_pointer__111__",
+								"name": "__unnamed_pointer__111__",
+								"kind": "pointer",
+								"package": "math/big",
+								"element": {
+									"id": "math/big.Int",
+									"kind": "struct"
+								},
+								"depth": 1,
+								"structure": "*math/big.Int"
+							}
+						}
+					],
+					"results": [
+						{
+							"type": {
+								"id": "__unnamed_pointer__112__",
+								"name": "__unnamed_pointer__112__",
+								"kind": "pointer",
+								"package": "math/big",
+								"element": {
+									"id": "math/big.Int",
+									"kind": "struct"
+								},
+								"depth": 1,
+								"structure": "*math/big.Int"
+							}
+						}
+					],
+					"isPointerReceiver": true,
+					"receiver": "math/big.Int",
+					"structure": "func(x *math/big.Int, y *math/big.Int) *math/big.Int"
+				},
+				{
+					"id": "math/big.Int#Mul",
+					"name": "Mul",
+					"kind": "method",
+					"named": true,
+					"distance": 4,
+					"package": "math/big",
+					"parameters": [
+						{
+							"name": "x",
+							"type": {
+								"id": "__unnamed_pointer__114__",
+								"name": "__unnamed_pointer__114__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10309,65 +10368,6 @@
 					"structure": "func(x *math/big.Int, y *math/big.Int) *math/big.Int"
 				},
 				{
-					"id": "math/big.Int#Mul",
-					"name": "Mul",
-					"kind": "method",
-					"named": true,
-					"distance": 4,
-					"package": "math/big",
-					"parameters": [
-						{
-							"name": "x",
-							"type": {
-								"id": "__unnamed_pointer__118__",
-								"name": "__unnamed_pointer__118__",
-								"kind": "pointer",
-								"package": "math/big",
-								"element": {
-									"id": "math/big.Int",
-									"kind": "struct"
-								},
-								"depth": 1,
-								"structure": "*math/big.Int"
-							}
-						},
-						{
-							"name": "y",
-							"type": {
-								"id": "__unnamed_pointer__119__",
-								"name": "__unnamed_pointer__119__",
-								"kind": "pointer",
-								"package": "math/big",
-								"element": {
-									"id": "math/big.Int",
-									"kind": "struct"
-								},
-								"depth": 1,
-								"structure": "*math/big.Int"
-							}
-						}
-					],
-					"results": [
-						{
-							"type": {
-								"id": "__unnamed_pointer__120__",
-								"name": "__unnamed_pointer__120__",
-								"kind": "pointer",
-								"package": "math/big",
-								"element": {
-									"id": "math/big.Int",
-									"kind": "struct"
-								},
-								"depth": 1,
-								"structure": "*math/big.Int"
-							}
-						}
-					],
-					"isPointerReceiver": true,
-					"receiver": "math/big.Int",
-					"structure": "func(x *math/big.Int, y *math/big.Int) *math/big.Int"
-				},
-				{
 					"id": "math/big.Int#mul",
 					"name": "mul",
 					"kind": "method",
@@ -10378,8 +10378,8 @@
 						{
 							"name": "stk",
 							"type": {
-								"id": "__unnamed_pointer__121__",
-								"name": "__unnamed_pointer__121__",
+								"id": "__unnamed_pointer__120__",
+								"name": "__unnamed_pointer__120__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10393,8 +10393,8 @@
 						{
 							"name": "x",
 							"type": {
-								"id": "__unnamed_pointer__122__",
-								"name": "__unnamed_pointer__122__",
+								"id": "__unnamed_pointer__121__",
+								"name": "__unnamed_pointer__121__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10408,8 +10408,8 @@
 						{
 							"name": "y",
 							"type": {
-								"id": "__unnamed_pointer__123__",
-								"name": "__unnamed_pointer__123__",
+								"id": "__unnamed_pointer__122__",
+								"name": "__unnamed_pointer__122__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10453,8 +10453,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__124__",
-								"name": "__unnamed_pointer__124__",
+								"id": "__unnamed_pointer__123__",
+								"name": "__unnamed_pointer__123__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10498,8 +10498,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__125__",
-								"name": "__unnamed_pointer__125__",
+								"id": "__unnamed_pointer__124__",
+								"name": "__unnamed_pointer__124__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10526,8 +10526,8 @@
 						{
 							"name": "x",
 							"type": {
-								"id": "__unnamed_pointer__126__",
-								"name": "__unnamed_pointer__126__",
+								"id": "__unnamed_pointer__125__",
+								"name": "__unnamed_pointer__125__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10541,8 +10541,8 @@
 						{
 							"name": "y",
 							"type": {
-								"id": "__unnamed_pointer__127__",
-								"name": "__unnamed_pointer__127__",
+								"id": "__unnamed_pointer__126__",
+								"name": "__unnamed_pointer__126__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10557,8 +10557,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__128__",
-								"name": "__unnamed_pointer__128__",
+								"id": "__unnamed_pointer__127__",
+								"name": "__unnamed_pointer__127__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -10585,8 +10585,8 @@
 						{
 							"name": "x",
 							"type": {
-								"id": "__unnamed_pointer__129__",
-								"name": "__unnamed_pointer__129__",
+								"id": "__unnamed_pointer__128__",
+								"name": "__unnamed_pointer__128__",
 								"kind": "pointer",
 								"package": "math/big",
 								"element": {
@@ -13372,8 +13372,8 @@
 					"distance": 4,
 					"package": "math/big",
 					"type": {
-						"id": "__unnamed_slice__208__",
-						"name": "__unnamed_slice__208__",
+						"id": "__unnamed_slice__201__",
+						"name": "__unnamed_slice__201__",
 						"kind": "slice",
 						"package": "math/big",
 						"element": {
@@ -13903,8 +13903,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__202__",
-								"name": "__unnamed_slice__202__",
+								"id": "__unnamed_slice__211__",
+								"name": "__unnamed_slice__211__",
 								"kind": "slice",
 								"package": "math/rand",
 								"element": {
@@ -13940,8 +13940,8 @@
 						{
 							"name": "swap",
 							"type": {
-								"id": "__unnamed_function__27__",
-								"name": "__unnamed_function__27__",
+								"id": "__unnamed_function__29__",
+								"name": "__unnamed_function__29__",
 								"kind": "function",
 								"package": "math/rand",
 								"parameters": [
@@ -13980,8 +13980,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__204__",
-								"name": "__unnamed_slice__204__",
+								"id": "__unnamed_slice__212__",
+								"name": "__unnamed_slice__212__",
 								"kind": "slice",
 								"package": "math/rand",
 								"element": {
@@ -14212,8 +14212,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__28__",
-								"name": "__unnamed_slice__28__",
+								"id": "__unnamed_slice__29__",
+								"name": "__unnamed_slice__29__",
 								"kind": "slice",
 								"package": "mime/multipart",
 								"element": {
@@ -14259,8 +14259,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_slice__29__",
-								"name": "__unnamed_slice__29__",
+								"id": "__unnamed_slice__30__",
+								"name": "__unnamed_slice__30__",
 								"kind": "slice",
 								"package": "mime/multipart",
 								"element": {
@@ -14550,8 +14550,8 @@
 					"distance": 2,
 					"package": "mime/multipart",
 					"type": {
-						"id": "__unnamed_map__7__",
-						"name": "__unnamed_map__7__",
+						"id": "__unnamed_map__6__",
+						"name": "__unnamed_map__6__",
 						"kind": "map",
 						"package": "mime/multipart",
 						"key": {
@@ -14560,8 +14560,8 @@
 							"kind": "basic"
 						},
 						"value": {
-							"id": "__unnamed_slice__35__",
-							"name": "__unnamed_slice__35__",
+							"id": "__unnamed_slice__31__",
+							"name": "__unnamed_slice__31__",
 							"kind": "slice",
 							"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 							"element": {
@@ -14584,8 +14584,8 @@
 					"distance": 2,
 					"package": "mime/multipart",
 					"type": {
-						"id": "__unnamed_map__8__",
-						"name": "__unnamed_map__8__",
+						"id": "__unnamed_map__7__",
+						"name": "__unnamed_map__7__",
 						"kind": "map",
 						"package": "mime/multipart",
 						"key": {
@@ -14594,13 +14594,13 @@
 							"kind": "basic"
 						},
 						"value": {
-							"id": "__unnamed_slice__36__",
-							"name": "__unnamed_slice__36__",
+							"id": "__unnamed_slice__32__",
+							"name": "__unnamed_slice__32__",
 							"kind": "slice",
 							"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 							"element": {
-								"id": "__unnamed_pointer__60__",
-								"name": "__unnamed_pointer__60__",
+								"id": "__unnamed_pointer__56__",
+								"name": "__unnamed_pointer__56__",
 								"kind": "pointer",
 								"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 								"element": {
@@ -14941,8 +14941,8 @@
 						{
 							"name": "d",
 							"type": {
-								"id": "__unnamed_slice__79__",
-								"name": "__unnamed_slice__79__",
+								"id": "__unnamed_slice__72__",
+								"name": "__unnamed_slice__72__",
 								"kind": "slice",
 								"package": "mime/multipart",
 								"element": {
@@ -15109,8 +15109,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__42__",
-						"name": "__unnamed_slice__42__",
+						"id": "__unnamed_slice__40__",
+						"name": "__unnamed_slice__40__",
 						"kind": "slice",
 						"package": "mime/multipart",
 						"element": {
@@ -15137,8 +15137,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__43__",
-						"name": "__unnamed_slice__43__",
+						"id": "__unnamed_slice__42__",
+						"name": "__unnamed_slice__42__",
 						"kind": "slice",
 						"package": "mime/multipart",
 						"element": {
@@ -15165,8 +15165,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__44__",
-						"name": "__unnamed_slice__44__",
+						"id": "__unnamed_slice__43__",
+						"name": "__unnamed_slice__43__",
 						"kind": "slice",
 						"package": "mime/multipart",
 						"element": {
@@ -15193,8 +15193,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__45__",
-						"name": "__unnamed_slice__45__",
+						"id": "__unnamed_slice__44__",
+						"name": "__unnamed_slice__44__",
 						"kind": "slice",
 						"package": "mime/multipart",
 						"element": {
@@ -15438,8 +15438,8 @@
 						{
 							"name": "line",
 							"type": {
-								"id": "__unnamed_slice__46__",
-								"name": "__unnamed_slice__46__",
+								"id": "__unnamed_slice__45__",
+								"name": "__unnamed_slice__45__",
 								"kind": "slice",
 								"package": "mime/multipart",
 								"element": {
@@ -15476,8 +15476,8 @@
 						{
 							"name": "line",
 							"type": {
-								"id": "__unnamed_slice__47__",
-								"name": "__unnamed_slice__47__",
+								"id": "__unnamed_slice__46__",
+								"name": "__unnamed_slice__46__",
 								"kind": "slice",
 								"package": "mime/multipart",
 								"element": {
@@ -15664,8 +15664,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__210__",
-								"name": "__unnamed_slice__210__",
+								"id": "__unnamed_slice__203__",
+								"name": "__unnamed_slice__203__",
 								"kind": "slice",
 								"package": "net",
 								"element": {
@@ -15847,8 +15847,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__212__",
-								"name": "__unnamed_slice__212__",
+								"id": "__unnamed_slice__204__",
+								"name": "__unnamed_slice__204__",
 								"kind": "slice",
 								"package": "net",
 								"element": {
@@ -16749,8 +16749,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__41__",
-						"name": "__unnamed_slice__41__",
+						"id": "__unnamed_slice__47__",
+						"name": "__unnamed_slice__47__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -17075,8 +17075,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_function__3__",
-						"name": "__unnamed_function__3__",
+						"id": "__unnamed_function__4__",
+						"name": "__unnamed_function__4__",
 						"kind": "function",
 						"package": "net/http",
 						"results": [
@@ -17131,8 +17131,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__20__",
-						"name": "__unnamed_slice__20__",
+						"id": "__unnamed_slice__24__",
+						"name": "__unnamed_slice__24__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -18715,8 +18715,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__31__",
-						"name": "__unnamed_slice__31__",
+						"id": "__unnamed_slice__33__",
+						"name": "__unnamed_slice__33__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -18802,8 +18802,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_pointer__56__",
-						"name": "__unnamed_pointer__56__",
+						"id": "__unnamed_pointer__57__",
+						"name": "__unnamed_pointer__57__",
 						"kind": "pointer",
 						"distance": 1,
 						"package": "net/http",
@@ -18830,8 +18830,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_pointer__57__",
-						"name": "__unnamed_pointer__57__",
+						"id": "__unnamed_pointer__58__",
+						"name": "__unnamed_pointer__58__",
 						"kind": "pointer",
 						"distance": 1,
 						"package": "net/http",
@@ -18856,13 +18856,13 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__32__",
-								"name": "__unnamed_slice__32__",
+								"id": "__unnamed_slice__35__",
+								"name": "__unnamed_slice__35__",
 								"kind": "slice",
 								"package": "net/http",
 								"element": {
-									"id": "__unnamed_pointer__58__",
-									"name": "__unnamed_pointer__58__",
+									"id": "__unnamed_pointer__59__",
+									"name": "__unnamed_pointer__59__",
 									"kind": "pointer",
 									"package": "net/http",
 									"element": {
@@ -18891,8 +18891,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__59__",
-								"name": "__unnamed_pointer__59__",
+								"id": "__unnamed_pointer__60__",
+								"name": "__unnamed_pointer__60__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -19850,8 +19850,8 @@
 					"distance": 1,
 					"package": "net/http",
 					"type": {
-						"id": "__unnamed_slice__78__",
-						"name": "__unnamed_slice__78__",
+						"id": "__unnamed_slice__59__",
+						"name": "__unnamed_slice__59__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -19898,8 +19898,8 @@
 					"distance": 1,
 					"package": "net/http",
 					"type": {
-						"id": "__unnamed_slice__77__",
-						"name": "__unnamed_slice__77__",
+						"id": "__unnamed_slice__60__",
+						"name": "__unnamed_slice__60__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -19945,8 +19945,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__30__",
-						"name": "__unnamed_slice__30__",
+						"id": "__unnamed_slice__41__",
+						"name": "__unnamed_slice__41__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -20022,8 +20022,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_map__6__",
-						"name": "__unnamed_map__6__",
+						"id": "__unnamed_map__11__",
+						"name": "__unnamed_map__11__",
 						"kind": "map",
 						"package": "net/http",
 						"key": {
@@ -20197,8 +20197,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__30__",
-						"name": "__unnamed_slice__30__",
+						"id": "__unnamed_slice__41__",
+						"name": "__unnamed_slice__41__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -20274,8 +20274,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_map__6__",
-						"name": "__unnamed_map__6__",
+						"id": "__unnamed_map__11__",
+						"name": "__unnamed_map__11__",
 						"kind": "map",
 						"package": "net/http",
 						"key": {
@@ -20557,8 +20557,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__9__",
-						"name": "__unnamed_slice__9__",
+						"id": "__unnamed_slice__10__",
+						"name": "__unnamed_slice__10__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -20642,8 +20642,8 @@
 						{
 							"name": "p2",
 							"type": {
-								"id": "__unnamed_pointer__14__",
-								"name": "__unnamed_pointer__14__",
+								"id": "__unnamed_pointer__16__",
+								"name": "__unnamed_pointer__16__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -20715,8 +20715,8 @@
 						{
 							"name": "p2",
 							"type": {
-								"id": "__unnamed_pointer__41__",
-								"name": "__unnamed_pointer__41__",
+								"id": "__unnamed_pointer__21__",
+								"name": "__unnamed_pointer__21__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -20751,8 +20751,8 @@
 						{
 							"name": "p2",
 							"type": {
-								"id": "__unnamed_pointer__42__",
-								"name": "__unnamed_pointer__42__",
+								"id": "__unnamed_pointer__22__",
+								"name": "__unnamed_pointer__22__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -20825,8 +20825,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_map__4__",
-						"name": "__unnamed_map__4__",
+						"id": "__unnamed_map__1__",
+						"name": "__unnamed_map__1__",
 						"kind": "map",
 						"package": "net/http",
 						"key": {
@@ -20834,13 +20834,13 @@
 							"kind": "struct"
 						},
 						"value": {
-							"id": "__unnamed_slice__23__",
-							"name": "__unnamed_slice__23__",
+							"id": "__unnamed_slice__9__",
+							"name": "__unnamed_slice__9__",
 							"kind": "slice",
 							"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 							"element": {
-								"id": "__unnamed_pointer__36__",
-								"name": "__unnamed_pointer__36__",
+								"id": "__unnamed_pointer__13__",
+								"name": "__unnamed_pointer__13__",
 								"kind": "pointer",
 								"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 								"element": {
@@ -20871,13 +20871,13 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__24__",
-						"name": "__unnamed_slice__24__",
+						"id": "__unnamed_slice__11__",
+						"name": "__unnamed_slice__11__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
-							"id": "__unnamed_pointer__37__",
-							"name": "__unnamed_pointer__37__",
+							"id": "__unnamed_pointer__15__",
+							"name": "__unnamed_pointer__15__",
 							"kind": "pointer",
 							"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 							"element": {
@@ -20905,8 +20905,8 @@
 						{
 							"name": "pat",
 							"type": {
-								"id": "__unnamed_pointer__38__",
-								"name": "__unnamed_pointer__38__",
+								"id": "__unnamed_pointer__17__",
+								"name": "__unnamed_pointer__17__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -20933,8 +20933,8 @@
 						{
 							"name": "pat",
 							"type": {
-								"id": "__unnamed_pointer__39__",
-								"name": "__unnamed_pointer__39__",
+								"id": "__unnamed_pointer__19__",
+								"name": "__unnamed_pointer__19__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -20948,16 +20948,16 @@
 						{
 							"name": "f",
 							"type": {
-								"id": "__unnamed_function__4__",
-								"name": "__unnamed_function__4__",
+								"id": "__unnamed_function__2__",
+								"name": "__unnamed_function__2__",
 								"kind": "function",
 								"package": "net/http",
 								"parameters": [
 									{
 										"name": "",
 										"type": {
-											"id": "__unnamed_pointer__40__",
-											"name": "__unnamed_pointer__40__",
+											"id": "__unnamed_pointer__20__",
+											"name": "__unnamed_pointer__20__",
 											"kind": "pointer",
 											"package": "net/http",
 											"element": {
@@ -21081,8 +21081,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_pointer__13__",
-						"name": "__unnamed_pointer__13__",
+						"id": "__unnamed_pointer__14__",
+						"name": "__unnamed_pointer__14__",
 						"kind": "pointer",
 						"distance": 1,
 						"package": "net/http",
@@ -21137,8 +21137,8 @@
 									}
 								],
 								"type": {
-									"id": "__unnamed_slice__30__",
-									"name": "__unnamed_slice__30__",
+									"id": "__unnamed_slice__41__",
+									"name": "__unnamed_slice__41__",
 									"kind": "slice",
 									"package": "net/http",
 									"element": {
@@ -21214,8 +21214,8 @@
 									}
 								],
 								"type": {
-									"id": "__unnamed_map__6__",
-									"name": "__unnamed_map__6__",
+									"id": "__unnamed_map__11__",
+									"name": "__unnamed_map__11__",
 									"kind": "map",
 									"package": "net/http",
 									"key": {
@@ -21394,8 +21394,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_pointer__24__",
-						"name": "__unnamed_pointer__24__",
+						"id": "__unnamed_pointer__27__",
+						"name": "__unnamed_pointer__27__",
 						"kind": "pointer",
 						"distance": 1,
 						"package": "net/http",
@@ -21422,8 +21422,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_pointer__25__",
-						"name": "__unnamed_pointer__25__",
+						"id": "__unnamed_pointer__28__",
+						"name": "__unnamed_pointer__28__",
 						"kind": "pointer",
 						"distance": 1,
 						"package": "net/http",
@@ -21449,8 +21449,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_pointer__26__",
-								"name": "__unnamed_pointer__26__",
+								"id": "__unnamed_pointer__29__",
+								"name": "__unnamed_pointer__29__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -21484,8 +21484,8 @@
 						{
 							"name": "segs",
 							"type": {
-								"id": "__unnamed_slice__17__",
-								"name": "__unnamed_slice__17__",
+								"id": "__unnamed_slice__13__",
+								"name": "__unnamed_slice__13__",
 								"kind": "slice",
 								"package": "net/http",
 								"element": {
@@ -21499,8 +21499,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_pointer__27__",
-								"name": "__unnamed_pointer__27__",
+								"id": "__unnamed_pointer__33__",
+								"name": "__unnamed_pointer__33__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -21534,8 +21534,8 @@
 						{
 							"name": "p",
 							"type": {
-								"id": "__unnamed_pointer__28__",
-								"name": "__unnamed_pointer__28__",
+								"id": "__unnamed_pointer__36__",
+								"name": "__unnamed_pointer__36__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -21578,8 +21578,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__29__",
-								"name": "__unnamed_pointer__29__",
+								"id": "__unnamed_pointer__37__",
+								"name": "__unnamed_pointer__37__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -21615,8 +21615,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__30__",
-								"name": "__unnamed_pointer__30__",
+								"id": "__unnamed_pointer__38__",
+								"name": "__unnamed_pointer__38__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -21668,8 +21668,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__31__",
-								"name": "__unnamed_pointer__31__",
+								"id": "__unnamed_pointer__39__",
+								"name": "__unnamed_pointer__39__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -21682,8 +21682,8 @@
 						},
 						{
 							"type": {
-								"id": "__unnamed_slice__18__",
-								"name": "__unnamed_slice__18__",
+								"id": "__unnamed_slice__16__",
+								"name": "__unnamed_slice__16__",
 								"kind": "slice",
 								"package": "net/http",
 								"element": {
@@ -21728,8 +21728,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__32__",
-								"name": "__unnamed_pointer__32__",
+								"id": "__unnamed_pointer__40__",
+								"name": "__unnamed_pointer__40__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -21796,8 +21796,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__33__",
-								"name": "__unnamed_pointer__33__",
+								"id": "__unnamed_pointer__41__",
+								"name": "__unnamed_pointer__41__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -21855,8 +21855,8 @@
 						{
 							"name": "methodSet",
 							"type": {
-								"id": "__unnamed_map__2__",
-								"name": "__unnamed_map__2__",
+								"id": "__unnamed_map__3__",
+								"name": "__unnamed_map__3__",
 								"kind": "map",
 								"package": "net/http",
 								"key": {
@@ -21896,8 +21896,8 @@
 						{
 							"name": "set",
 							"type": {
-								"id": "__unnamed_map__3__",
-								"name": "__unnamed_map__3__",
+								"id": "__unnamed_map__4__",
+								"name": "__unnamed_map__4__",
 								"kind": "map",
 								"package": "net/http",
 								"key": {
@@ -22031,8 +22031,8 @@
 					"distance": 1,
 					"package": "net/http",
 					"type": {
-						"id": "__unnamed_map__1__",
-						"name": "__unnamed_map__1__",
+						"id": "__unnamed_map__2__",
+						"name": "__unnamed_map__2__",
 						"kind": "map",
 						"package": "net/http",
 						"key": {
@@ -22062,8 +22062,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__10__",
-						"name": "__unnamed_slice__10__",
+						"id": "__unnamed_slice__12__",
+						"name": "__unnamed_slice__12__",
 						"kind": "slice",
 						"package": "net/http",
 						"element": {
@@ -22144,8 +22144,8 @@
 						{
 							"name": "handler",
 							"type": {
-								"id": "__unnamed_function__2__",
-								"name": "__unnamed_function__2__",
+								"id": "__unnamed_function__3__",
+								"name": "__unnamed_function__3__",
 								"kind": "function",
 								"package": "net/http",
 								"parameters": [
@@ -22159,8 +22159,8 @@
 									{
 										"name": "",
 										"type": {
-											"id": "__unnamed_pointer__15__",
-											"name": "__unnamed_pointer__15__",
+											"id": "__unnamed_pointer__25__",
+											"name": "__unnamed_pointer__25__",
 											"kind": "pointer",
 											"package": "net/http",
 											"element": {
@@ -22190,8 +22190,8 @@
 						{
 							"name": "r",
 							"type": {
-								"id": "__unnamed_pointer__16__",
-								"name": "__unnamed_pointer__16__",
+								"id": "__unnamed_pointer__26__",
+								"name": "__unnamed_pointer__26__",
 								"kind": "pointer",
 								"package": "net/http",
 								"element": {
@@ -22849,8 +22849,8 @@
 							{
 								"name": "value",
 								"type": {
-									"id": "__unnamed_slice__86__",
-									"name": "__unnamed_slice__86__",
+									"id": "__unnamed_slice__103__",
+									"name": "__unnamed_slice__103__",
 									"kind": "slice",
 									"package": "github.com/pablor21/goscanner/examples/starwars/basic",
 									"element": {
@@ -22951,8 +22951,8 @@
 						{
 							"name": "old",
 							"type": {
-								"id": "__unnamed_pointer__76__",
-								"name": "__unnamed_pointer__76__",
+								"id": "__unnamed_pointer__78__",
+								"name": "__unnamed_pointer__78__",
 								"kind": "pointer",
 								"package": "net/http/httptrace",
 								"element": {
@@ -23022,8 +23022,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_slice__142__",
-						"name": "__unnamed_slice__142__",
+						"id": "__unnamed_slice__173__",
+						"name": "__unnamed_slice__173__",
 						"kind": "slice",
 						"package": "net/http/httptrace",
 						"element": {
@@ -23346,8 +23346,8 @@
 						}
 					],
 					"type": {
-						"id": "__unnamed_pointer__17__",
-						"name": "__unnamed_pointer__17__",
+						"id": "__unnamed_pointer__24__",
+						"name": "__unnamed_pointer__24__",
 						"kind": "pointer",
 						"distance": 2,
 						"package": "net/url",
@@ -23702,8 +23702,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__19__",
-								"name": "__unnamed_pointer__19__",
+								"id": "__unnamed_pointer__30__",
+								"name": "__unnamed_pointer__30__",
 								"kind": "pointer",
 								"package": "net/url",
 								"element": {
@@ -23737,8 +23737,8 @@
 						{
 							"name": "ref",
 							"type": {
-								"id": "__unnamed_pointer__20__",
-								"name": "__unnamed_pointer__20__",
+								"id": "__unnamed_pointer__31__",
+								"name": "__unnamed_pointer__31__",
 								"kind": "pointer",
 								"package": "net/url",
 								"element": {
@@ -23753,8 +23753,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__21__",
-								"name": "__unnamed_pointer__21__",
+								"id": "__unnamed_pointer__32__",
+								"name": "__unnamed_pointer__32__",
 								"kind": "pointer",
 								"package": "net/url",
 								"element": {
@@ -23860,8 +23860,8 @@
 						{
 							"name": "text",
 							"type": {
-								"id": "__unnamed_slice__12__",
-								"name": "__unnamed_slice__12__",
+								"id": "__unnamed_slice__15__",
+								"name": "__unnamed_slice__15__",
 								"kind": "slice",
 								"package": "net/url",
 								"element": {
@@ -23897,8 +23897,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__13__",
-								"name": "__unnamed_slice__13__",
+								"id": "__unnamed_slice__17__",
+								"name": "__unnamed_slice__17__",
 								"kind": "slice",
 								"package": "net/url",
 								"element": {
@@ -23914,8 +23914,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__14__",
-								"name": "__unnamed_slice__14__",
+								"id": "__unnamed_slice__18__",
+								"name": "__unnamed_slice__18__",
 								"kind": "slice",
 								"package": "net/url",
 								"element": {
@@ -23950,8 +23950,8 @@
 						{
 							"name": "text",
 							"type": {
-								"id": "__unnamed_slice__15__",
-								"name": "__unnamed_slice__15__",
+								"id": "__unnamed_slice__20__",
+								"name": "__unnamed_slice__20__",
 								"kind": "slice",
 								"package": "net/url",
 								"element": {
@@ -23988,8 +23988,8 @@
 						{
 							"name": "elem",
 							"type": {
-								"id": "__unnamed_slice__16__",
-								"name": "__unnamed_slice__16__",
+								"id": "__unnamed_slice__23__",
+								"name": "__unnamed_slice__23__",
 								"kind": "slice",
 								"package": "net/url",
 								"element": {
@@ -24006,8 +24006,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__22__",
-								"name": "__unnamed_pointer__22__",
+								"id": "__unnamed_pointer__42__",
+								"name": "__unnamed_pointer__42__",
 								"kind": "pointer",
 								"package": "net/url",
 								"element": {
@@ -24174,8 +24174,8 @@
 				"kind": "basic"
 			},
 			"value": {
-				"id": "__unnamed_slice__11__",
-				"name": "__unnamed_slice__11__",
+				"id": "__unnamed_slice__14__",
+				"name": "__unnamed_slice__14__",
 				"kind": "slice",
 				"package": "net/url",
 				"element": {
@@ -25027,8 +25027,8 @@
 					"distance": 2,
 					"package": "time",
 					"type": {
-						"id": "__unnamed_slice__144__",
-						"name": "__unnamed_slice__144__",
+						"id": "__unnamed_slice__148__",
+						"name": "__unnamed_slice__148__",
 						"kind": "slice",
 						"package": "time",
 						"element": {
@@ -25048,8 +25048,8 @@
 					"distance": 2,
 					"package": "time",
 					"type": {
-						"id": "__unnamed_slice__145__",
-						"name": "__unnamed_slice__145__",
+						"id": "__unnamed_slice__155__",
+						"name": "__unnamed_slice__155__",
 						"kind": "slice",
 						"package": "time",
 						"element": {
@@ -25123,8 +25123,8 @@
 					"distance": 2,
 					"package": "time",
 					"type": {
-						"id": "__unnamed_pointer__97__",
-						"name": "__unnamed_pointer__97__",
+						"id": "__unnamed_pointer__118__",
+						"name": "__unnamed_pointer__118__",
 						"kind": "pointer",
 						"distance": 2,
 						"package": "time",
@@ -25149,8 +25149,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__98__",
-								"name": "__unnamed_pointer__98__",
+								"id": "__unnamed_pointer__119__",
+								"name": "__unnamed_pointer__119__",
 								"kind": "pointer",
 								"package": "time",
 								"element": {
@@ -25173,12 +25173,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "String returns a descriptive name for the time zone information,\ncorresponding to the name argument to [LoadLocation] or [FixedZone].",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -25199,12 +25193,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "lookup returns information about the time zone in use at an\ninstant in time expressed as seconds since January 1, 1970 00:00:00 UTC.\n\nThe returned information gives the name of the zone (such as \"CET\"),\nthe start and end times bracketing sec when that zone is in effect,\nthe offset in seconds east of UTC (such as -5*60*60), and whether\nthe daylight savings is being observed at that time.",
-							"placement": "above"
-						}
-					],
 					"parameters": [
 						{
 							"name": "sec",
@@ -25268,12 +25256,6 @@
 					"named": true,
 					"distance": 2,
 					"package": "time",
-					"comments": [
-						{
-							"text": "lookupFirstZone returns the index of the time zone to use for times\nbefore the first transition time, or when there are no transition\ntimes.\n\nThe reference implementation in localtime.c from\nhttps://www.iana.org/time-zones/repository/releases/tzcode2013g.tar.gz\nimplements the following algorithm for these cases:\n 1. If the first zone is unused by the transitions, use it.\n 2. Otherwise, if there are transition times, and the first\n    transition is to a zone in daylight time, find the first\n    non-daylight-time zone before and closest to the first transition\n    zone.\n 3. Otherwise, use the first zone that is not daylight time, if\n    there is one.\n 4. Otherwise, use the first zone.",
-							"placement": "above"
-						}
-					],
 					"results": [
 						{
 							"type": {
@@ -25572,8 +25554,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__81__",
-								"name": "__unnamed_slice__81__",
+								"id": "__unnamed_slice__73__",
+								"name": "__unnamed_slice__73__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -25597,8 +25579,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__82__",
-								"name": "__unnamed_slice__82__",
+								"id": "__unnamed_slice__75__",
+								"name": "__unnamed_slice__75__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -25626,8 +25608,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__83__",
-								"name": "__unnamed_slice__83__",
+								"id": "__unnamed_slice__76__",
+								"name": "__unnamed_slice__76__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -25651,8 +25633,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__84__",
-								"name": "__unnamed_slice__84__",
+								"id": "__unnamed_slice__79__",
+								"name": "__unnamed_slice__79__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -25680,8 +25662,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__85__",
-								"name": "__unnamed_slice__85__",
+								"id": "__unnamed_slice__81__",
+								"name": "__unnamed_slice__81__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -25705,8 +25687,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__87__",
-								"name": "__unnamed_slice__87__",
+								"id": "__unnamed_slice__82__",
+								"name": "__unnamed_slice__82__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -25734,8 +25716,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__88__",
-								"name": "__unnamed_slice__88__",
+								"id": "__unnamed_slice__83__",
+								"name": "__unnamed_slice__83__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -25751,8 +25733,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__89__",
-								"name": "__unnamed_slice__89__",
+								"id": "__unnamed_slice__84__",
+								"name": "__unnamed_slice__84__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -26756,8 +26738,8 @@
 						{
 							"name": "loc",
 							"type": {
-								"id": "__unnamed_pointer__77__",
-								"name": "__unnamed_pointer__77__",
+								"id": "__unnamed_pointer__76__",
+								"name": "__unnamed_pointer__76__",
 								"kind": "pointer",
 								"package": "time",
 								"element": {
@@ -26797,8 +26779,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_pointer__78__",
-								"name": "__unnamed_pointer__78__",
+								"id": "__unnamed_pointer__77__",
+								"name": "__unnamed_pointer__77__",
 								"kind": "pointer",
 								"package": "time",
 								"element": {
@@ -27003,8 +26985,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__90__",
-								"name": "__unnamed_slice__90__",
+								"id": "__unnamed_slice__89__",
+								"name": "__unnamed_slice__89__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27020,8 +27002,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__91__",
-								"name": "__unnamed_slice__91__",
+								"id": "__unnamed_slice__90__",
+								"name": "__unnamed_slice__90__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27061,8 +27043,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__92__",
-								"name": "__unnamed_slice__92__",
+								"id": "__unnamed_slice__91__",
+								"name": "__unnamed_slice__91__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27103,8 +27085,8 @@
 						{
 							"name": "data",
 							"type": {
-								"id": "__unnamed_slice__93__",
-								"name": "__unnamed_slice__93__",
+								"id": "__unnamed_slice__92__",
+								"name": "__unnamed_slice__92__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27146,8 +27128,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__94__",
-								"name": "__unnamed_slice__94__",
+								"id": "__unnamed_slice__93__",
+								"name": "__unnamed_slice__93__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27188,8 +27170,8 @@
 						{
 							"name": "data",
 							"type": {
-								"id": "__unnamed_slice__95__",
-								"name": "__unnamed_slice__95__",
+								"id": "__unnamed_slice__94__",
+								"name": "__unnamed_slice__94__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27231,8 +27213,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__96__",
-								"name": "__unnamed_slice__96__",
+								"id": "__unnamed_slice__95__",
+								"name": "__unnamed_slice__95__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27273,8 +27255,8 @@
 						{
 							"name": "data",
 							"type": {
-								"id": "__unnamed_slice__97__",
-								"name": "__unnamed_slice__97__",
+								"id": "__unnamed_slice__96__",
+								"name": "__unnamed_slice__96__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27311,8 +27293,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__98__",
-								"name": "__unnamed_slice__98__",
+								"id": "__unnamed_slice__97__",
+								"name": "__unnamed_slice__97__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27336,8 +27318,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__99__",
-								"name": "__unnamed_slice__99__",
+								"id": "__unnamed_slice__98__",
+								"name": "__unnamed_slice__98__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27378,8 +27360,8 @@
 						{
 							"name": "b",
 							"type": {
-								"id": "__unnamed_slice__100__",
-								"name": "__unnamed_slice__100__",
+								"id": "__unnamed_slice__99__",
+								"name": "__unnamed_slice__99__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27395,8 +27377,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__101__",
-								"name": "__unnamed_slice__101__",
+								"id": "__unnamed_slice__100__",
+								"name": "__unnamed_slice__100__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27436,8 +27418,8 @@
 					"results": [
 						{
 							"type": {
-								"id": "__unnamed_slice__102__",
-								"name": "__unnamed_slice__102__",
+								"id": "__unnamed_slice__101__",
+								"name": "__unnamed_slice__101__",
 								"kind": "slice",
 								"package": "time",
 								"element": {
@@ -27478,8 +27460,8 @@
 						{
 							"name": "data",
 							"type": {
-								"id": "__unnamed_slice__103__",
-								"name": "__unnamed_slice__103__",
+								"id": "__unnamed_slice__102__",
+								"name": "__unnamed_slice__102__",
 								"kind": "slice",
 								"package": "time",
 								"element": {

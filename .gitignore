@@ -27,3 +27,5 @@ coverage.out
 *.dylib
 *.test
 *.out
+*.prof
+*.pprof
