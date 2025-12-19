@@ -1,7 +1,5 @@
 package types
 
-import "fmt"
-
 // Field represents a struct field
 type Field struct {
 	baseType
@@ -53,9 +51,7 @@ func (f *Field) Parent() Type {
 }
 
 func (f *Field) Serialize() any {
-	if err := f.Load(); err != nil && f.pkg != nil && f.pkg.logger != nil {
-		f.pkg.logger.Error(fmt.Sprintf("failed to load field %s: %v", f.id, err))
-	}
+	// Avoid calling Load() here to prevent reentrancy deadlocks
 	promotedFromID := ""
 	if f.promotedFrom != nil {
 		promotedFromID = f.promotedFrom.Id()
@@ -169,9 +165,7 @@ func (m *Method) AddResult(result *Result) {
 }
 
 func (m *Method) Serialize() any {
-	if err := m.Load(); err != nil && m.pkg != nil && m.pkg.logger != nil {
-		m.pkg.logger.Error(fmt.Sprintf("failed to load method %s: %v", m.id, err))
-	}
+	// Avoid calling Load() here to prevent reentrancy deadlocks
 	params := make([]*SerializedParameter, len(m.params))
 	for i, p := range m.params {
 		params[i] = &SerializedParameter{

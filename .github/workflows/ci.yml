@@ -5,6 +5,12 @@ on:
     branches: [ master, main, develop ]
   pull_request:
     branches: [ master, main, develop ]
+  workflow_dispatch:
+    inputs:
+      timeout:
+        description: "go test timeout for profiling"
+        required: false
+        default: "120s"
 
 jobs:
   test:
@@ -24,8 +30,11 @@ jobs:
     - name: Download dependencies
       run: go mod download
 
-    - name: Run tests
-      run: go test -v -race -coverprofile=coverage.out ./...
+    - name: Make test script executable
+      run: chmod +x ./run-tests.sh
+
+    - name: Run tests (fast unit tests)
+      run: ./run-tests.sh tests -race -count=1 -coverprofile=coverage.out
 
     - name: Upload coverage
       uses: codecov/codecov-action@v4
@@ -69,3 +78,26 @@ jobs:
       with:
         version: latest
         args: --timeout=5m
+
+  profiling:
+    name: Profiling (manual)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v6
+      with:
+        go-version: '1.25'
+        cache: true
+
+    - name: Download dependencies
+      run: go mod download
+
+    - name: Make test script executable
+      run: chmod +x ./run-tests.sh
+
+    - name: Run profiling tests only
+      run: ./run-tests.sh profiling -v -timeout "${{ github.event.inputs.timeout }}"

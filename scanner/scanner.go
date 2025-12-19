@@ -55,7 +55,13 @@ func (s *DefaultScanner) ScanWithConfig(config *Config) (*ScanningResult, error)
 
 func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (*ScanningResult, error) {
 	// start timer and log start message
-	ctx.Logger.Info("Starting scan...")
+	ctx.Logger.Infof("Starting scan with mode  %s on packages: %v", ctx.ScanMode.String(), ctx.Config.Packages)
+	ctx.Logger.Infof("Using max concurrency: %d", func() int {
+		if ctx.Config.MaxConcurrency <= 0 {
+			return runtime.NumCPU()
+		}
+		return ctx.Config.MaxConcurrency
+	}())
 	totalPackages := 0
 	now := time.Now()
 	var m1, m2 runtime.MemStats
@@ -68,7 +74,7 @@ func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (*ScanningResult,
 		runtime.GC()
 		runtime.ReadMemStats(&m2)
 		memoryUsage = (m2.Alloc - m1.Alloc) / 1024 // in KB
-		ctx.Logger.Info(fmt.Sprintf("Scan completed in %v, found %d types, across %d packages, memory usage: %dKB", time.Since(now), s.TypeResolver.GetTypes().Len(), totalPackages, memoryUsage))
+		ctx.Logger.Infof("Scan completed in %v, found %d types, across %d packages, memory usage: %dKB", time.Since(now), s.TypeResolver.GetTypes().Len(), totalPackages, memoryUsage)
 	}()
 
 	if ctx == nil || ctx.Config == nil {

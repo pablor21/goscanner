@@ -44,11 +44,12 @@ type defaultTypeResolver struct {
 	packageDistances *gstypes.SyncMap[string, int]               // Track distance for each package (thread-safe)
 	unnamedCounter   *gstypes.SyncCounter                        // Counter for unnamed types per kind (thread-safe)
 
-	ignoredTypes map[string]struct{}                    // Types to ignore
-	basicTypes   *gstypes.SyncMap[string, gstypes.Type] // Cache of basic types (thread-safe)
-	qualifier    types.Qualifier                        // Cached qualifier function for GetCanonicalName
-	config       *Config
-	logger       logger.Logger
+	ignoredTypes   map[string]struct{}                    // Types to ignore
+	basicTypes     *gstypes.SyncMap[string, gstypes.Type] // Cache of basic types (thread-safe)
+	stringInterner *StringInterner                        // String interning pool to reduce allocations (thread-safe)
+	qualifier      types.Qualifier                        // Cached qualifier function for GetCanonicalName
+	config         *Config
+	logger         logger.Logger
 }
 
 // NewDefaultTypeResolver creates a new type resolver
@@ -70,6 +71,7 @@ func NewDefaultTypeResolver(config *Config, log logger.Logger) *defaultTypeResol
 		unnamedCounter:   gstypes.NewSyncCounter(),
 		ignoredTypes:     make(map[string]struct{}),
 		basicTypes:       gstypes.NewSyncMap[string, gstypes.Type](),
+		stringInterner:   NewStringInterner(),
 		qualifier: func(pkg *types.Package) string {
 			return pkg.Path()
 		},
@@ -129,21 +131,23 @@ func (r *defaultTypeResolver) GetCanonicalName(t types.Type) string {
 		if named.TypeArgs() != nil && named.TypeArgs().Len() > 0 {
 			// This is an instantiated generic, use TypeString to get full name with args
 			name := types.TypeString(t, r.qualifier)
-			return name
+			return r.stringInterner.Intern(name) // Intern the string
 		}
 		// Check for type parameters (generic type definition like GenericStruct[T])
 		if named.TypeParams() != nil && named.TypeParams().Len() > 0 {
 			obj := named.Obj()
 			if obj.Pkg() != nil {
-				return obj.Pkg().Path() + "." + obj.Name()
+				pkgPath := r.stringInterner.Intern(obj.Pkg().Path())
+				name := r.stringInterner.Intern(obj.Name())
+				return pkgPath + "." + name
 			}
-			return obj.Name()
+			return r.stringInterner.Intern(obj.Name())
 		}
 	}
 
 	name := types.TypeString(t, r.qualifier)
 
-	return name
+	return r.stringInterner.Intern(name) // Intern all type names
 }
 
 // getPackageInfo returns the package info for the given object
@@ -1559,17 +1563,12 @@ func (r *defaultTypeResolver) makeInterface(ctx *ScanningContext,
 		}
 	}
 
-	// Register in cache early to prevent infinite recursion on self-referencing types
-	r.cache(iface)
-
 	// Get the underlying interface type
 	var underlying *types.Interface
 	if namedType != nil {
 		var ok bool
 		underlying, ok = namedType.Underlying().(*types.Interface)
 		if !ok {
-			// Remove from cache if we couldn't resolve
-			r.types.Delete(typeID)
 			r.logger.Warnf("Failed to resolve interface underlying type: %v", namedType)
 			return nil
 		}
@@ -1577,6 +1576,7 @@ func (r *defaultTypeResolver) makeInterface(ctx *ScanningContext,
 		// Unnamed interface type
 		underlying = interfaceType
 	}
+
 	// Set loader to extract methods lazily
 	iface.SetLoader(func(t gstypes.Type) error {
 		loaderCtx := ctx
@@ -1677,6 +1677,9 @@ func (r *defaultTypeResolver) makeInterface(ctx *ScanningContext,
 		return nil
 	})
 
+	// Register in cache after loader is set so concurrent loads see the loader
+	r.cache(iface)
+
 	return iface
 }
 
@@ -1712,17 +1715,12 @@ func (r *defaultTypeResolver) makeStruct(ctx *ScanningContext,
 		}
 	}
 
-	// Register in cache early to prevent infinite recursion on self-referencing types
-	r.cache(strct)
-
 	// Get the underlying struct type
 	var underlying *types.Struct
 	if namedType != nil {
 		var ok bool
 		underlying, ok = namedType.Underlying().(*types.Struct)
 		if !ok {
-			// Remove from cache if we couldn't resolve
-			r.types.Delete(typeID)
 			r.logger.Warnf("Failed to resolve struct underlying type: %v", namedType)
 			return nil
 		}
@@ -1886,6 +1884,9 @@ func (r *defaultTypeResolver) makeStruct(ctx *ScanningContext,
 
 		return nil
 	})
+
+	// Register in cache after loader is set so concurrent loads see the loader
+	r.cache(strct)
 
 	return strct
 }
