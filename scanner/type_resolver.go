@@ -1608,6 +1608,7 @@ func (r *defaultTypeResolver) makeInterface(
 							false,
 						)
 						promotedMethod.SetPackage(r.getPackageInfo(embeddedMethod))
+						promotedMethod.SetDistance(iface.Distance())
 						promotedMethod.SetPromotedFrom(embeddedResolved)
 						promotedMethod.SetStructure(sig.String())
 
@@ -1647,6 +1648,7 @@ func (r *defaultTypeResolver) makeInterface(
 			methodID := typeID + "#" + method.Name()
 			m := gstypes.NewMethod(methodID, method.Name(), iface, false)
 			m.SetPackage(r.getPackageInfo(method))
+			m.SetDistance(iface.Distance())
 			m.SetStructure(sig.String())
 
 			// Process signature using helper
@@ -1805,6 +1807,7 @@ func (r *defaultTypeResolver) makeStruct(
 
 							promotedFieldID := id + "#" + embeddedField.Name()
 							promotedField := gstypes.NewField(promotedFieldID, embeddedField.Name(), finalEmbeddedFieldType, embeddedStructType.Tag(j), false, strct)
+							promotedField.SetDistance(strct.Distance())
 							promotedField.SetPromotedFrom(finalFieldType)
 							strct.AddField(promotedField)
 						}

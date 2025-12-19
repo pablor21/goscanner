@@ -6,8 +6,8 @@ type SerializedType struct {
 	Name     string    `json:"name"`
 	Kind     TypeKind  `json:"kind"`
 	IsNamed  bool      `json:"named,omitempty"`
-	Exported bool      `json:"exported"`
-	Distance int       `json:"distance"`
+	Exported bool      `json:"exported,omitempty"`
+	Distance int       `json:"distance,omitempty"`
 	Package  string    `json:"package,omitempty"`
 	Files    []string  `json:"files,omitempty"`
 	Comments []Comment `json:"comments,omitempty"`
