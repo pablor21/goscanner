@@ -1536,7 +1536,7 @@ func (r *defaultTypeResolver) makeAlias(
 	}
 
 	// Create pointer wrapper if needed
-	var finalUnderlying gstypes.Type = underlying
+	var finalUnderlying = underlying
 	if pointerDepth > 0 {
 		ptrID := r.generateUnnamedID("pointer")
 		finalUnderlying = gstypes.NewPointer(ptrID, ptrID, underlying, pointerDepth)
@@ -1838,7 +1838,7 @@ func (r *defaultTypeResolver) makeStruct(
 							}
 
 							// Create pointer wrapper if needed
-							var finalEmbeddedFieldType gstypes.Type = embeddedFieldTypeResolved
+							var finalEmbeddedFieldType = embeddedFieldTypeResolved
 							if embeddedPointerDepth > 0 {
 								ptrID := r.generateUnnamedID("pointer")
 								finalEmbeddedFieldType = gstypes.NewPointer(ptrID, ptrID, embeddedFieldTypeResolved, embeddedPointerDepth)
@@ -1992,7 +1992,7 @@ func (r *defaultTypeResolver) parseValue(obj types.Object, docValue *doc.Value) 
 	}
 
 	// Create pointer wrapper if needed
-	var finalValueType gstypes.Type = valueTypeResolved
+	var finalValueType = valueTypeResolved
 	if pointerDepth > 0 {
 		ptrID := r.generateUnnamedID("pointer")
 		finalValueType = gstypes.NewPointer(ptrID, ptrID, valueTypeResolved, pointerDepth)
