@@ -1,4 +1,4 @@
-package typesnew
+package types
 
 // SerializedType contains the common serializable fields for all types
 type SerializedType struct {
@@ -7,6 +7,7 @@ type SerializedType struct {
 	Kind     TypeKind  `json:"kind"`
 	IsNamed  bool      `json:"named,omitempty"`
 	Exported bool      `json:"exported"`
+	Distance int       `json:"distance"`
 	Package  string    `json:"package,omitempty"`
 	Files    []string  `json:"files,omitempty"`
 	Comments []Comment `json:"comments,omitempty"`
@@ -24,6 +25,7 @@ func (b *baseType) serializeBase() SerializedType {
 		Kind:     b.kind,
 		IsNamed:  b.obj != nil,
 		Exported: b.exported,
+		Distance: b.distance,
 		Package:  pkgPath,
 		Files:    b.files,
 		Comments: b.comments,

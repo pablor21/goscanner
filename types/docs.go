@@ -1,4 +1,4 @@
-package typesnew
+package types
 
 import (
 	"strings"

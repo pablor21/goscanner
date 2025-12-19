@@ -20,14 +20,13 @@ const (
 	ScanModeFunctions                      // Include standalone functions
 	ScanModeDocs                           // Include documentation
 	ScanModeComments                       // Parse and extract comments
-	ScanModeConsts
-	ScanModeVariables // Include constants and variables
-	ScanModeEnums     // Include enum values
+	ScanModeConsts                         // Include constants
+	ScanModeVariables                      // Include variables
 
 	// Predefined combinations
 	ScanModeBasic   = ScanModeTypes | ScanModeDocs
-	ScanModeDefault = ScanModeTypes | ScanModeMethods | ScanModeDocs | ScanModeComments | ScanModeConsts | ScanModeVariables | ScanModeEnums
-	ScanModeFull    = ScanModeTypes | ScanModeMethods | ScanModeFields | ScanModeFunctions | ScanModeDocs | ScanModeComments | ScanModeConsts | ScanModeVariables | ScanModeEnums
+	ScanModeDefault = ScanModeTypes | ScanModeMethods | ScanModeDocs | ScanModeComments | ScanModeConsts | ScanModeVariables
+	ScanModeFull    = ScanModeTypes | ScanModeMethods | ScanModeFields | ScanModeFunctions | ScanModeDocs | ScanModeComments | ScanModeConsts | ScanModeVariables
 )
 
 func (m ScanMode) String() string {
@@ -38,8 +37,6 @@ func (m ScanMode) Has(mode ScanMode) bool {
 	return m&mode == mode
 }
 
-// parse a string separated by commas into a ScanMode
-// e.g. "types,methods,fields" -> ScanModeTypes | ScanModeMethods | ScanModeFields
 func (m ScanMode) FromString(str string) ScanMode {
 	s := strings.Split(strings.ToLower(str), ",")
 	if len(s) == 0 {
@@ -69,8 +66,6 @@ func (m ScanMode) FromString(str string) ScanMode {
 			m |= ScanModeConsts
 		case "variables", "vars":
 			m |= ScanModeVariables
-		case "enums":
-			m |= ScanModeEnums
 		default:
 			panic("unknown scan mode " + v)
 		}
@@ -100,6 +95,15 @@ func (m ScanMode) MarshalJSON() ([]byte, error) {
 	}
 	if m.Has(ScanModeDocs) {
 		parts = append(parts, "docs")
+	}
+	if m.Has(ScanModeComments) {
+		parts = append(parts, "comments")
+	}
+	if m.Has(ScanModeConsts) {
+		parts = append(parts, "consts")
+	}
+	if m.Has(ScanModeVariables) {
+		parts = append(parts, "variables")
 	}
 	str := strings.Join(parts, ",")
 	return []byte(`"` + str + `"`), nil
@@ -167,15 +171,29 @@ func (v VisibilityLevel) MarshalJSON() ([]byte, error) {
 //go:embed config.json
 var defaultConfigFs embed.FS
 
+type OutOfScopeHandling string
+
+const (
+	OutOfScopeIgnore OutOfScopeHandling = "ignore"
+	OutOfScopeWarn   OutOfScopeHandling = "warn"
+	OutOfScopeError  OutOfScopeHandling = "error"
+)
+
+type ExternalPackagesOptions struct {
+	ScanMode    ScanMode           `json:"scan_mode" yaml:"scan_mode"`
+	ParseFiles  bool               `json:"parse_files" yaml:"parse_files"`
+	Visibility  VisibilityLevel    `json:"visibility" yaml:"visibility"`
+	Packages    []string           `json:"packages" yaml:"packages"`
+	MaxDistance int                `json:"max_distance" yaml:"max_distance"`
+	OutOfScope  OutOfScopeHandling `json:"out_of_scope" yaml:"out_of_scope"`
+}
+
 type Config struct {
-	Packages           []string        `json:"packages" yaml:"packages"`
-	ScanMode           ScanMode        `json:"scan_mode" yaml:"scan_mode"`
-	FieldVisibility    VisibilityLevel `json:"field_visibility" yaml:"field_visibility"`
-	MethodVisibility   VisibilityLevel `json:"method_visibility" yaml:"method_visibility"`
-	FunctionVisibility VisibilityLevel `json:"function_visibility" yaml:"function_visibility"`
-	TypeVisibility     VisibilityLevel `json:"type_visibility" yaml:"type_visibility"`
-	EnumVisibility     VisibilityLevel `json:"enum_visibility" yaml:"enum_visibility"`
-	LogLevel           logger.LogLevel `json:"log_level" yaml:"log_level"`
+	Packages                []string                 `json:"packages" yaml:"packages"`
+	ScanMode                ScanMode                 `json:"scan_mode" yaml:"scan_mode"`
+	Visibility              VisibilityLevel          `json:"visibility" yaml:"visibility"`
+	ExternalPackagesOptions *ExternalPackagesOptions `json:"external_packages_options,omitempty" yaml:"external_packages_options,omitempty"`
+	LogLevel                logger.LogLevel          `json:"log_level" yaml:"log_level"`
 }
 
 func NewDefaultConfig() *Config {

@@ -8,40 +8,40 @@ import (
 	"testing"
 
 	"github.com/pablor21/goscanner/logger"
-	. "github.com/pablor21/goscanner/types"
+	gstypes "github.com/pablor21/goscanner/types"
 )
 
 // test basic types
 func TestTypeResolver_resolveBasicType(t *testing.T) {
-	r := newDefaultTypeResolver(NewDefaultConfig(), logger.NewDefaultLogger())
+	r := NewDefaultTypeResolver(NewDefaultConfig(), logger.NewDefaultLogger())
 
 	// Define test cases for basic types based on the go/types package
 	tests := []struct {
 		goType   types.Type
-		wantKind TypeKind
+		wantKind gstypes.TypeKind
 	}{
-		{types.Typ[types.Bool], TypeKindBasic},
-		{types.Typ[types.Byte], TypeKindBasic},
-		{types.Typ[types.Complex64], TypeKindBasic},
-		{types.Typ[types.Complex128], TypeKindBasic},
-		{types.Universe.Lookup("error").Type(), TypeKindBasic},
-		{types.Universe.Lookup("rune").Type(), TypeKindBasic},
-		{types.Universe.Lookup("comparable").Type(), TypeKindBasic},
-		{types.Typ[types.Float32], TypeKindBasic},
-		{types.Typ[types.Float64], TypeKindBasic},
-		{types.Typ[types.Int], TypeKindBasic},
-		{types.Typ[types.Int8], TypeKindBasic},
-		{types.Typ[types.Int16], TypeKindBasic},
-		{types.Typ[types.Int32], TypeKindBasic},
-		{types.Typ[types.Int64], TypeKindBasic},
-		{types.Typ[types.Rune], TypeKindBasic},
-		{types.Typ[types.String], TypeKindBasic},
-		{types.Typ[types.Uint], TypeKindBasic},
-		{types.Typ[types.Uint8], TypeKindBasic},
-		{types.Typ[types.Uint16], TypeKindBasic},
-		{types.Typ[types.Uint32], TypeKindBasic},
-		{types.Typ[types.Uint64], TypeKindBasic},
-		{types.Typ[types.Uintptr], TypeKindBasic},
+		{types.Typ[types.Bool], gstypes.TypeKindBasic},
+		{types.Typ[types.Byte], gstypes.TypeKindBasic},
+		{types.Typ[types.Complex64], gstypes.TypeKindBasic},
+		{types.Typ[types.Complex128], gstypes.TypeKindBasic},
+		{types.Universe.Lookup("error").Type(), gstypes.TypeKindBasic},
+		{types.Universe.Lookup("rune").Type(), gstypes.TypeKindBasic},
+		{types.Universe.Lookup("comparable").Type(), gstypes.TypeKindBasic},
+		{types.Typ[types.Float32], gstypes.TypeKindBasic},
+		{types.Typ[types.Float64], gstypes.TypeKindBasic},
+		{types.Typ[types.Int], gstypes.TypeKindBasic},
+		{types.Typ[types.Int8], gstypes.TypeKindBasic},
+		{types.Typ[types.Int16], gstypes.TypeKindBasic},
+		{types.Typ[types.Int32], gstypes.TypeKindBasic},
+		{types.Typ[types.Int64], gstypes.TypeKindBasic},
+		{types.Typ[types.Rune], gstypes.TypeKindBasic},
+		{types.Typ[types.String], gstypes.TypeKindBasic},
+		{types.Typ[types.Uint], gstypes.TypeKindBasic},
+		{types.Typ[types.Uint8], gstypes.TypeKindBasic},
+		{types.Typ[types.Uint16], gstypes.TypeKindBasic},
+		{types.Typ[types.Uint32], gstypes.TypeKindBasic},
+		{types.Typ[types.Uint64], gstypes.TypeKindBasic},
+		{types.Typ[types.Uintptr], gstypes.TypeKindBasic},
 	}
 
 	for _, tt := range tests {
@@ -61,7 +61,6 @@ func TestTypeResolver_resolveBasicType(t *testing.T) {
 func TestTypeResolver_resolveNamedBasicTypes(t *testing.T) {
 	src := `
 	package test
-
 
 	type MyError error
 	type MyInt int
@@ -96,381 +95,629 @@ func TestTypeResolver_resolveNamedBasicTypes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	l := logger.NewDefaultLogger()
 	l.SetLevel(logger.LogLevelDebug)
-	r := newDefaultTypeResolver(NewDefaultConfig(), l)
 
-	namedTypes := []string{
-		"MyError",
-		"MyInt",
-		"MyString",
-		"MyBool",
-		"MyFloat",
-		"MyComplex",
-		"MyByte",
-		"MyRune",
-		"MyUintptr",
-		"MyFloat32",
-		"MyFloat64",
-		"MyInt8",
-		"MyInt16",
-		"MyInt32",
-		"MyInt64",
-		"MyUint",
-		"MyUint8",
-		"MyUint16",
-		"MyUint32",
-		"MyUint64",
+	r := NewDefaultTypeResolver(NewDefaultConfig(), l)
+	r.currentPkg = gstypes.NewPackage("test", "test", nil)
+	r.currentPkg.SetLogger(l)
+
+	tests := []struct {
+		name           string
+		wantKind       gstypes.TypeKind
+		wantUnderlying string
+	}{
+		{"MyError", gstypes.TypeKindInterface, "error"},
+		{"MyInt", gstypes.TypeKindBasic, "int"},
+		{"MyString", gstypes.TypeKindBasic, "string"},
+		{"MyBool", gstypes.TypeKindBasic, "bool"},
+		{"MyFloat", gstypes.TypeKindBasic, "float64"},
+		{"MyComplex", gstypes.TypeKindBasic, "complex128"},
+		{"MyByte", gstypes.TypeKindBasic, "byte"}, // byte is an alias for uint8
+		{"MyRune", gstypes.TypeKindBasic, "rune"}, // rune is an alias for int32
+		{"MyUintptr", gstypes.TypeKindBasic, "uintptr"},
 	}
 
-	for _, typeName := range namedTypes {
-		obj := pkg.Scope().Lookup(typeName)
-		namedType := obj.Type()
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			obj := pkg.Scope().Lookup(tt.name)
+			if obj == nil {
+				t.Fatalf("Type %s not found", tt.name)
+			}
 
-		got := r.ResolveType(namedType)
-		if got == nil {
-			t.Errorf("ResolveType(%s) = nil, want type info", typeName)
-			continue
-		}
+			got := r.ResolveType(obj.Type())
+			if got == nil {
+				t.Errorf("resolveType(%v) = nil", tt.name)
+				return
+			}
 
-		if got.Kind() != TypeKindBasic {
-			t.Errorf("ResolveType(%s).GetKind() = %v, want %v", typeName, got.Kind(), TypeKindBasic)
-		}
+			if got.Kind() != tt.wantKind {
+				t.Errorf("resolveType(%v) kind = %v, want %v", tt.name, got.Kind(), tt.wantKind)
+			}
 
-		if got.Id() != "test."+typeName {
-			t.Errorf("ResolveType(%s).GetCannonicalName() = %v, want %v", typeName, got.Id(), "test."+typeName)
-		}
+			if !got.IsNamed() {
+				t.Errorf("Expected named type for %v, got unnamed", tt.name)
+			}
 
-		// For special predeclared types like error, we treat them as basic types
-		// so the TypeRef points to "error" not "interface{Error() string}"
-		expectedUnderlying := namedType.Underlying().String()
-		if typeName == "MyError" {
-			expectedUnderlying = "error"
-		}
-
-		if (got.(*NamedTypeInfo)).TypeRefId() != expectedUnderlying {
-			t.Errorf("ResolveType(%s).Underlying().GetCannonicalName() = %v, want %v", typeName, (got.(*NamedTypeInfo)).TypeRefId(), expectedUnderlying)
-		}
+			// Check for underlying type
+			if basic, ok := got.(*gstypes.Basic); ok {
+				if basic.Underlying() == nil {
+					t.Errorf("Expected underlying type, got nil")
+				} else if basic.Underlying().Id() != tt.wantUnderlying {
+					t.Errorf("Expected underlying type %s, got %s", tt.wantUnderlying, basic.Underlying().Id())
+				}
+			}
+		})
 	}
-
-	// src := `
-	// package test
-
-	// type BasicStruct struct {
-	//     Field1 string
-	//     Field2 int
-	//     Field3 *bool
-	// 	Field4 []float64
-	// 	Field5 map[string]int
-	// 	Field6 chan int
-	// 	Field7 interface{}
-	// 	Field8 [5]string
-	// 	Field9 *BasicStruct
-	// 	Field10 [][]int
-	// 	field11 string // unexported field
-	// }
-	// func (bs BasicStruct) Method1() {}
-	// func (bs *BasicStruct) Method2(param int) string {
-	// 	return ""
-	// }
-	// // this method should not be counted as it's unexported
-	// func (bs BasicStruct) method3() {}
-
-	// type unexportedStruct struct {
-	// 	FieldA string
-	// }
-
-	// type BasicInterface interface {
-	// 	InterfaceMethod1() int
-	// 	InterfaceMethod2(param string) error
-	// 	privateMethod() // unexported method
-	// }
-
-	// type unexportedInterface interface {
-	// 	UnexportedInterfaceMethod() bool
-	// }
-	// `
-
-	// fset := token.NewFileSet()
-	// file, err := parser.ParseFile(fset, "test.go", src, 0)
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-
-	// cfg := &types.Config{}
-	// pkg, err := cfg.Check("test", fset, []*ast.File{file}, nil)
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-	// l := logger.NewDefaultLogger()
-	// l.SetLevel(logger.LogLevelDebug)
-	// r := newDefaultTypeResolver(NewDefaultConfig(), l)
-
-	// // Get the type from package scope
-	// obj := pkg.Scope().Lookup("BasicStruct")
-	// structType := obj.Type()
-
-	// got := r.ResolveType(structType)
-	// if got == nil {
-	// 	t.Errorf("ResolveType(BasicStruct) = nil, want type info")
-	// 	return
-	// }
-
-	// if got.Kind() != TypeKindStruct {
-	// 	t.Errorf("ResolveType(BasicStruct).GetKind() = %v, want %v", got.Kind(), TypeKindStruct)
-	// }
-
-	// if got.Id() != "test.BasicStruct" {
-	// 	t.Errorf("ResolveType(BasicStruct).GetCannonicalName() = %v, want %v", got.Id(), "test.BasicStruct")
-	// }
-
-	// // resolve type again should return the same instance
-	// got2 := r.ResolveType(structType)
-	// if got != got2 {
-	// 	t.Errorf("ResolveType should be idempotent, got different instances")
-	// }
-
-	// // check how many types are cached
-	// if len(r.GetTypeInfos()) != 1 { // only BasicStruct should be cached
-	// 	t.Errorf("Expected 1 type in cache, got %d", len(r.GetTypeInfos()))
-	// }
-
-	// // check how many fields are in the struct
-	// structInfo, ok := got.(*ComplexTypeEntry)
-	// if !ok {
-	// 	t.Errorf("Expected ComplexTypeEntry, got %T", got)
-	// 	return
-	// }
-
-	// if len(structInfo.Fields) != 10 {
-	// 	t.Errorf("Expected 10 fields in BasicStruct, got %d", len(structInfo.Fields))
-	// }
-
-	// if len(structInfo.Methods) != 2 {
-	// 	t.Errorf("Expected 2 methods in BasicStruct, got %d", len(structInfo.Methods))
-	// }
-
-	// // unexportedStruct should not be in the cache
-	// unexportedObj := pkg.Scope().Lookup("unexportedStruct")
-	// // resolve unexported struct type
-	// got = r.ResolveType(unexportedObj.Type())
-	// if got != nil {
-	// 	t.Errorf("ResolveType(unexportedStruct) = %v, want nil", got)
-	// }
-
-	// if len(r.GetTypeInfos()) != 1 { // still only BasicStruct should be cached
-	// 	t.Errorf("Expected 1 type in cache after checking unexported struct, got %d", len(r.GetTypeInfos()))
-	// }
-
-	// // test interface
-	// ifaceObj := pkg.Scope().Lookup("BasicInterface")
-	// ifaceType := ifaceObj.Type()
-
-	// ifaceInfo := r.ResolveType(ifaceType)
-	// if ifaceInfo == nil {
-	// 	t.Errorf("ResolveType(BasicInterface) = nil, want type info")
-	// 	return
-	// }
-
-	// if ifaceInfo.Kind() != TypeKindInterface {
-	// 	t.Errorf("ResolveType(BasicInterface).GetKind() = %v, want %v", ifaceInfo.Kind(), TypeKindInterface)
-	// }
-
-	// if ifaceInfo.Id() != "test.BasicInterface" {
-	// 	t.Errorf("ResolveType(BasicInterface).GetCannonicalName() = %v, want %v", ifaceInfo.Id(), "test.BasicInterface")
-	// }
-
-	// ifaceNamedInfo, ok := ifaceInfo.(*ComplexTypeEntry)
-	// if !ok {
-	// 	t.Errorf("Expected NamedTypeInfo, got %T", ifaceInfo)
-	// 	return
-	// }
-
-	// if len(ifaceNamedInfo.Methods) != 2 {
-	// 	t.Errorf("Expected 2 methods in BasicInterface, got %d", len(ifaceNamedInfo.Methods))
-	// }
-
-	// // unexportedInterface should not be in the cache
-	// unexportedIfaceObj := pkg.Scope().Lookup("unexportedInterface")
-	// // resolve unexported interface type
-	// got = r.ResolveType(unexportedIfaceObj.Type())
-	// if got != nil {
-	// 	t.Errorf("ResolveType(unexportedInterface) = %v, want nil", got)
-	// }
-
-	// if len(r.GetTypeInfos()) != 2 { // still only BasicStruct and BasicInterface should be cached
-	// 	t.Errorf("Expected 2 types in cache after checking unexported interface, got %d", len(r.GetTypeInfos()))
-	// }
 }
 
-// // test structs
-// func TestTypeResolver_resolveStructType(t *testing.T) {
-// 	r := newDefaultTypeResolver(ScanModeFull, &logger.DefaultLogger{})
+func TestTypeResolver_resolvePointerTypes(t *testing.T) {
+	src := `
+	package test
+	
+	type MyInt int
+	type MyIntPtr *MyInt
+	type MyIntPtrPtr **MyInt
+	`
 
-// 	tests := []struct {
-// 		name         string
-// 		setupStruct  func() types.Type
-// 		wantKind     TypeKind
-// 		wantName     string
-// 		shouldCache  bool
-// 		expectFields bool
-// 	}{
-// 		{
-// 			name: "simple named struct",
-// 			setupStruct: func() types.Type {
-// 				structType := types.NewStruct([]*types.Var{
-// 					types.NewVar(0, nil, "Field1", types.Typ[types.Int]),
-// 					types.NewVar(0, nil, "Field2", types.Typ[types.String]),
-// 				}, nil)
-// 				return types.NewNamed(types.NewTypeName(0, nil, "MyStruct", nil), structType, nil)
-// 			},
-// 			wantKind:     TypeKindStruct,
-// 			wantName:     "MyStruct",
-// 			shouldCache:  true,
-// 			expectFields: true,
-// 		},
-// 		{
-// 			name: "empty struct",
-// 			setupStruct: func() types.Type {
-// 				structType := types.NewStruct([]*types.Var{}, nil)
-// 				return types.NewNamed(types.NewTypeName(0, nil, "EmptyStruct", nil), structType, nil)
-// 			},
-// 			wantKind:     TypeKindStruct,
-// 			wantName:     "EmptyStruct",
-// 			shouldCache:  true,
-// 			expectFields: false,
-// 		},
-// 		{
-// 			name: "struct with pointer fields",
-// 			setupStruct: func() types.Type {
-// 				structType := types.NewStruct([]*types.Var{
-// 					types.NewVar(0, nil, "PtrField", types.NewPointer(types.Typ[types.Int])),
-// 					types.NewVar(0, nil, "NormalField", types.Typ[types.String]),
-// 				}, nil)
-// 				return types.NewNamed(types.NewTypeName(0, nil, "PointerStruct", nil), structType, nil)
-// 			},
-// 			wantKind:     TypeKindStruct,
-// 			wantName:     "PointerStruct",
-// 			shouldCache:  true,
-// 			expectFields: true,
-// 		},
-// 		{
-// 			name: "struct with embedded field",
-// 			setupStruct: func() types.Type {
-// 				// Create an embedded struct field (anonymous field)
-// 				embeddedStruct := types.NewStruct([]*types.Var{
-// 					types.NewVar(0, nil, "EmbeddedField", types.Typ[types.Int]),
-// 				}, nil)
-// 				embeddedNamed := types.NewNamed(types.NewTypeName(0, nil, "Embedded", nil), embeddedStruct, nil)
+	fset := token.NewFileSet()
+	file, err := parser.ParseFile(fset, "test.go", src, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-// 				structType := types.NewStruct([]*types.Var{
-// 					types.NewVar(0, nil, "", embeddedNamed), // Empty name for embedded field
-// 					types.NewVar(0, nil, "RegularField", types.Typ[types.String]),
-// 				}, nil)
-// 				return types.NewNamed(types.NewTypeName(0, nil, "EmbeddingStruct", nil), structType, nil)
-// 			},
-// 			wantKind:     TypeKindStruct,
-// 			wantName:     "EmbeddingStruct",
-// 			shouldCache:  true,
-// 			expectFields: true,
-// 		},
-// 		{
-// 			name: "struct in package",
-// 			setupStruct: func() types.Type {
-// 				// Create a package for the struct
-// 				pkg := types.NewPackage("example.com/test", "test")
-// 				structType := types.NewStruct([]*types.Var{
-// 					types.NewVar(0, pkg, "Field1", types.Typ[types.Int]),
-// 				}, nil)
-// 				return types.NewNamed(types.NewTypeName(0, pkg, "PackageStruct", nil), structType, nil)
-// 			},
-// 			wantKind:     TypeKindStruct,
-// 			wantName:     "example.com/test.PackageStruct",
-// 			shouldCache:  true,
-// 			expectFields: true,
-// 		},
-// 	}
+	cfg := &types.Config{}
+	pkg, err := cfg.Check("test", fset, []*ast.File{file}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			// Clear cache between tests to ensure clean state
-// 			r.types = make(map[string]TypeInfo)
+	l := logger.NewDefaultLogger()
+	r := NewDefaultTypeResolver(NewDefaultConfig(), l)
+	r.currentPkg = gstypes.NewPackage("test", "test", nil)
+	r.currentPkg.SetLogger(l)
 
-// 			structType := tt.setupStruct()
-// 			got := r.ResolveType(structType)
+	tests := []struct {
+		name      string
+		wantKind  gstypes.TypeKind
+		wantDepth int
+		wantElem  string
+	}{
+		{"MyIntPtr", gstypes.TypeKindPointer, 1, "test.MyInt"},
+		{"MyIntPtrPtr", gstypes.TypeKindPointer, 2, "test.MyInt"},
+	}
 
-// 			// Basic checks
-// 			if got == nil {
-// 				t.Errorf("ResolveType(%v) = nil, want struct type", structType)
-// 				return
-// 			}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			obj := pkg.Scope().Lookup(tt.name)
+			if obj == nil {
+				t.Fatalf("Type %s not found", tt.name)
+			}
 
-// 			if got.GetKind() != tt.wantKind {
-// 				t.Errorf("ResolveType(%v).GetKind() = %v, want %v", structType, got.GetKind(), tt.wantKind)
-// 			}
+			got := r.ResolveType(obj.Type())
+			if got == nil {
+				t.Errorf("resolveType(%v) = nil", tt.name)
+				return
+			}
 
-// 			if got.GetCannonicalName() != tt.wantName {
-// 				t.Errorf("ResolveType(%v).GetCannonicalName() = %v, want %v", structType, got.GetCannonicalName(), tt.wantName)
-// 			}
+			if got.Kind() != tt.wantKind {
+				t.Errorf("resolveType(%v) kind = %v, want %v", tt.name, got.Kind(), tt.wantKind)
+			}
 
-// 			// Check if type is properly cached
-// 			if tt.shouldCache {
-// 				cached := r.GetTypeInfos()[got.GetCannonicalName()]
-// 				if cached == nil {
-// 					t.Errorf("Expected type %v to be cached, but it's not", tt.wantName)
-// 				} else if cached != got {
-// 					t.Errorf("Cached type is different from resolved type")
-// 				}
-// 			}
+			if ptr, ok := got.(*gstypes.Pointer); ok {
+				if ptr.Depth() != tt.wantDepth {
+					t.Errorf("Expected depth %d, got %d", tt.wantDepth, ptr.Depth())
+				}
+				if ptr.Elem() == nil {
+					t.Error("Expected element type, got nil")
+				} else if ptr.Elem().Id() != tt.wantElem {
+					t.Errorf("Expected element %s, got %s", tt.wantElem, ptr.Elem().Id())
+				}
+			} else {
+				t.Errorf("Expected Pointer type, got %T", got)
+			}
+		})
+	}
+}
 
-// 			// Test idempotency - resolving the same type should return the same instance
-// 			got2 := r.ResolveType(structType)
-// 			if got != got2 {
-// 				t.Errorf("ResolveType should be idempotent, got different instances")
-// 			}
+func TestTypeResolver_resolveSliceTypes(t *testing.T) {
+	src := `
+	package test
+	
+	type MyString string
+	type MyStringSlice []MyString
+	type MyStringArray [5]MyString
+	`
 
-// 			// Test type-specific methods
-// 			if !got.IsBasic() == false {
-// 				// This might fail depending on implementation, just testing the method exists
-// 			}
+	fset := token.NewFileSet()
+	file, err := parser.ParseFile(fset, "test.go", src, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-// 			if got.IsMap() {
-// 				t.Errorf("Struct type should not be identified as map")
-// 			}
+	cfg := &types.Config{}
+	pkg, err := cfg.Check("test", fset, []*ast.File{file}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-// 			if got.IsSlice() {
-// 				t.Errorf("Struct type should not be identified as slice")
-// 			}
+	l := logger.NewDefaultLogger()
+	r := NewDefaultTypeResolver(NewDefaultConfig(), l)
+	r.currentPkg = gstypes.NewPackage("test", "test", nil)
+	r.currentPkg.SetLogger(l)
 
-// 			if got.IsChannel() {
-// 				t.Errorf("Struct type should not be identified as channel")
-// 			}
-// 		})
-// 	}
-// }
+	tests := []struct {
+		name       string
+		wantKind   gstypes.TypeKind
+		wantLength int64
+		wantElem   string
+	}{
+		{"MyStringSlice", gstypes.TypeKindSlice, -1, "test.MyString"},
+		{"MyStringArray", gstypes.TypeKindArray, 5, "test.MyString"},
+	}
 
-// // Test resolving pointer to struct
-// func TestTypeResolver_resolveStructPointerType(t *testing.T) {
-// 	r := newDefaultTypeResolver(ScanModeFull, &logger.DefaultLogger{})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			obj := pkg.Scope().Lookup(tt.name)
+			if obj == nil {
+				t.Fatalf("Type %s not found", tt.name)
+			}
 
-// 	// Create a struct type
-// 	structType := types.NewStruct([]*types.Var{
-// 		types.NewVar(0, nil, "Field1", types.Typ[types.Int]),
-// 	}, nil)
-// 	namedStruct := types.NewNamed(types.NewTypeName(0, nil, "MyStruct", nil), structType, nil)
+			got := r.ResolveType(obj.Type())
+			if got == nil {
+				t.Errorf("resolveType(%v) = nil", tt.name)
+				return
+			}
 
-// 	// Create pointer to struct
-// 	pointerToStruct := types.NewPointer(namedStruct)
+			if got.Kind() != tt.wantKind {
+				t.Errorf("resolveType(%v) kind = %v, want %v", tt.name, got.Kind(), tt.wantKind)
+			}
 
-// 	got := r.ResolveType(pointerToStruct)
-// 	if got == nil {
-// 		t.Errorf("ResolveType(pointer to struct) = nil, want type info")
-// 		return
-// 	}
+			if slice, ok := got.(*gstypes.Slice); ok {
+				if slice.Len() != tt.wantLength {
+					t.Errorf("Expected length %d, got %d", tt.wantLength, slice.Len())
+				}
+				if slice.Elem() == nil {
+					t.Error("Expected element type, got nil")
+				} else if slice.Elem().Id() != tt.wantElem {
+					t.Errorf("Expected element %s, got %s", tt.wantElem, slice.Elem().Id())
+				}
+			} else {
+				t.Errorf("Expected Slice type, got %T", got)
+			}
+		})
+	}
+}
 
-// 	// The resolver should handle pointer indirection and return the underlying struct type info
-// 	// This depends on the implementation - it might return the struct type or a pointer type
-// 	if got.GetKind() != TypeKindStruct && got.GetKind() != TypeKindBasic {
-// 		t.Errorf("ResolveType(pointer to struct).GetKind() = %v, expected struct or appropriate pointer handling", got.GetKind())
-// 	}
-// }
+func TestTypeResolver_resolveMapTypes(t *testing.T) {
+	src := `
+	package test
+	
+	type MyString string
+	type MyInt int
+	type MyStringIntMap map[MyString]MyInt
+	type MyIntStringMap map[MyInt]MyString
+	type MyInterfaceMap map[interface{}]interface{}
+	`
+
+	fset := token.NewFileSet()
+	file, err := parser.ParseFile(fset, "test.go", src, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cfg := &types.Config{}
+	pkg, err := cfg.Check("test", fset, []*ast.File{file}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	l := logger.NewDefaultLogger()
+	r := NewDefaultTypeResolver(NewDefaultConfig(), l)
+	r.currentPkg = gstypes.NewPackage("test", "test", nil)
+	r.currentPkg.SetLogger(l)
+
+	tests := []struct {
+		name     string
+		wantKind gstypes.TypeKind
+		wantKey  string
+		wantElem string
+	}{
+		{"MyStringIntMap", gstypes.TypeKindMap, "test.MyString", "test.MyInt"},
+		{"MyIntStringMap", gstypes.TypeKindMap, "test.MyInt", "test.MyString"},
+		{"MyInterfaceMap", gstypes.TypeKindMap, "interface{}", "interface{}"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			obj := pkg.Scope().Lookup(tt.name)
+			if obj == nil {
+				t.Fatalf("Type %s not found", tt.name)
+			}
+
+			got := r.ResolveType(obj.Type())
+			if got == nil {
+				t.Errorf("resolveType(%v) = nil", tt.name)
+				return
+			}
+
+			if got.Kind() != tt.wantKind {
+				t.Errorf("resolveType(%v) kind = %v, want %v", tt.name, got.Kind(), tt.wantKind)
+			}
+
+			if m, ok := got.(*gstypes.Map); ok {
+				if m.Key() == nil {
+					t.Error("Expected key type, got nil")
+				} else if m.Key().Id() != tt.wantKey {
+					t.Errorf("Expected key %s, got %s", tt.wantKey, m.Key().Id())
+				}
+
+				if m.Value() == nil {
+					t.Error("Expected value type, got nil")
+				} else if m.Value().Id() != tt.wantElem {
+					t.Errorf("Expected value %s, got %s", tt.wantElem, m.Value().Id())
+				}
+			} else {
+				t.Errorf("Expected Map type, got %T", got)
+			}
+		})
+	}
+}
+
+func TestTypeResolver_resolveChanTypes(t *testing.T) {
+	src := `
+	package test
+	
+	type MyInt int
+	type MyIntChan chan MyInt
+	type MyIntRecvChan <-chan MyInt
+	type MyIntSendChan chan<- MyInt
+	`
+
+	fset := token.NewFileSet()
+	file, err := parser.ParseFile(fset, "test.go", src, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cfg := &types.Config{}
+	pkg, err := cfg.Check("test", fset, []*ast.File{file}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	l := logger.NewDefaultLogger()
+	r := NewDefaultTypeResolver(NewDefaultConfig(), l)
+	r.currentPkg = gstypes.NewPackage("test", "test", nil)
+	r.currentPkg.SetLogger(l)
+
+	tests := []struct {
+		name     string
+		wantKind gstypes.TypeKind
+		wantElem string
+		wantDir  gstypes.ChannelDirection
+	}{
+		{"MyIntChan", gstypes.TypeKindChan, "test.MyInt", gstypes.ChanDirBoth},
+		{"MyIntRecvChan", gstypes.TypeKindChan, "test.MyInt", gstypes.ChanDirRecv},
+		{"MyIntSendChan", gstypes.TypeKindChan, "test.MyInt", gstypes.ChanDirSend},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			obj := pkg.Scope().Lookup(tt.name)
+			if obj == nil {
+				t.Fatalf("Type %s not found", tt.name)
+			}
+
+			got := r.ResolveType(obj.Type())
+			if got == nil {
+				t.Errorf("resolveType(%v) = nil", tt.name)
+				return
+			}
+
+			if got.Kind() != tt.wantKind {
+				t.Errorf("resolveType(%v) kind = %v, want %v", tt.name, got.Kind(), tt.wantKind)
+			}
+
+			if ch, ok := got.(*gstypes.Chan); ok {
+				if ch.Elem() == nil {
+					t.Error("Expected element type, got nil")
+				} else if ch.Elem().Id() != tt.wantElem {
+					t.Errorf("Expected element %s, got %s", tt.wantElem, ch.Elem().Id())
+				}
+
+				if ch.Dir() != tt.wantDir {
+					t.Errorf("Expected direction %v, got %v", tt.wantDir, ch.Dir())
+				}
+			} else {
+				t.Errorf("Expected Chan type, got %T", got)
+			}
+		})
+	}
+}
+
+func TestTypeResolver_resolveFunctions(t *testing.T) {
+	src := `
+	package test
+	
+	type MyInt int
+	
+	func MyFunc(a MyInt, b int) (string, error) {
+		return "", nil
+	}
+
+	type NamedFunc func(x int) bool
+	func (f NamedFunc) DoSomething(y string) int {
+		return 0
+	}
+	`
+
+	fset := token.NewFileSet()
+	file, err := parser.ParseFile(fset, "test.go", src, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cfg := &types.Config{}
+	pkg, err := cfg.Check("test", fset, []*ast.File{file}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	l := logger.NewDefaultLogger()
+	r := NewDefaultTypeResolver(NewDefaultConfig(), l)
+	r.currentPkg = gstypes.NewPackage("test", "test", nil)
+	r.currentPkg.SetLogger(l)
+
+	tests := []struct {
+		name       string
+		wantKind   gstypes.TypeKind
+		parameters []struct {
+			name string
+			typ  string
+		}
+		results []struct {
+			name string
+			typ  string
+		}
+		named bool
+	}{
+		{"MyFunc", gstypes.TypeKindFunction,
+			[]struct {
+				name string
+				typ  string
+			}{
+				{"a", "test.MyInt"},
+				{"b", "int"},
+			},
+			[]struct {
+				name string
+				typ  string
+			}{
+				{"", "string"},
+				{"", "error"},
+			},
+			false,
+		},
+		{"NamedFunc", gstypes.TypeKindFunction,
+			[]struct {
+				name string
+				typ  string
+			}{
+				{"x", "int"},
+			},
+			[]struct {
+				name string
+				typ  string
+			}{
+				{"", "bool"},
+			},
+			true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			obj := pkg.Scope().Lookup(tt.name)
+			if obj == nil {
+				t.Fatalf("Type %s not found", tt.name)
+			}
+
+			got := r.ResolveType(obj.Type())
+			if got == nil {
+				t.Errorf("resolveType(%v) = nil", tt.name)
+				return
+			}
+
+			if got.Kind() != tt.wantKind {
+				t.Errorf("resolveType(%v) kind = %v, want %v", tt.name, got.Kind(), tt.wantKind)
+			}
+
+			if got.IsNamed() != tt.named {
+				t.Errorf("Expected named=%v, got %v", tt.named, got.IsNamed())
+			}
+
+			if fn, ok := got.(*gstypes.Function); ok {
+				if len(fn.Parameters()) != len(tt.parameters) {
+					t.Errorf("Expected %d parameters, got %d", len(tt.parameters), len(fn.Parameters()))
+				} else {
+					for i, param := range fn.Parameters() {
+						if param.Name() != tt.parameters[i].name {
+							t.Errorf("Expected parameter name %s, got %s", tt.parameters[i].name, param.Name())
+						}
+						if param.Type().Id() != tt.parameters[i].typ {
+							t.Errorf("Expected parameter type %s, got %s", tt.parameters[i].typ, param.Type().Id())
+						}
+					}
+				}
+
+				if len(fn.Results()) != len(tt.results) {
+					t.Errorf("Expected %d results, got %d", len(tt.results), len(fn.Results()))
+				} else {
+					for i, result := range fn.Results() {
+						if result.Name() != tt.results[i].name {
+							t.Errorf("Expected result name %s, got %s", tt.results[i].name, result.Name())
+						}
+						if result.Type().Id() != tt.results[i].typ {
+							t.Errorf("Expected result type %s, got %s", tt.results[i].typ, result.Type().Id())
+						}
+					}
+				}
+
+			} else {
+				t.Errorf("Expected Function type, got %T", got)
+			}
+		})
+	}
+}
+
+func TestTypeResolver_resolveEmptyInterface(t *testing.T) {
+	src := `
+	package test
+	
+	type MyEmptyInterface interface{}
+	`
+
+	fset := token.NewFileSet()
+	file, err := parser.ParseFile(fset, "test.go", src, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cfg := &types.Config{}
+	pkg, err := cfg.Check("test", fset, []*ast.File{file}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	l := logger.NewDefaultLogger()
+	r := NewDefaultTypeResolver(NewDefaultConfig(), l)
+	r.currentPkg = gstypes.NewPackage("test", "test", nil)
+	r.currentPkg.SetLogger(l)
+
+	obj := pkg.Scope().Lookup("MyEmptyInterface")
+	if obj == nil {
+		t.Fatalf("Type MyEmptyInterface not found")
+	}
+
+	got := r.ResolveType(obj.Type())
+	if got == nil {
+		t.Errorf("resolveType(MyEmptyInterface) = nil")
+		return
+	}
+	if got.Kind() != gstypes.TypeKindInterface {
+		t.Errorf("resolveType(MyEmptyInterface) kind = %v, want %v", got.Kind(), gstypes.TypeKindInterface)
+	}
+
+	iface, ok := got.(*gstypes.Interface)
+	if !ok {
+		t.Errorf("Expected Interface type, got %T", got)
+		return
+	}
+
+	if len(iface.Methods()) != 0 {
+		t.Errorf("Expected 0 methods, got %d", len(iface.Methods()))
+	}
+}
+
+func TestTypeResolver_testMakeStruct(t *testing.T) {
+	src := `
+	package test
+	
+	type MyStruct struct {
+		Field1 int
+		Field2 string
+	}
+		func (s MyStruct) Method1() {}
+		func (s *MyStruct) Method2() {}
+	`
+	fset := token.NewFileSet()
+	file, err := parser.ParseFile(fset, "test.go", src, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cfg := &types.Config{}
+	pkg, err := cfg.Check("test", fset, []*ast.File{file}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	l := logger.NewDefaultLogger()
+	r := NewDefaultTypeResolver(NewDefaultConfig(), l)
+	r.currentPkg = gstypes.NewPackage("test", "test", nil)
+	r.currentPkg.SetLogger(l)
+
+	tests := []struct {
+		name       string
+		wantKind   gstypes.TypeKind
+		wantFields []struct {
+			name string
+			typ  string
+		}
+		wantMethods []string
+	}{
+		{"MyStruct", gstypes.TypeKindStruct,
+			[]struct {
+				name string
+				typ  string
+			}{
+				{"Field1", "int"},
+				{"Field2", "string"},
+			},
+			[]string{"Method1", "Method2"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			obj := pkg.Scope().Lookup(tt.name)
+			if obj == nil {
+				t.Fatalf("Type %s not found", tt.name)
+			}
+
+			got := r.ResolveType(obj.Type())
+			if got == nil {
+				t.Errorf("resolveType(%v) = nil", tt.name)
+				return
+			}
+
+			if got.Kind() != tt.wantKind {
+				t.Errorf("resolveType(%v) kind = %v, want %v", tt.name, got.Kind(), tt.wantKind)
+			}
+			if strct, ok := got.(*gstypes.Struct); ok {
+				// Load fields and methods
+				if err := strct.Load(); err != nil {
+					t.Fatalf("Failed to load struct: %v", err)
+				}
+
+				if len(strct.Fields()) != len(tt.wantFields) {
+					t.Errorf("Expected %d fields, got %d", len(tt.wantFields), len(strct.Fields()))
+				} else {
+					for i, field := range strct.Fields() {
+						if field.Name() != tt.wantFields[i].name {
+							t.Errorf("Expected field name %s, got %s", tt.wantFields[i].name, field.Name())
+						}
+						if field.Type().Id() != tt.wantFields[i].typ {
+							t.Errorf("Expected field type %s, got %s", tt.wantFields[i].typ, field.Type().Id())
+						}
+					}
+				}
+
+				if len(strct.Methods()) != len(tt.wantMethods) {
+					t.Errorf("Expected %d methods, got %d", len(tt.wantMethods), len(strct.Methods()))
+				} else {
+					for i, method := range strct.Methods() {
+						if method.Name() != tt.wantMethods[i] {
+							t.Errorf("Expected method name %s, got %s", tt.wantMethods[i], method.Name())
+						}
+					}
+				}
+
+			} else {
+				t.Errorf("Expected Struct type, got %T", got)
+			}
+		})
+	}
+}

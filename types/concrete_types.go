@@ -4,7 +4,7 @@
 // and lazy loading of additional details.
 // Usually these types correspond to go/types types but are designed for easier
 // serialization and documentation extraction.
-package typesnew
+package types
 
 import (
 	"fmt"
@@ -52,12 +52,12 @@ func serializeTypeOrID(t Type) any {
 // Old full reference (commented out)
 // return serializeTypeRef(t)
 
-func getPackagePath(t Type) string {
-	if t.Package() != nil {
-		return t.Package().Path()
-	}
-	return ""
-}
+// func getPackagePath(t Type) string {
+// 	if t.Package() != nil {
+// 		return t.Package().Path()
+// 	}
+// 	return ""
+// }
 
 // Basic represents a basic/primitive type (int, string, bool, etc.)
 // For named basic types like `type MyInt int`, the underlying field points to the cached basic type

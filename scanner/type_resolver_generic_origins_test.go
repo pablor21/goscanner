@@ -1,4 +1,4 @@
-package scannernew
+package scanner
 
 import (
 	"go/ast"
@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/pablor21/goscanner/logger"
-	"github.com/pablor21/goscanner/typesnew"
+	gstypes "github.com/pablor21/goscanner/types"
 )
 
 // Test generic types with non-struct/interface origins
@@ -83,7 +83,7 @@ func TestTypeResolver_GenericOriginTypes(t *testing.T) {
 	config.ScanMode = ScanModeFull
 
 	r := NewDefaultTypeResolver(config, l)
-	r.currentPkg = typesnew.NewPackage("test", "test", nil)
+	r.currentPkg = gstypes.NewPackage("test", "test", nil)
 	r.currentPkg.SetLogger(l)
 
 	t.Run("GenericSlice_DirectInstantiation", func(t *testing.T) {
@@ -98,7 +98,7 @@ func TestTypeResolver_GenericOriginTypes(t *testing.T) {
 		}
 
 		// Should be InstantiatedGeneric
-		ig, ok := got.(*typesnew.InstantiatedGeneric)
+		ig, ok := got.(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected InstantiatedGeneric, got %T", got)
 		}
@@ -113,7 +113,7 @@ func TestTypeResolver_GenericOriginTypes(t *testing.T) {
 		}
 
 		// Origin should be a slice type
-		originSlice, ok := ig.Origin().(*typesnew.Slice)
+		originSlice, ok := ig.Origin().(*gstypes.Slice)
 		if !ok {
 			t.Fatalf("Origin should be Slice, got %T", ig.Origin())
 		}
@@ -145,7 +145,7 @@ func TestTypeResolver_GenericOriginTypes(t *testing.T) {
 			t.Fatal("Origin slice element is nil")
 		}
 
-		if originElem.Kind() != typesnew.TypeKindTypeParameter {
+		if originElem.Kind() != gstypes.TypeKindTypeParameter {
 			t.Errorf("Origin slice element kind = %v, want TypeKindTypeParameter", originElem.Kind())
 		}
 	})
@@ -162,13 +162,13 @@ func TestTypeResolver_GenericOriginTypes(t *testing.T) {
 		}
 
 		// Should be InstantiatedGeneric
-		ig, ok := got.(*typesnew.InstantiatedGeneric)
+		ig, ok := got.(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected InstantiatedGeneric, got %T", got)
 		}
 
 		// Origin should be a map type
-		originMap, ok := ig.Origin().(*typesnew.Map)
+		originMap, ok := ig.Origin().(*gstypes.Map)
 		if !ok {
 			t.Fatalf("Origin should be Map, got %T", ig.Origin())
 		}
@@ -211,13 +211,13 @@ func TestTypeResolver_GenericOriginTypes(t *testing.T) {
 		}
 
 		// Should be InstantiatedGeneric
-		ig, ok := got.(*typesnew.InstantiatedGeneric)
+		ig, ok := got.(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected InstantiatedGeneric, got %T", got)
 		}
 
 		// Origin should be a channel type
-		originChan, ok := ig.Origin().(*typesnew.Chan)
+		originChan, ok := ig.Origin().(*gstypes.Chan)
 		if !ok {
 			t.Fatalf("Origin should be Chan, got %T", ig.Origin())
 		}
@@ -246,13 +246,13 @@ func TestTypeResolver_GenericOriginTypes(t *testing.T) {
 		}
 
 		// Should be InstantiatedGeneric
-		ig, ok := got.(*typesnew.InstantiatedGeneric)
+		ig, ok := got.(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected InstantiatedGeneric, got %T", got)
 		}
 
 		// This wraps a struct with a function field, so origin should be struct
-		originStruct, ok := ig.Origin().(*typesnew.Struct)
+		originStruct, ok := ig.Origin().(*gstypes.Struct)
 		if !ok {
 			t.Fatalf("Origin should be Struct (function wrapper), got %T", ig.Origin())
 		}

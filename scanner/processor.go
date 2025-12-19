@@ -1,30 +1,35 @@
 package scanner
 
-import (
-	gcr "github.com/pablor21/goscanner/types"
-)
+import "go/types"
 
+// Processor interface for custom type processing during scanning
 type Processor interface {
 	ScanMode() ScanMode
 	SetScanMode(mode ScanMode)
 	// ProcessType processes a type and returns whether to continue processing and any error encountered
-	// This is used for custom processing of types during scanning
 	// If continueProcessing is false, the scanner will skip further processing of this type
-	// and move to the next type in the queue, if there is no processors left to process the type
-	// it will be stop the processing of the type entirely
-	ProcessType(t gcr.Type) (continueProcessing bool, err error)
+	ProcessType(t types.Type) (continueProcessing bool, err error)
 }
 
-type NoOpProcessor struct{}
+// NoOpProcessor is a no-operation processor that always continues processing
+type NoOpProcessor struct {
+	scanMode ScanMode
+}
+
+func NewNoOpProcessor() *NoOpProcessor {
+	return &NoOpProcessor{
+		scanMode: ScanModeDefault,
+	}
+}
 
 func (p *NoOpProcessor) ScanMode() ScanMode {
-	return ScanModeDefault
+	return p.scanMode
 }
 
 func (p *NoOpProcessor) SetScanMode(mode ScanMode) {
-	// No-op
+	p.scanMode = mode
 }
 
-func (p *NoOpProcessor) ProcessType(t gcr.Type) (bool, error) {
+func (p *NoOpProcessor) ProcessType(t types.Type) (bool, error) {
 	return true, nil
 }

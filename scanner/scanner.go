@@ -3,6 +3,7 @@ package scanner
 import (
 	"fmt"
 	"runtime"
+	"sort"
 	"time"
 
 	"golang.org/x/tools/go/packages"
@@ -25,7 +26,6 @@ type DefaultScanner struct {
 
 func NewScanner() *DefaultScanner {
 	return &DefaultScanner{
-		// TypeResolver: newDefaultTypeResolver(ScanModeBasic, nil),
 		Processors: []Processor{},
 	}
 }
@@ -38,11 +38,11 @@ func (s *DefaultScanner) SetProcessors(processors []Processor) {
 	s.Processors = processors
 }
 
-func (s *DefaultScanner) Scan() (ret *ScanningResult, err error) {
+func (s *DefaultScanner) Scan() (*ScanningResult, error) {
 	return s.ScanWithConfig(NewDefaultConfig())
 }
 
-func (s *DefaultScanner) ScanWithConfig(config *Config) (ret *ScanningResult, err error) {
+func (s *DefaultScanner) ScanWithConfig(config *Config) (*ScanningResult, error) {
 	if config == nil {
 		return s.Scan()
 	}
@@ -51,8 +51,7 @@ func (s *DefaultScanner) ScanWithConfig(config *Config) (ret *ScanningResult, er
 	return s.ScanWithContext(ctx)
 }
 
-func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (ret *ScanningResult, err error) {
-
+func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (*ScanningResult, error) {
 	// start timer and log start message
 	ctx.Logger.Info("Starting scan...")
 	totalPackages := 0
@@ -67,11 +66,11 @@ func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (ret *ScanningRes
 		runtime.GC()
 		runtime.ReadMemStats(&m2)
 		memoryUsage = (m2.Alloc - m1.Alloc) / 1024 // in KB
-		ctx.Logger.Info(fmt.Sprintf("Scan completed in %v, found %d types, across %d packages, memory usage: %dKB", time.Since(now), len(s.TypeResolver.GetTypeInfos()), totalPackages, memoryUsage))
+		ctx.Logger.Info(fmt.Sprintf("Scan completed in %v, found %d types, across %d packages, memory usage: %dKB", time.Since(now), s.TypeResolver.GetTypes().Len(), totalPackages, memoryUsage))
 	}()
 
 	if ctx == nil || ctx.Config == nil {
-		panic(`No scanning context provided or config invalid!`)
+		panic("No scanning context provided or config invalid")
 	}
 	// Initialize the scanning result
 	s.Context = ctx
@@ -90,7 +89,30 @@ func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (ret *ScanningRes
 	}
 
 	// set the scanmode in the type resolver
-	s.TypeResolver = newDefaultTypeResolver(ctx.Config, ctx.Logger)
+	s.TypeResolver = NewDefaultTypeResolver(ctx.Config, ctx.Logger)
+
+	// Register dependency packages so we can load their docs when needed
+	visited := make(map[string]bool)
+	var registerDeps func(*packages.Package)
+	registerDeps = func(pkg *packages.Package) {
+		if pkg == nil || visited[pkg.PkgPath] {
+			return
+		}
+		visited[pkg.PkgPath] = true
+
+		// Register this package in the type resolver's package map
+		s.TypeResolver.(*defaultTypeResolver).pkgs[pkg.PkgPath] = pkg
+
+		// Recursively register dependencies
+		for _, dep := range pkg.Imports {
+			registerDeps(dep)
+		}
+	}
+
+	// Register all packages and their dependencies
+	for _, pkg := range pkgs {
+		registerDeps(pkg)
+	}
 
 	// process the packages and generate the scanning result
 	for _, pkg := range pkgs {
@@ -103,66 +125,49 @@ func (s *DefaultScanner) ScanWithContext(ctx *ScanningContext) (ret *ScanningRes
 
 	totalPackages = len(pkgs)
 
-	ret = &ScanningResult{
-		Types:    s.TypeResolver.GetTypeInfos(),
-		Values:   s.TypeResolver.GetValueInfos(),
-		Packages: s.TypeResolver.GetPackageInfos(),
-		//BasicTypes:        s.TypeResolver.GetBasicTypes(),
-		// GenericParamTypes: s.TypeResolver.GetGenericParamTypes(),
+	result := &ScanningResult{
+		Types:    s.TypeResolver.GetTypes(),
+		Values:   s.TypeResolver.GetValues(),
+		Packages: s.TypeResolver.GetPackages(),
 	}
 
-	// trigger the lazy loading of each type
-	for _, t := range ret.Types {
-		if loadable, ok := t.(interface{ Load() error }); ok {
-			err := loadable.Load()
-			if err != nil {
-				// just log the error but continue processing other types
+	// Trigger lazy loading of all types
+	// Keep loading until no new types are discovered
+	// (Loading a type can trigger resolution of new types like field types)
+	// Sort IDs to ensure deterministic iteration order
+	loadedTypes := make(map[string]bool)
+	for {
+		// Get all type IDs and sort them for deterministic order
+		var typeIDs []string
+		for _, t := range result.Types.Values() {
+			if !loadedTypes[t.Id()] {
+				typeIDs = append(typeIDs, t.Id())
+			}
+		}
+
+		if len(typeIDs) == 0 {
+			break // No new types to load
+		}
+
+		// Sort to ensure deterministic loading order
+		sort.Strings(typeIDs)
+
+		for _, id := range typeIDs {
+			t, exists := result.Types.Get(id)
+			if !exists {
+				continue
+			}
+			loadedTypes[id] = true
+
+			if err := t.Load(); err != nil {
 				ctx.Logger.Error(fmt.Sprintf("Failed to load type %s: %v", t.Id(), err))
 			}
 		}
 	}
 
 	// Return the scanning result and any errors encountered
-	return ret, err
+	return result, nil
 }
-
-// // filterGenericArtifacts removes generic instantiation artifacts that contain unresolved type parameters
-// func (s *DefaultScanner) filterGenericArtifacts(types map[string]TypeInfo) map[string]TypeInfo {
-// 	filtered := make(map[string]TypeInfo)
-// 	for name, typeInfo := range types {
-// 		// Filter out map/slice/array types with unresolved generic parameters
-// 		if s.containsUnresolvedGenerics(name) {
-// 			continue
-// 		}
-// 		filtered[name] = typeInfo
-// 	}
-// 	return filtered
-// }
-
-// // containsUnresolvedGenerics checks if a type name contains unresolved generic parameters
-// func (s *DefaultScanner) containsUnresolvedGenerics(typeName string) bool {
-// 	// Check for patterns like "map[string]pkg.T" where T is likely a generic parameter
-// 	if strings.Contains(typeName, "map[") || strings.Contains(typeName, "[]") || strings.Contains(typeName, "[") {
-// 		// Check for single letter generic parameters after package paths
-// 		genericPatterns := []string{".T", ".U", ".K", ".V", ".A", ".S", ".M", ".P", ".Q"}
-// 		for _, pattern := range genericPatterns {
-// 			if strings.Contains(typeName, pattern) {
-// 				// Check if it's followed by ] or ) or end of string (indicating it's a generic parameter)
-// 				idx := strings.Index(typeName, pattern)
-// 				if idx >= 0 && idx+len(pattern) < len(typeName) {
-// 					nextChar := typeName[idx+len(pattern)]
-// 					if nextChar == ']' || nextChar == ')' || nextChar == '>' || nextChar == ',' || nextChar == ' ' {
-// 						return true
-// 					}
-// 				}
-// 				if idx >= 0 && idx+len(pattern) == len(typeName) {
-// 					return true
-// 				}
-// 			}
-// 		}
-// 	}
-// 	return false
-// }
 
 func (s *DefaultScanner) GetTypeResolver() TypeResolver {
 	return s.TypeResolver

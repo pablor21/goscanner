@@ -1,4 +1,4 @@
-package scannernew
+package scanner
 
 import (
 	"go/ast"
@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/pablor21/goscanner/logger"
-	"github.com/pablor21/goscanner/typesnew"
+	gstypes "github.com/pablor21/goscanner/types"
 )
 
 // TestTypeResolver_GenericAliasesComprehensive tests all 20 cases from generic_aliases.go
@@ -160,7 +160,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 	config.ScanMode = ScanModeFull
 
 	r := NewDefaultTypeResolver(config, l)
-	r.currentPkg = typesnew.NewPackage("test", "test", nil)
+	r.currentPkg = gstypes.NewPackage("test", "test", nil)
 	r.currentPkg.SetLogger(l)
 
 	// Helper to verify InstantiatedGeneric and its fields/methods
@@ -176,7 +176,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatalf("ResolveType returned nil for %s", typeName)
 		}
 
-		ig, ok := got.(*typesnew.InstantiatedGeneric)
+		ig, ok := got.(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected InstantiatedGeneric for %s, got %T", typeName, got)
 		}
@@ -214,7 +214,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 
 		// Verify fields if this is a struct origin
 		if checkFields && expectedFieldTypes != nil {
-			originStruct, ok := ig.Origin().(*typesnew.Struct)
+			originStruct, ok := ig.Origin().(*gstypes.Struct)
 			if !ok {
 				t.Fatalf("%s: Origin should be Struct, got %T", typeName, ig.Origin())
 			}
@@ -271,17 +271,17 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 		}
 
 		// Unwrap Alias if present
-		if alias, ok := got.(*typesnew.Alias); ok {
+		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
 		}
 
 		// Should be Pointer to InstantiatedGeneric
-		ptr, ok := got.(*typesnew.Pointer)
+		ptr, ok := got.(*gstypes.Pointer)
 		if !ok {
 			t.Fatalf("Expected Pointer, got %T", got)
 		}
 
-		ig, ok := ptr.Elem().(*typesnew.InstantiatedGeneric)
+		ig, ok := ptr.Elem().(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected pointer to InstantiatedGeneric, got pointer to %T", ptr.Elem())
 		}
@@ -299,15 +299,15 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 
 		got := r.ResolveType(obj.Type())
 		// Unwrap Alias if present
-		if alias, ok := got.(*typesnew.Alias); ok {
+		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
 		}
-		slice, ok := got.(*typesnew.Slice)
+		slice, ok := got.(*gstypes.Slice)
 		if !ok {
 			t.Fatalf("Expected Slice, got %T", got)
 		}
 
-		ig, ok := slice.Elem().(*typesnew.InstantiatedGeneric)
+		ig, ok := slice.Elem().(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected slice elem to be InstantiatedGeneric, got %T", slice.Elem())
 		}
@@ -325,15 +325,15 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 
 		got := r.ResolveType(obj.Type())
 		// Unwrap Alias if present
-		if alias, ok := got.(*typesnew.Alias); ok {
+		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
 		}
-		slice, ok := got.(*typesnew.Slice)
+		slice, ok := got.(*gstypes.Slice)
 		if !ok {
 			t.Fatalf("Expected Slice (array treated as slice), got %T", got)
 		}
 
-		ig, ok := slice.Elem().(*typesnew.InstantiatedGeneric)
+		ig, ok := slice.Elem().(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected elem to be InstantiatedGeneric, got %T", slice.Elem())
 		}
@@ -351,15 +351,15 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 
 		got := r.ResolveType(obj.Type())
 		// Unwrap Alias if present
-		if alias, ok := got.(*typesnew.Alias); ok {
+		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
 		}
-		m, ok := got.(*typesnew.Map)
+		m, ok := got.(*gstypes.Map)
 		if !ok {
 			t.Fatalf("Expected Map, got %T", got)
 		}
 
-		ig, ok := m.Value().(*typesnew.InstantiatedGeneric)
+		ig, ok := m.Value().(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected map value to be InstantiatedGeneric, got %T", m.Value())
 		}
@@ -377,15 +377,15 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 
 		got := r.ResolveType(obj.Type())
 		// Unwrap Alias if present
-		if alias, ok := got.(*typesnew.Alias); ok {
+		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
 		}
-		ch, ok := got.(*typesnew.Chan)
+		ch, ok := got.(*gstypes.Chan)
 		if !ok {
 			t.Fatalf("Expected Chan, got %T", got)
 		}
 
-		ig, ok := ch.Elem().(*typesnew.InstantiatedGeneric)
+		ig, ok := ch.Elem().(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected chan elem to be InstantiatedGeneric, got %T", ch.Elem())
 		}
@@ -403,19 +403,19 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 
 		got := r.ResolveType(obj.Type())
 		// Unwrap Alias if present
-		if alias, ok := got.(*typesnew.Alias); ok {
+		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
 		}
-		ch, ok := got.(*typesnew.Chan)
+		ch, ok := got.(*gstypes.Chan)
 		if !ok {
 			t.Fatalf("Expected Chan, got %T", got)
 		}
 
-		if ch.Dir() != typesnew.ChanDirSend {
+		if ch.Dir() != gstypes.ChanDirSend {
 			t.Errorf("Expected send-only channel, got direction %v", ch.Dir())
 		}
 
-		ig, ok := ch.Elem().(*typesnew.InstantiatedGeneric)
+		ig, ok := ch.Elem().(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected chan elem to be InstantiatedGeneric, got %T", ch.Elem())
 		}
@@ -433,19 +433,19 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 
 		got := r.ResolveType(obj.Type())
 		// Unwrap Alias if present
-		if alias, ok := got.(*typesnew.Alias); ok {
+		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
 		}
-		ch, ok := got.(*typesnew.Chan)
+		ch, ok := got.(*gstypes.Chan)
 		if !ok {
 			t.Fatalf("Expected Chan, got %T", got)
 		}
 
-		if ch.Dir() != typesnew.ChanDirRecv {
+		if ch.Dir() != gstypes.ChanDirRecv {
 			t.Errorf("Expected receive-only channel, got direction %v", ch.Dir())
 		}
 
-		ig, ok := ch.Elem().(*typesnew.InstantiatedGeneric)
+		ig, ok := ch.Elem().(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected chan elem to be InstantiatedGeneric, got %T", ch.Elem())
 		}
@@ -486,7 +486,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 		}
 
 		got := r.ResolveType(obj.Type())
-		ig, ok := got.(*typesnew.InstantiatedGeneric)
+		ig, ok := got.(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected InstantiatedGeneric, got %T", got)
 		}
@@ -501,7 +501,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatalf("Expected 1 type arg, got %d", len(ig.TypeArgs()))
 		}
 
-		innerIG, ok := ig.TypeArgs()[0].Type.(*typesnew.InstantiatedGeneric)
+		innerIG, ok := ig.TypeArgs()[0].Type.(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected inner type arg to be InstantiatedGeneric, got %T", ig.TypeArgs()[0].Type)
 		}
@@ -519,20 +519,20 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 
 		got := r.ResolveType(obj.Type())
 		// Unwrap Alias if present
-		if alias, ok := got.(*typesnew.Alias); ok {
+		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
 		}
-		ptr, ok := got.(*typesnew.Pointer)
+		ptr, ok := got.(*gstypes.Pointer)
 		if !ok {
 			t.Fatalf("Expected Pointer, got %T", got)
 		}
 
-		slice, ok := ptr.Elem().(*typesnew.Slice)
+		slice, ok := ptr.Elem().(*gstypes.Slice)
 		if !ok {
 			t.Fatalf("Expected pointer to Slice, got pointer to %T", ptr.Elem())
 		}
 
-		ig, ok := slice.Elem().(*typesnew.InstantiatedGeneric)
+		ig, ok := slice.Elem().(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected slice elem to be InstantiatedGeneric, got %T", slice.Elem())
 		}
@@ -550,25 +550,25 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 
 		got := r.ResolveType(obj.Type())
 		// Unwrap Alias if present
-		if alias, ok := got.(*typesnew.Alias); ok {
+		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
 		}
-		m, ok := got.(*typesnew.Map)
+		m, ok := got.(*gstypes.Map)
 		if !ok {
 			t.Fatalf("Expected Map, got %T", got)
 		}
 
-		ptr, ok := m.Value().(*typesnew.Pointer)
+		ptr, ok := m.Value().(*gstypes.Pointer)
 		if !ok {
 			t.Fatalf("Expected map value to be Pointer, got %T", m.Value())
 		}
 
-		slice, ok := ptr.Elem().(*typesnew.Slice)
+		slice, ok := ptr.Elem().(*gstypes.Slice)
 		if !ok {
 			t.Fatalf("Expected pointer elem to be Slice, got %T", ptr.Elem())
 		}
 
-		ig, ok := slice.Elem().(*typesnew.InstantiatedGeneric)
+		ig, ok := slice.Elem().(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected slice elem to be InstantiatedGeneric, got %T", slice.Elem())
 		}
@@ -582,7 +582,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatalf("Expected 1 type arg, got %d", len(ig.TypeArgs()))
 		}
 
-		innerIG, ok := ig.TypeArgs()[0].Type.(*typesnew.InstantiatedGeneric)
+		innerIG, ok := ig.TypeArgs()[0].Type.(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected type arg to be InstantiatedGeneric, got %T", ig.TypeArgs()[0].Type)
 		}
@@ -609,7 +609,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatal("ResolveType returned nil")
 		}
 
-		ig, ok := got.(*typesnew.InstantiatedGeneric)
+		ig, ok := got.(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected InstantiatedGeneric, got %T", got)
 		}
@@ -629,7 +629,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatalf("Failed to load: %v", err)
 		}
 
-		originStruct, ok := ig.Origin().(*typesnew.Struct)
+		originStruct, ok := ig.Origin().(*gstypes.Struct)
 		if !ok {
 			t.Fatalf("Origin should be Struct, got %T", ig.Origin())
 		}
@@ -646,7 +646,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Errorf("Expected field Fn, got %s", fields[0].Name())
 		} else {
 			// Verify it's a function type
-			if fields[0].Type().Kind() != typesnew.TypeKindFunction {
+			if fields[0].Type().Kind() != gstypes.TypeKindFunction {
 				t.Errorf("Field Fn should be function type, got %v", fields[0].Type().Kind())
 			}
 		}
@@ -659,7 +659,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 		}
 
 		got := r.ResolveType(obj.Type())
-		ig, ok := got.(*typesnew.InstantiatedGeneric)
+		ig, ok := got.(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected InstantiatedGeneric, got %T", got)
 		}
@@ -673,7 +673,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatalf("Failed to load: %v", err)
 		}
 
-		iface, ok := ig.Origin().(*typesnew.Interface)
+		iface, ok := ig.Origin().(*gstypes.Interface)
 		if !ok {
 			t.Fatalf("Origin should be Interface, got %T", ig.Origin())
 		}

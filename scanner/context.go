@@ -1,12 +1,12 @@
 package scanner
 
 import (
+	"go/types"
+
 	"github.com/pablor21/goscanner/logger"
-	"github.com/pablor21/goscanner/types"
 )
 
-// ScanningContext holds the configuration and state information for the scanning process.
-// @myAnnotation("ScanningContext")
+// ScanningContext holds the configuration and state information for the scanning process
 type ScanningContext struct {
 	Config       *Config
 	Logger       logger.Logger

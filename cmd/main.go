@@ -5,7 +5,7 @@ import (
 	"flag"
 	"os"
 
-	"github.com/pablor21/goscanner/scannernew"
+	"github.com/pablor21/goscanner/scanner"
 )
 
 var pkg string
@@ -17,11 +17,11 @@ func main() {
 	flag.StringVar(&output, "out", "output.json", "Output file")
 	flag.Parse()
 
-	cfg := scannernew.NewDefaultConfig()
+	cfg := scanner.NewDefaultConfig()
 	cfg.Packages = []string{pkg}
 	cfg.LogLevel = "debug"
 
-	ret, err := scannernew.NewScanner().ScanWithConfig(cfg)
+	ret, err := scanner.NewScanner().ScanWithConfig(cfg)
 	if err != nil {
 		panic(err)
 	}

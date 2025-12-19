@@ -14,28 +14,28 @@ cd /workspace/goscanner
 
 # Run benchmarks with benchstat-friendly output
 echo "1. Running benchmarks..."
-go test -bench=. -run=^$ -benchmem -benchtime=3s -count=5 ./scannernew/ > "$OUTDIR/${MODE}_bench.txt"
+go test -bench=. -run=^$ -benchmem -benchtime=3s -count=5 ./scanner/ > "$OUTDIR/${MODE}_bench.txt"
 
 # CPU profile
 echo "2. Generating CPU profile..."
 go test -bench=BenchmarkTypeResolver_ResolveComplexPackage \
     -cpuprofile="$OUTDIR/${MODE}_cpu.prof" \
     -benchtime=3s \
-    ./scannernew/ > /dev/null 2>&1
+    ./scanner/ > /dev/null 2>&1
 
 # Memory profile
 echo "3. Generating memory profile..."
 go test -bench=BenchmarkTypeResolver_ResolveComplexPackage \
     -memprofile="$OUTDIR/${MODE}_mem.prof" \
     -benchtime=3s \
-    ./scannernew/ > /dev/null 2>&1
+    ./scanner/ > /dev/null 2>&1
 
 # Memory allocation profile
 echo "4. Generating allocation profile..."
 go test -bench=BenchmarkTypeResolver_ResolveComplexPackage \
     -memprofile="$OUTDIR/${MODE}_alloc.prof" \
     -benchtime=3s \
-    ./scannernew/ > /dev/null 2>&1
+    ./scanner/ > /dev/null 2>&1
 
 echo ""
 echo "Profiling complete! Results in $OUTDIR/"
