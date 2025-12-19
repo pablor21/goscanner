@@ -7,6 +7,7 @@ import (
 	"go/types"
 	"reflect"
 	"strings"
+	"sync"
 
 	"github.com/pablor21/goscanner/logger"
 	"golang.org/x/tools/go/packages"
@@ -31,21 +32,27 @@ type TypeResolver interface {
 }
 
 type defaultTypeResolver struct {
-	types            *gstypes.TypesCol[gstypes.Type]     // All resolved types
-	values           *gstypes.TypesCol[*gstypes.Value]   // All resolved values (constants/variables)
-	packages         *gstypes.TypesCol[*gstypes.Package] // All loaded packages
-	ignoredTypes     map[string]struct{}                 // Types to ignore
-	docTypes         map[string]*doc.Type                // Documentation for types
-	docFuncs         map[string]*doc.Func                // Documentation for functions
-	docPackages      map[string]*doc.Package             // Cached doc.Package by package path
-	pkgs             map[string]*packages.Package        // Raw go/packages
-	loadedPkgs       map[string]bool                     // Track processed packages
-	packageDistances map[string]int                      // Track distance for each package from scanned packages
-	basicTypes       map[string]gstypes.Type             // Cache of basic types
-	currentPkg       *gstypes.Package                    // Currently processing package
-	resolvingPkg     string                              // Package path being resolved (for distance calculation)
-	unnamedCounter   map[string]int                      // Counter for unnamed types per kind
-	qualifier        types.Qualifier                     // Cached qualifier function for GetCanonicalName
+	types    *gstypes.TypesCol[gstypes.Type]     // All resolved types (thread-safe)
+	values   *gstypes.TypesCol[*gstypes.Value]   // All resolved values (constants/variables) (thread-safe)
+	packages *gstypes.TypesCol[*gstypes.Package] // All loaded packages (thread-safe)
+
+	// Mutexes for non-TypesCol maps
+	docMu     sync.RWMutex // Protects doc* maps
+	pkgMu     sync.RWMutex // Protects pkgs, loadedPkgs, packageDistances
+	counterMu sync.Mutex   // Protects unnamedCounter
+
+	ignoredTypes     map[string]struct{}          // Types to ignore
+	docTypes         map[string]*doc.Type         // Documentation for types (protected by docMu)
+	docFuncs         map[string]*doc.Func         // Documentation for functions (protected by docMu)
+	docPackages      map[string]*doc.Package      // Cached doc.Package by package path (protected by docMu)
+	pkgs             map[string]*packages.Package // Raw go/packages (protected by pkgMu)
+	loadedPkgs       map[string]bool              // Track processed packages (protected by pkgMu)
+	packageDistances map[string]int               // Track distance for each package from scanned packages (protected by pkgMu)
+	basicTypes       map[string]gstypes.Type      // Cache of basic types (read-only after init)
+	currentPkg       *gstypes.Package             // Currently processing package
+	resolvingPkg     string                       // Package path being resolved (for distance calculation)
+	unnamedCounter   map[string]int               // Counter for unnamed types per kind (protected by counterMu)
+	qualifier        types.Qualifier              // Cached qualifier function for GetCanonicalName
 	config           *Config
 	logger           logger.Logger
 }
@@ -94,6 +101,8 @@ func (r *defaultTypeResolver) initBasicTypes() {
 
 // generateUnnamedID generates a unique ID for unnamed composite types
 func (r *defaultTypeResolver) generateUnnamedID(kind string) string {
+	r.counterMu.Lock()
+	defer r.counterMu.Unlock()
 	r.unnamedCounter[kind]++
 	return fmt.Sprintf("__unnamed_%s__%d__", kind, r.unnamedCounter[kind])
 }
@@ -283,15 +292,26 @@ func (r *defaultTypeResolver) loadExternalPackageDoc(pkgPath string, obj types.O
 	typeName := sb.String()
 
 	// If we've already loaded this package's docs, return from cache
-	if r.loadedPkgs[pkgPath] {
-		return r.docTypes[typeName] // Return cached value (may be nil if type has no docs)
+	r.pkgMu.RLock()
+	loaded := r.loadedPkgs[pkgPath]
+	r.pkgMu.RUnlock()
+
+	if loaded {
+		r.docMu.RLock()
+		docType := r.docTypes[typeName]
+		r.docMu.RUnlock()
+		return docType // Return cached value (may be nil if type has no docs)
 	}
 
 	// Mark as loaded to prevent re-attempting
+	r.pkgMu.Lock()
 	r.loadedPkgs[pkgPath] = true
+	r.pkgMu.Unlock()
 
 	// Try to get the package from our packages map (if it was loaded with dependencies)
+	r.pkgMu.RLock()
 	pkg, exists := r.pkgs[pkgPath]
+	r.pkgMu.RUnlock()
 	if !exists {
 		// Package not available, can't load docs
 		return nil
@@ -300,7 +320,10 @@ func (r *defaultTypeResolver) loadExternalPackageDoc(pkgPath string, obj types.O
 	// Extract documentation from the package
 	if len(pkg.Syntax) > 0 {
 		// Check if we already have the doc.Package cached
+		r.docMu.RLock()
 		docPkg, cached := r.docPackages[pkgPath]
+		r.docMu.RUnlock()
+
 		if !cached {
 			// Not cached - parse and cache it
 			var err error
@@ -314,10 +337,13 @@ func (r *defaultTypeResolver) loadExternalPackageDoc(pkgPath string, obj types.O
 				r.logger.Debugf("Failed to extract docs from external package %s: %v", pkgPath, err)
 				return nil
 			}
+			r.docMu.Lock()
 			r.docPackages[pkgPath] = docPkg
+			r.docMu.Unlock()
 		}
 
 		// Cache the doc types from this package
+		r.docMu.Lock()
 		for _, docType := range docPkg.Types {
 			var sb strings.Builder
 			sb.WriteString(pkgPath)
@@ -326,9 +352,11 @@ func (r *defaultTypeResolver) loadExternalPackageDoc(pkgPath string, obj types.O
 			canonical := sb.String()
 			r.docTypes[canonical] = docType
 		}
+		result := r.docTypes[typeName]
+		r.docMu.Unlock()
 
 		// Return the specific docType for this object
-		return r.docTypes[typeName]
+		return result
 	}
 
 	return nil
@@ -343,7 +371,9 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 	r.currentPkg = pkgInfo
 
 	// Mark this package as scanned (distance 0)
+	r.pkgMu.Lock()
 	r.packageDistances[pkg.PkgPath] = 0
+	r.pkgMu.Unlock()
 
 	// Extract comments from AST
 	if err := r.extractComments(pkgInfo, pkg); err != nil {
@@ -351,7 +381,10 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 	}
 
 	// Extract documentation - check cache first
+	r.docMu.RLock()
 	docPkg, cached := r.docPackages[pkg.PkgPath]
+	r.docMu.RUnlock()
+
 	if !cached {
 		var err error
 		docPkg, err = doc.NewFromFiles(
@@ -363,16 +396,21 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 		if err != nil {
 			return err
 		}
+		r.docMu.Lock()
 		r.docPackages[pkg.PkgPath] = docPkg
+		r.docMu.Unlock()
 	}
 
+	r.pkgMu.Lock()
 	r.pkgs[pkg.PkgPath] = pkg
 	r.loadedPkgs[pkg.PkgPath] = true
+	r.pkgMu.Unlock()
 
 	// Cache scope for efficiency
 	scope := pkg.Types.Scope()
 
 	// Package-level functions documentation
+	r.docMu.Lock()
 	for _, docFunc := range docPkg.Funcs {
 		var sb strings.Builder
 		sb.WriteString(pkg.PkgPath)
@@ -381,6 +419,7 @@ func (r *defaultTypeResolver) ProcessPackage(pkg *packages.Package) error {
 		canonical := sb.String()
 		r.docFuncs[canonical] = docFunc
 	}
+	r.docMu.Unlock()
 
 	// Types + associated functions
 	if r.config.ScanMode.Has(ScanModeTypes) {
@@ -1355,7 +1394,7 @@ func (r *defaultTypeResolver) processSignature(sig *types.Signature, pkgContext 
 			}
 		}
 
-		var finalParamType gstypes.Type = paramTypeResolved
+		var finalParamType = paramTypeResolved
 		if pointerDepth > 0 {
 			ptrID := r.generateUnnamedID("pointer")
 			finalParamType = gstypes.NewPointer(ptrID, ptrID, paramTypeResolved, pointerDepth)

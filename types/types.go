@@ -162,28 +162,39 @@ type Type interface {
 }
 
 type TypesCol[T Serializable] struct {
+	mu     sync.RWMutex
 	values map[string]T
 }
 
-func (c TypesCol[T]) Get(id string) (T, bool) {
+func (c *TypesCol[T]) Get(id string) (T, bool) {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
 	t, exists := c.values[id]
 	return t, exists
 }
 
-func (c TypesCol[T]) Set(id string, t T) {
+func (c *TypesCol[T]) Set(id string, t T) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	c.values[id] = t
 }
 
-func (c TypesCol[T]) Has(id string) bool {
+func (c *TypesCol[T]) Has(id string) bool {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
 	_, exists := c.values[id]
 	return exists
 }
 
-func (c TypesCol[T]) Delete(id string) {
+func (c *TypesCol[T]) Delete(id string) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	delete(c.values, id)
 }
 
-func (c TypesCol[T]) Keys() []string {
+func (c *TypesCol[T]) Keys() []string {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
 	keys := make([]string, 0, len(c.values))
 	for k := range c.values {
 		keys = append(keys, k)
@@ -191,7 +202,9 @@ func (c TypesCol[T]) Keys() []string {
 	return keys
 }
 
-func (c TypesCol[T]) Values() []T {
+func (c *TypesCol[T]) Values() []T {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
 	values := make([]T, 0, len(c.values))
 	for _, v := range c.values {
 		values = append(values, v)
@@ -199,15 +212,21 @@ func (c TypesCol[T]) Values() []T {
 	return values
 }
 
-func (c TypesCol[T]) Len() int {
+func (c *TypesCol[T]) Len() int {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
 	return len(c.values)
 }
 
 func (c *TypesCol[T]) Clear() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	c.values = make(map[string]T)
 }
 
-func (c TypesCol[T]) Serialize() any {
+func (c *TypesCol[T]) Serialize() any {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
 	result := make(map[string]any, len(c.values))
 	for id, t := range c.values {
 		result[id] = t.Serialize()
