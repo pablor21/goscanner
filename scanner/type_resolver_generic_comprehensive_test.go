@@ -1,6 +1,7 @@
 package scanner
 
 import (
+	"context"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -160,8 +161,12 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 	config.ScanMode = ScanModeFull
 
 	r := NewDefaultTypeResolver(config, l)
-	r.currentPkg = gstypes.NewPackage("test", "test", nil)
-	r.currentPkg.SetLogger(l)
+
+	// Create scanning context with package
+	ctx := NewScanningContext(context.Background(), config)
+	pkgInfo := gstypes.NewPackage("test", "test", nil)
+	pkgInfo.SetLogger(l)
+	ctx = ctx.WithPackage(pkgInfo)
 
 	// Helper to verify InstantiatedGeneric and its fields/methods
 	verifyInstantiatedGeneric := func(t *testing.T, typeName string, expectedOrigin string, expectedTypeArgs map[string]string, checkFields bool, expectedFieldTypes map[string]string) {
@@ -171,7 +176,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatalf("%s not found", typeName)
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		if got == nil {
 			t.Fatalf("ResolveType returned nil for %s", typeName)
 		}
@@ -265,7 +270,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatal("PointerToGenericAlias not found")
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		if got == nil {
 			t.Fatal("ResolveType returned nil")
 		}
@@ -297,7 +302,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatal("SliceOfGenericAlias not found")
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		// Unwrap Alias if present
 		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
@@ -323,7 +328,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatal("ArrayOfGenericAlias not found")
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		// Unwrap Alias if present
 		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
@@ -349,7 +354,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatal("MapWithGenericValueAlias not found")
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		// Unwrap Alias if present
 		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
@@ -375,7 +380,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatal("ChanOfGenericAlias not found")
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		// Unwrap Alias if present
 		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
@@ -401,7 +406,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatal("SendChanOfGenericAlias not found")
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		// Unwrap Alias if present
 		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
@@ -431,7 +436,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatal("RecvChanOfGenericAlias not found")
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		// Unwrap Alias if present
 		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
@@ -485,7 +490,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatal("NestedGenericAlias not found")
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		ig, ok := got.(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected InstantiatedGeneric, got %T", got)
@@ -517,7 +522,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatal("PointerToSliceOfGenericAlias not found")
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		// Unwrap Alias if present
 		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
@@ -548,7 +553,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatal("ComplexNestedAlias not found")
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		// Unwrap Alias if present
 		if alias, ok := got.(*gstypes.Alias); ok {
 			got = alias.UnderlyingType()
@@ -604,7 +609,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatal("GenericFuncAlias not found")
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		if got == nil {
 			t.Fatal("ResolveType returned nil")
 		}
@@ -658,7 +663,7 @@ func TestTypeResolver_GenericAliasesComprehensive(t *testing.T) {
 			t.Fatal("ExtendedInterfaceAlias not found")
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		ig, ok := got.(*gstypes.InstantiatedGeneric)
 		if !ok {
 			t.Fatalf("Expected InstantiatedGeneric, got %T", got)

@@ -1,6 +1,7 @@
 package scanner
 
 import (
+	"context"
 	"go/ast"
 	"go/importer"
 	"go/parser"
@@ -67,12 +68,13 @@ func BenchmarkTypeResolver_ResolveComplexPackage(b *testing.B) {
 
 	config := NewDefaultConfig()
 	log := logger.NewDefaultLogger()
+	ctx := NewScanningContext(context.Background(), config)
 
 	b.ReportAllocs()
 
 	for b.Loop() {
 		r := NewDefaultTypeResolver(config, log)
-		_ = r.ProcessPackage(pkg)
+		_ = r.ProcessPackage(ctx, pkg)
 	}
 }
 
@@ -116,13 +118,14 @@ func BenchmarkTypeResolver_StringConcatenation(b *testing.B) {
 
 	config := NewDefaultConfig()
 	log := logger.NewDefaultLogger()
+	ctx := NewScanningContext(context.Background(), config)
 
 	b.ResetTimer()
 	b.ReportAllocs()
 
 	for b.Loop() {
 		r := NewDefaultTypeResolver(config, log)
-		_ = r.ProcessPackage(pkg)
+		_ = r.ProcessPackage(ctx, pkg)
 	}
 }
 
@@ -161,13 +164,14 @@ func BenchmarkTypeResolver_ExternalPackageDoc(b *testing.B) {
 
 	config := NewDefaultConfig()
 	log := logger.NewDefaultLogger()
+	ctx := NewScanningContext(context.Background(), config)
 
 	b.ResetTimer()
 	b.ReportAllocs()
 
 	for b.Loop() {
 		r := NewDefaultTypeResolver(config, log)
-		_ = r.ProcessPackage(pkg)
+		_ = r.ProcessPackage(ctx, pkg)
 	}
 }
 
@@ -206,12 +210,13 @@ func BenchmarkTypeResolver_GetCanonicalName(b *testing.B) {
 
 	config := NewDefaultConfig()
 	log := logger.NewDefaultLogger()
+	ctx := NewScanningContext(context.Background(), config)
 
 	b.ResetTimer()
 	b.ReportAllocs()
 
 	for b.Loop() {
 		r := NewDefaultTypeResolver(config, log)
-		_ = r.ProcessPackage(pkg)
+		_ = r.ProcessPackage(ctx, pkg)
 	}
 }

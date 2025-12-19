@@ -1,6 +1,7 @@
 package scanner
 
 import (
+	"context"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -83,8 +84,12 @@ func TestTypeResolver_GenericOriginTypes(t *testing.T) {
 	config.ScanMode = ScanModeFull
 
 	r := NewDefaultTypeResolver(config, l)
-	r.currentPkg = gstypes.NewPackage("test", "test", nil)
-	r.currentPkg.SetLogger(l)
+
+	// Create scanning context with package
+	ctx := NewScanningContext(context.Background(), config)
+	pkgInfo := gstypes.NewPackage("test", "test", nil)
+	pkgInfo.SetLogger(l)
+	ctx = ctx.WithPackage(pkgInfo)
 
 	t.Run("GenericSlice_DirectInstantiation", func(t *testing.T) {
 		obj := pkg.Scope().Lookup("StringSlice")
@@ -92,7 +97,7 @@ func TestTypeResolver_GenericOriginTypes(t *testing.T) {
 			t.Fatal("StringSlice not found")
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		if got == nil {
 			t.Fatal("ResolveType returned nil")
 		}
@@ -156,7 +161,7 @@ func TestTypeResolver_GenericOriginTypes(t *testing.T) {
 			t.Fatal("StringIntMap not found")
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		if got == nil {
 			t.Fatal("ResolveType returned nil")
 		}
@@ -205,7 +210,7 @@ func TestTypeResolver_GenericOriginTypes(t *testing.T) {
 			t.Fatal("IntChan not found")
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		if got == nil {
 			t.Fatal("ResolveType returned nil")
 		}
@@ -240,7 +245,7 @@ func TestTypeResolver_GenericOriginTypes(t *testing.T) {
 			t.Fatal("StringToIntFunc not found")
 		}
 
-		got := r.ResolveType(obj.Type())
+		got := r.ResolveType(ctx, obj.Type())
 		if got == nil {
 			t.Fatal("ResolveType returned nil")
 		}

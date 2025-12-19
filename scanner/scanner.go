@@ -175,5 +175,5 @@ func (s *DefaultScanner) GetTypeResolver() TypeResolver {
 }
 
 func (s *DefaultScanner) ScanTypes(pkg *packages.Package) error {
-	return s.TypeResolver.ProcessPackage(pkg)
+	return s.TypeResolver.ProcessPackage(s.Context, pkg)
 }

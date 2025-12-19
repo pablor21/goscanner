@@ -116,7 +116,7 @@ func BenchmarkType_ConcurrentLoad(b *testing.B) {
 	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			s.Load()
+			_ = s.Load()
 		}
 	})
 }
