@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"os"
+	"strings"
 
 	"github.com/pablor21/goscanner/logger"
 	"github.com/pablor21/goscanner/scanner"
@@ -16,15 +17,15 @@ var useCache bool
 
 func main() {
 	// get the package scanning to (flag)
-	flag.StringVar(&pkg, "pkg", "../examples/starwars/basic", "Package to scan")
+	flag.StringVar(&pkg, "pkg", "../examples/starwars/basic,../examples/starwars/functions", "Package to scan")
 	flag.StringVar(&output, "out", "output.json", "Output file")
 	flag.StringVar(&cacheOut, "cache-out", ".scan.cache", "Output binary cache file (gzip-compressed JSON)")
 	flag.BoolVar(&useCache, "use-cache", false, "Load from cache if available (default: false)")
 	flag.Parse()
 
 	cfg := scanner.NewDefaultConfig()
-	cfg.Packages = []string{pkg}
-	cfg.LogLevel = logger.LogLevelDebug
+	cfg.Packages = strings.Split(pkg, ",")
+	cfg.LogLevel = "info"
 
 	// Create a logger for the main function
 	logger.SetupLogger(cfg.LogLevel)

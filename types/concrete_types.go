@@ -7,7 +7,6 @@
 package types
 
 import (
-	"fmt"
 	"go/doc"
 )
 
@@ -84,10 +83,6 @@ func (b *Basic) SetUnderlying(t Type) {
 }
 
 func (b *Basic) Serialize() any {
-	if err := b.Load(); err != nil && b.pkg != nil && b.pkg.logger != nil {
-		b.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", b.id, err))
-	}
-
 	var underlyingSerialized any
 	if b.underlying != nil {
 		underlyingSerialized = b.underlying.Serialize()
@@ -139,9 +134,7 @@ func (p *Pointer) Depth() int {
 }
 
 func (p *Pointer) Serialize() any {
-	if err := p.Load(); err != nil && p.pkg != nil && p.pkg.logger != nil {
-		p.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", p.id, err))
-	}
+	// Avoid calling Load() here to prevent reentrancy deadlocks
 	var elemSerialized any
 	if p.elem != nil {
 		if p.elem.IsNamed() {
@@ -216,9 +209,7 @@ func (s *Slice) IsArray() bool {
 }
 
 func (s *Slice) Serialize() any {
-	if err := s.Load(); err != nil && s.pkg != nil && s.pkg.logger != nil {
-		s.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", s.id, err))
-	}
+	// Avoid calling Load() here to prevent reentrancy deadlocks
 
 	var elemSerialized any
 	if s.elem != nil {
@@ -285,9 +276,7 @@ func (c *Chan) Dir() ChannelDirection {
 }
 
 func (c *Chan) Serialize() any {
-	if err := c.Load(); err != nil && c.pkg != nil && c.pkg.logger != nil {
-		c.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", c.id, err))
-	}
+	// Avoid calling Load() here to prevent reentrancy deadlocks
 	var elemSerialized any
 	if c.elem != nil {
 		if c.elem.IsNamed() {
@@ -352,9 +341,7 @@ func (m *Map) Value() Type {
 }
 
 func (m *Map) Serialize() any {
-	if err := m.Load(); err != nil && m.pkg != nil && m.pkg.logger != nil {
-		m.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", m.id, err))
-	}
+	// Avoid calling Load() here to prevent reentrancy deadlocks
 
 	var keySerialized any
 	if m.key != nil {
@@ -428,9 +415,7 @@ func (a *Alias) UnderlyingType() Type {
 }
 
 func (a *Alias) Serialize() any {
-	if err := a.Load(); err != nil && a.pkg != nil && a.pkg.logger != nil {
-		a.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", a.id, err))
-	}
+	// Avoid calling Load() here to prevent reentrancy deadlocks
 	var underlyingSerialized any
 	if a.underlying != nil {
 		underlyingSerialized = a.underlying.Serialize()
@@ -572,9 +557,7 @@ func (f *Function) AddTypeParam(tp *TypeParameter) {
 }
 
 func (f *Function) Serialize() any {
-	if err := f.Load(); err != nil && f.pkg != nil && f.pkg.logger != nil {
-		f.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", f.id, err))
-	}
+	// Removed Load call as per requirement
 	params := make([]*SerializedParameter, len(f.params))
 	for i, p := range f.params {
 		params[i] = &SerializedParameter{
@@ -674,9 +657,7 @@ func NewInterface(id string, name string) *Interface {
 }
 
 func (i *Interface) Serialize() any {
-	if err := i.Load(); err != nil && i.pkg != nil && i.pkg.logger != nil {
-		i.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", i.id, err))
-	}
+	// Avoid calling Load() here to prevent reentrancy deadlocks
 
 	embeds := make([]any, len(i.embeds))
 	for idx, e := range i.embeds {
@@ -772,9 +753,7 @@ func (s *Struct) AddTypeParam(tp *TypeParameter) {
 }
 
 func (s *Struct) Serialize() any {
-	if err := s.Load(); err != nil && s.pkg != nil && s.pkg.logger != nil {
-		s.pkg.logger.Error(fmt.Sprintf("failed to load type %s: %v", s.id, err))
-	}
+	// Avoid calling Load() here to prevent reentrancy deadlocks
 
 	embeds := make([]any, len(s.embeds))
 	for i, e := range s.embeds {

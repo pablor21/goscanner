@@ -29,3 +29,5 @@ coverage.out
 *.out
 *.prof
 *.pprof
+*.json
+.scan.cache
