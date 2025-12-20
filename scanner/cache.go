@@ -82,11 +82,11 @@ func WriteCache(filename string, result *ScanningResult) error {
 	if err != nil {
 		return fmt.Errorf("failed to create cache file %s: %w", filename, err)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	// Wrap with gzip compression
 	gzipWriter := gzip.NewWriter(file)
-	defer gzipWriter.Close()
+	defer func() { _ = gzipWriter.Close() }()
 
 	// Write compressed JSON
 	if _, err := gzipWriter.Write(cacheJSON); err != nil {
@@ -115,14 +115,14 @@ func ReadCache(filename string) (*ScanningResult, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to open cache file %s: %w", filename, err)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	// Decompress gzip
 	gzipReader, err := gzip.NewReader(file)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create gzip reader: %w", err)
 	}
-	defer gzipReader.Close()
+	defer func() { _ = gzipReader.Close() }()
 
 	// Decode JSON
 	var cache CacheFile
@@ -200,7 +200,7 @@ func deserializeType(jsonStr string, result *ScanningResult) (gstypes.Type, erro
 	switch st.Kind {
 	case gstypes.TypeKindBasic:
 		var sb gstypes.SerializedBasic
-		json.Unmarshal([]byte(jsonStr), &sb)
+		_ = json.Unmarshal([]byte(jsonStr), &sb)
 		t = gstypes.NewBasic(sb.ID, sb.Name)
 		if sb.Underlying != nil {
 			if underlyingType := reconstructTypeRef(sb.Underlying, result); underlyingType != nil {
@@ -210,44 +210,44 @@ func deserializeType(jsonStr string, result *ScanningResult) (gstypes.Type, erro
 
 	case gstypes.TypeKindPointer:
 		var sp gstypes.SerializedPointer
-		json.Unmarshal([]byte(jsonStr), &sp)
+		_ = json.Unmarshal([]byte(jsonStr), &sp)
 		elem := reconstructTypeRef(sp.Element, result)
 		t = gstypes.NewPointer(sp.ID, sp.Name, elem, sp.Depth)
 
 	case gstypes.TypeKindSlice:
 		var ss gstypes.SerializedSlice
-		json.Unmarshal([]byte(jsonStr), &ss)
+		_ = json.Unmarshal([]byte(jsonStr), &ss)
 		elem := reconstructTypeRef(ss.Element, result)
 		t = gstypes.NewSlice(ss.ID, ss.Name, elem)
 
 	case gstypes.TypeKindArray:
 		var sa gstypes.SerializedSlice
-		json.Unmarshal([]byte(jsonStr), &sa)
+		_ = json.Unmarshal([]byte(jsonStr), &sa)
 		elem := reconstructTypeRef(sa.Element, result)
 		t = gstypes.NewSlice(sa.ID, sa.Name, elem)
 
 	case gstypes.TypeKindMap:
 		var sm gstypes.SerializedMap
-		json.Unmarshal([]byte(jsonStr), &sm)
+		_ = json.Unmarshal([]byte(jsonStr), &sm)
 		key := reconstructTypeRef(sm.Key, result)
 		val := reconstructTypeRef(sm.Value, result)
 		t = gstypes.NewMap(sm.ID, sm.Name, key, val)
 
 	case gstypes.TypeKindChan:
 		var sc gstypes.SerializedChan
-		json.Unmarshal([]byte(jsonStr), &sc)
+		_ = json.Unmarshal([]byte(jsonStr), &sc)
 		elem := reconstructTypeRef(sc.Element, result)
 		t = gstypes.NewChan(sc.ID, sc.Name, elem, sc.Direction)
 
 	case gstypes.TypeKindAlias:
 		var sa gstypes.SerializedAlias
-		json.Unmarshal([]byte(jsonStr), &sa)
+		_ = json.Unmarshal([]byte(jsonStr), &sa)
 		underlying := reconstructTypeRef(sa.Underlying, result)
 		t = gstypes.NewAlias(sa.ID, sa.Name, underlying)
 
 	case gstypes.TypeKindFunction:
 		var sf gstypes.SerializedFunction
-		json.Unmarshal([]byte(jsonStr), &sf)
+		_ = json.Unmarshal([]byte(jsonStr), &sf)
 		fn := gstypes.NewFunction(sf.ID, sf.Name)
 		// Add parameters
 		for _, param := range sf.Parameters {
@@ -263,7 +263,7 @@ func deserializeType(jsonStr string, result *ScanningResult) (gstypes.Type, erro
 
 	case gstypes.TypeKindInterface:
 		var si gstypes.SerializedInterface
-		json.Unmarshal([]byte(jsonStr), &si)
+		_ = json.Unmarshal([]byte(jsonStr), &si)
 		iface := gstypes.NewInterface(si.ID, si.Name)
 		// Add embeds
 		for _, embed := range si.Embeds {
@@ -293,7 +293,7 @@ func deserializeType(jsonStr string, result *ScanningResult) (gstypes.Type, erro
 
 	case gstypes.TypeKindStruct:
 		var ss gstypes.SerializedStruct
-		json.Unmarshal([]byte(jsonStr), &ss)
+		_ = json.Unmarshal([]byte(jsonStr), &ss)
 		str := gstypes.NewStruct(ss.ID, ss.Name)
 		// Add embeds
 		for _, embed := range ss.Embeds {
@@ -329,7 +329,7 @@ func deserializeType(jsonStr string, result *ScanningResult) (gstypes.Type, erro
 
 	case gstypes.TypeKindMethod:
 		var sm gstypes.SerializedMethod
-		json.Unmarshal([]byte(jsonStr), &sm)
+		_ = json.Unmarshal([]byte(jsonStr), &sm)
 		receiver := reconstructTypeRef(sm.Receiver, result)
 		m := gstypes.NewMethod(sm.ID, sm.Name, receiver, sm.IsPointerReceiver)
 		// Add parameters
@@ -347,7 +347,7 @@ func deserializeType(jsonStr string, result *ScanningResult) (gstypes.Type, erro
 
 	case gstypes.TypeKindField:
 		var sf gstypes.SerializedField
-		json.Unmarshal([]byte(jsonStr), &sf)
+		_ = json.Unmarshal([]byte(jsonStr), &sf)
 		parent := reconstructTypeRef(sf.Parent, result)
 		fieldType := reconstructTypeRef(sf.Type, result)
 		f := gstypes.NewField(sf.ID, sf.Name, fieldType, sf.Tag, sf.IsEmbedded, parent)
@@ -356,7 +356,7 @@ func deserializeType(jsonStr string, result *ScanningResult) (gstypes.Type, erro
 
 	case gstypes.TypeKindInstantiated:
 		var sig gstypes.SerializedInstantiatedGeneric
-		json.Unmarshal([]byte(jsonStr), &sig)
+		_ = json.Unmarshal([]byte(jsonStr), &sig)
 		origin := reconstructTypeRef(sig.Origin, result)
 		// Create instantiated generic type with type arguments
 		typeArgs := make([]gstypes.TypeArgument, 0)
@@ -372,13 +372,13 @@ func deserializeType(jsonStr string, result *ScanningResult) (gstypes.Type, erro
 
 	case gstypes.TypeKindTypeParameter:
 		var stp gstypes.SerializedTypeParameter
-		json.Unmarshal([]byte(jsonStr), &stp)
+		_ = json.Unmarshal([]byte(jsonStr), &stp)
 		constraint := reconstructTypeRef(stp.Constraint, result)
 		t = gstypes.NewTypeParameter(stp.ID, stp.Name, stp.Index, constraint)
 
 	case gstypes.TypeKindUnion:
 		var su gstypes.SerializedUnion
-		json.Unmarshal([]byte(jsonStr), &su)
+		_ = json.Unmarshal([]byte(jsonStr), &su)
 		// Create union terms
 		terms := make([]*gstypes.UnionTerm, 0)
 		for _, term := range su.Terms {
