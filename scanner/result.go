@@ -20,6 +20,44 @@ func (s *ScanningResult) Serialize() any {
 	}
 }
 
+// EnsureFullyLoaded materializes all lazy-loaded type details
+// This must be called before caching to ensure all type data is available
+func (s *ScanningResult) EnsureFullyLoaded() error {
+	if s == nil {
+		return nil
+	}
+
+	// Load all types
+	for _, id := range s.Types.Keys() {
+		if t, exists := s.Types.Get(id); exists {
+			if loadable, ok := t.(gstypes.Loadable); ok {
+				if err := loadable.Load(); err != nil {
+					return err
+				}
+			}
+		}
+	}
+
+	// Load all values
+	for _, id := range s.Values.Keys() {
+		if v, exists := s.Values.Get(id); exists {
+			if err := v.Load(); err != nil {
+				return err
+			}
+		}
+	}
+
+	// Packages don't have a Load method, but we ensure their files are populated
+	// (they're loaded during scanning)
+
+	return nil
+}
+
+// ToCache serializes the result to a gzip-compressed JSON cache file
+func (s *ScanningResult) ToCache(filename string) error {
+	return WriteCache(filename, s)
+}
+
 // func (s *ScanningResult) MarshalJSON() ([]byte, error) {
 // 	s.Serialize()
 // 	return json.Marshal(struct {
